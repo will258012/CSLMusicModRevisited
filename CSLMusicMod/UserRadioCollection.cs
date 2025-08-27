@@ -7,6 +7,7 @@ using System.IO;
 using ColossalFramework.UI;
 using ColossalFramework.Plugins;
 using ICities;
+using AlgernonCommons.Translation;
 
 namespace CSLMusicMod
 {
@@ -159,7 +160,7 @@ namespace CSLMusicMod
 
             if (ModOptions.Instance.CreateChannelsFromLegacyPacks)
             {
-                CreateLegacyChannel("Userdefined", new string[] { "Userdefined" }, UserRadioCollection.GameDirUserCollectionDirectory);
+                CreateLegacyChannel(Translations.Translate("USERDEFINED"), new string[] { "Userdefined" }, UserRadioCollection.GameDirUserCollectionDirectory);
             }
 
             LoadChannelsFromCollection(UserRadioCollection.GameDirUserCollectionDirectory);
@@ -211,7 +212,7 @@ namespace CSLMusicMod
 
         private void CreateDefaultMixChannel()
         {
-            UserRadioChannel channel = new UserRadioChannel("CSLMusic Mix");
+            UserRadioChannel channel = new UserRadioChannel(Translations.Translate("CSLMUSIC_MIX"));
             channel.m_ThumbnailFile = "thumbnail_mix.png";
             channel.m_Collections = new HashSet<string>(m_Songs.Values.Where(song => !song.m_isVanilla || ModOptions.Instance.AddVanillaSongsToMusicMix).Select(song => song.m_Collection)); // Default channel loads from all collections
 
