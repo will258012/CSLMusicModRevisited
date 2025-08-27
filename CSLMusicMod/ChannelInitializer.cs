@@ -1,7 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
-using System.Collections.Generic;
 using UnityEngine.SceneManagement;
 
 namespace CSLMusicMod
@@ -25,10 +25,11 @@ namespace CSLMusicMod
         {
             UserRadioCollection collection = LoadingExtension.UserRadioContainer;
 
-            foreach(UserRadioChannel channel in collection.m_Stations.Values)
+            foreach (UserRadioChannel channel in collection.m_Stations.Values)
             {
                 // Creates the actual radio station object that the games uses.
-                CreatePrefab(channel.m_Name, "Default", new Action<RadioChannelInfo>((RadioChannelInfo obj) => {                    
+                CreatePrefab(channel.m_Name, "Default", new Action<RadioChannelInfo>((RadioChannelInfo obj) =>
+                {
                     obj.m_stateChain = channel.m_StateChain;
                     obj.m_Atlas = channel.GetThumbnailAtlas(obj.m_Atlas.material);
                     obj.m_Thumbnail = "thumbnail";
@@ -55,15 +56,15 @@ namespace CSLMusicMod
         {
             SceneManager.sceneLoaded += OnLevelFinishedLoading;
         }
-       
+
         public void OnDisable()
         {
             SceneManager.sceneLoaded -= OnLevelFinishedLoading;
         }
 
-        void OnLevelFinishedLoading (Scene scene, LoadSceneMode mode)
+        void OnLevelFinishedLoading(Scene scene, LoadSceneMode mode)
         {
-            if(mode == LoadSceneMode.Single)
+            if (mode == LoadSceneMode.Single)
             {
                 _customPrefabs.Clear();
                 _isInitialized = false;
@@ -71,7 +72,7 @@ namespace CSLMusicMod
         }
 
         public void Update()
-        {          
+        {
             if (!_isInitialized)
             {
                 // Wait until the game got its radio channels.
@@ -127,13 +128,9 @@ namespace CSLMusicMod
 
         protected static RadioChannelInfo FindOriginalPrefab(string originalPrefabName)
         {
-            RadioChannelInfo foundPrefab;           
+            RadioChannelInfo foundPrefab;
             foundPrefab = Resources.FindObjectsOfTypeAll<RadioChannelInfo>().FirstOrDefault(netInfo => netInfo.name == originalPrefabName);
-            if (foundPrefab == null)
-            {
-                return null;
-            }
-            return foundPrefab;
+            return foundPrefab == null ? null : foundPrefab;
         }
     }
 }

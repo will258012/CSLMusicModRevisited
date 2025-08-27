@@ -1,7 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using ColossalFramework;
+﻿using ColossalFramework;
 using LitJson;
+using System;
+using System.Collections.Generic;
 
 namespace CSLMusicMod.Contexts
 {
@@ -9,7 +9,7 @@ namespace CSLMusicMod.Contexts
     /// This condition handles the mood of a city (the happiness)
     /// </summary>
     public class MoodContextCondition : RadioContextCondition
-    {    
+    {
         public int m_HappinessFrom = 0;
 
         public int m_HappinessTo = 100;
@@ -36,12 +36,13 @@ namespace CSLMusicMod.Contexts
 
         public static MoodContextCondition LoadFromJson(JsonData json)
         {
-            MoodContextCondition context = new MoodContextCondition();
+            MoodContextCondition context = new MoodContextCondition
+            {
+                m_HappinessFrom = (int)json["from"],
+                m_HappinessTo = (int)json["to"]
+            };
 
-            context.m_HappinessFrom = (int)json["from"];
-            context.m_HappinessTo = (int)json["to"];
-
-            if(json.Keys.Contains("not"))
+            if (json.Keys.Contains("not"))
             {
                 context.m_Invert = (bool)json["not"];
             }

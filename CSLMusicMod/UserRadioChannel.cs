@@ -1,13 +1,13 @@
-﻿using System;
-using System.Linq;
-using System.Collections.Generic;
+﻿using ColossalFramework.IO;
 using ColossalFramework.UI;
-using UnityEngine;
-using System.IO;
-using ColossalFramework.IO;
 using CSLMusicMod.Contexts;
 using CSLMusicMod.Helpers;
 using LitJson;
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using UnityEngine;
 
 namespace CSLMusicMod
 {
@@ -50,17 +50,15 @@ namespace CSLMusicMod
             String filename;
             var assembly = System.Reflection.Assembly.GetExecutingAssembly();
 
-            if(m_ThumbnailFile != null && File.Exists(m_ThumbnailFile))
-            {
-                filename = m_ThumbnailFile;
-            }
-            else if(m_ThumbnailFile != null && assembly.GetManifestResourceNames().Contains("CSLMusicMod." + m_ThumbnailFile))
+            if (m_ThumbnailFile != null && File.Exists(m_ThumbnailFile))
             {
                 filename = m_ThumbnailFile;
             }
             else
             {
-                filename = "thumbnail.png";
+                filename = m_ThumbnailFile != null && assembly.GetManifestResourceNames().Contains("CSLMusicMod." + m_ThumbnailFile)
+                    ? m_ThumbnailFile
+                    : "thumbnail.png";
             }
 
             return TextureHelper.CreateAtlas(filename,
@@ -78,16 +76,16 @@ namespace CSLMusicMod
         public HashSet<UserRadioContent> GetApplyingSongs()
         {
             // If we have no contexts, all collections can be used.
-            if(m_Contexts.Count == 0)
+            if (m_Contexts.Count == 0)
             {
                 return null;
             }
 
             HashSet<UserRadioContent> songs = new HashSet<UserRadioContent>();
 
-            foreach(RadioContext context in m_Contexts)
+            foreach (RadioContext context in m_Contexts)
             {
-                if(context.Applies())
+                if (context.Applies())
                 {
                     return context.GetAttachedSongs();
                 }
@@ -109,14 +107,16 @@ namespace CSLMusicMod
                 string data = File.ReadAllText(filename);
                 JsonData json = JsonMapper.ToObject(data);
 
-                UserRadioChannel channel = new UserRadioChannel();
-                channel.m_Name = (String)json["name"];
+                UserRadioChannel channel = new UserRadioChannel
+                {
+                    m_Name = (String)json["name"]
+                };
 
-                if(json.Keys.Contains("collections"))
+                if (json.Keys.Contains("collections"))
                 {
                     List<String> collections = new List<string>();
 
-                    foreach(JsonData v in json["collections"])
+                    foreach (JsonData v in json["collections"])
                     {
                         collections.Add((String)v);
                     }
@@ -128,28 +128,30 @@ namespace CSLMusicMod
                     channel.m_Collections = new HashSet<string>(new string[] { channel.m_Name });
                 }
 
-                if(json.Keys.Contains("thumbnail"))
+                if (json.Keys.Contains("thumbnail"))
                 {
                     channel.m_ThumbnailFile = Path.Combine(Path.GetDirectoryName(filename), (String)json["thumbnail"]);
                 }
 
-                if(json.Keys.Contains("schedule"))
+                if (json.Keys.Contains("schedule"))
                 {
                     List<RadioChannelInfo.State> states = new List<RadioChannelInfo.State>();
 
-                    foreach(JsonData entry in json["schedule"])
+                    foreach (JsonData entry in json["schedule"])
                     {
-                        RadioChannelInfo.State state = new RadioChannelInfo.State();
-                        state.m_contentType = (RadioContentInfo.ContentType)Enum.Parse(typeof(RadioContentInfo.ContentType), (String)entry["type"], true);
-                        state.m_minCount = (int)entry["min"];
-                        state.m_maxCount = (int)entry["max"];
+                        RadioChannelInfo.State state = new RadioChannelInfo.State
+                        {
+                            m_contentType = (RadioContentInfo.ContentType)Enum.Parse(typeof(RadioContentInfo.ContentType), (String)entry["type"], true),
+                            m_minCount = (int)entry["min"],
+                            m_maxCount = (int)entry["max"]
+                        };
 
                         states.Add(state);
                     }
 
                     channel.m_StateChain = states.ToArray();
                 }
-                
+
                 // Named conditions
                 var namedConditions = new Dictionary<string, RadioContextCondition>();
                 if (json.Keys.Contains("filters") && json["filters"].IsObject)
@@ -166,19 +168,19 @@ namespace CSLMusicMod
                     }
                 }
 
-                if(json.Keys.Contains("contexts"))
+                if (json.Keys.Contains("contexts"))
                 {
-                    foreach(JsonData entry in json["contexts"])
+                    foreach (JsonData entry in json["contexts"])
                     {
                         var context = RadioContext.LoadFromJson(entry, namedConditions);
 
-                        if(context != null)
+                        if (context != null)
                         {
                             context.m_RadioChannel = channel;
                             channel.m_Contexts.Add(context);
 
                             // Auto-load collections that are defined in contexts
-                            foreach(var coll in context.m_Collections)
+                            foreach (var coll in context.m_Collections)
                             {
                                 channel.m_Collections.Add(coll);
                             }
@@ -188,7 +190,7 @@ namespace CSLMusicMod
 
                 return channel;
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 Debug.LogError(ex);
                 return null;

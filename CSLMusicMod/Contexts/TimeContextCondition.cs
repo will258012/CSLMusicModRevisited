@@ -1,7 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using ColossalFramework;
+﻿using ColossalFramework;
 using LitJson;
+using System;
+using System.Collections.Generic;
 
 namespace CSLMusicMod.Contexts
 {
@@ -31,28 +31,32 @@ namespace CSLMusicMod.Contexts
         {
             float currenttime = Singleton<SimulationManager>.instance.m_currentDayTimeHour;
 
-            if(m_TimeFrom < m_TimeTo)
+            if (m_TimeFrom < m_TimeTo)
             {
                 return currenttime >= m_TimeFrom && currenttime <= m_TimeTo;
             }
-            else if(m_TimeTo < m_TimeFrom)
-            {
-                return currenttime >= m_TimeFrom || currenttime <= m_TimeTo;
-            }
             else
             {
-                return true;
+                if (m_TimeTo < m_TimeFrom)
+                {
+                    return currenttime >= m_TimeFrom || currenttime <= m_TimeTo;
+                }
+                else
+                {
+                    return true;
+                }
             }
         }
 
         public static TimeContextCondition LoadFromJson(JsonData json)
         {
-            TimeContextCondition context = new TimeContextCondition();
+            TimeContextCondition context = new TimeContextCondition
+            {
+                m_TimeFrom = (int)json["from"],
+                m_TimeTo = (int)json["to"]
+            };
 
-            context.m_TimeFrom = (int)json["from"];
-            context.m_TimeTo = (int)json["to"];
-
-            if(json.Keys.Contains("not"))
+            if (json.Keys.Contains("not"))
             {
                 context.m_Invert = (bool)json["not"];
             }

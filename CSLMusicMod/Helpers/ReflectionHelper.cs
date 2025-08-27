@@ -21,7 +21,7 @@ namespace CSLMusicMod.Helpers
             if (instance == null)
             {
                 Debug.LogError("GetPrivateField: Instance is null!");
-                return default(T);
+                return default;
             }
 
             FieldInfo field = instance.GetType().GetField(name, BindingFlags.NonPublic | BindingFlags.Instance);
@@ -29,15 +29,12 @@ namespace CSLMusicMod.Helpers
             if (field == null)
             {
                 Debug.LogError("GetPrivateField: Field is null!");
-                return default(T);
+                return default;
             }
 
             object obj = field.GetValue(instance);
 
-            if (obj == null)
-                return default(T);
-
-            return (T)obj;
+            return obj == null ? default : (T)obj;
         }
 
         /// <summary>
@@ -52,10 +49,7 @@ namespace CSLMusicMod.Helpers
             object obj = type.GetField(name, BindingFlags.NonPublic | BindingFlags.Static).
                 GetValue(null);
 
-            if (obj == null)
-                return default(T);
-
-            return (T)obj;
+            return obj == null ? default : (T)obj;
         }
 
         /// <summary>
@@ -82,26 +76,26 @@ namespace CSLMusicMod.Helpers
                 SetValue(null, value);
         }
 
-		/// <summary>
-		/// Invokes a private function.
-		/// </summary>
-		/// <returns>Return value of the procedure</returns>
-		/// <param name="instance">Object with the private method</param>
-		/// <param name="method">Name of the method</param>
-		/// <param name="parameters">Parameters of the method</param>
-		/// <typeparam name="T">Return type of the method</typeparam>
-		public static T InvokePrivateMethod<T>(object instance, String method, params object[] parameters)
+        /// <summary>
+        /// Invokes a private function.
+        /// </summary>
+        /// <returns>Return value of the procedure</returns>
+        /// <param name="instance">Object with the private method</param>
+        /// <param name="method">Name of the method</param>
+        /// <param name="parameters">Parameters of the method</param>
+        /// <typeparam name="T">Return type of the method</typeparam>
+        public static T InvokePrivateMethod<T>(object instance, String method, params object[] parameters)
         {
             return (T)instance.GetType().GetMethod(method, BindingFlags.NonPublic | BindingFlags.Instance).Invoke(instance, parameters);
         }
 
-		/// <summary>
-		/// Invokes a private procedure.
-		/// </summary>
-		/// <param name="instance">Object with the private method.</param>
-		/// <param name="method">Name of the method.</param>
-		/// <param name="parameters">Parameters of the method.</param>
-		public static void InvokePrivateVoidMethod(object instance, String method, params object[] parameters)
+        /// <summary>
+        /// Invokes a private procedure.
+        /// </summary>
+        /// <param name="instance">Object with the private method.</param>
+        /// <param name="method">Name of the method.</param>
+        /// <param name="parameters">Parameters of the method.</param>
+        public static void InvokePrivateVoidMethod(object instance, String method, params object[] parameters)
         {
             instance.GetType().GetMethod(method, BindingFlags.NonPublic | BindingFlags.Instance).Invoke(instance, parameters);
         }

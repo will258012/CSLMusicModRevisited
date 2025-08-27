@@ -39,25 +39,25 @@ namespace CSLMusicMod
 
             String basename = Path.GetFileNameWithoutExtension(filename);
 
-            if(basename.EndsWith("#blurb"))
+            if (basename.EndsWith("#blurb"))
             {
                 m_ContentType = RadioContentInfo.ContentType.Blurb;
-                m_DisplayName = m_DisplayName.Substring(0, m_DisplayName.Length - "#blurb".Length );
+                m_DisplayName = m_DisplayName.Substring(0, m_DisplayName.Length - "#blurb".Length);
             }
-            else if(basename.EndsWith("#talk"))
+            else if (basename.EndsWith("#talk"))
             {
                 m_ContentType = RadioContentInfo.ContentType.Talk;
-                m_DisplayName = m_DisplayName.Substring(0, m_DisplayName.Length - "#talk".Length );
+                m_DisplayName = m_DisplayName.Substring(0, m_DisplayName.Length - "#talk".Length);
             }
-            else if(basename.EndsWith("#commercial"))
+            else if (basename.EndsWith("#commercial"))
             {
                 m_ContentType = RadioContentInfo.ContentType.Commercial;
-                m_DisplayName = m_DisplayName.Substring(0, m_DisplayName.Length - "#commercial".Length );
+                m_DisplayName = m_DisplayName.Substring(0, m_DisplayName.Length - "#commercial".Length);
             }
-            else if(basename.EndsWith("#broadcast"))
+            else if (basename.EndsWith("#broadcast"))
             {
                 m_ContentType = RadioContentInfo.ContentType.Broadcast;
-                m_DisplayName = m_DisplayName.Substring(0, m_DisplayName.Length - "#broadcast".Length );
+                m_DisplayName = m_DisplayName.Substring(0, m_DisplayName.Length - "#broadcast".Length);
             }
             else
             {

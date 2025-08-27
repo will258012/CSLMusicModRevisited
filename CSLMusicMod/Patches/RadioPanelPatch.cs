@@ -68,14 +68,7 @@ namespace CSLMusicMod.Patches
             UserRadioCollection collection)
         {
 
-            if (ModOptions.Instance.DisabledRadioStations.Contains(station.name))
-            {
-                button.isVisible = false;
-            }
-            else
-            {
-                button.isVisible = true;
-            }
+            button.isVisible = !ModOptions.Instance.DisabledRadioStations.Contains(station.name);
 
             ((UIPanel)button.parent).autoLayoutPadding = new RectOffset(0, 0, 0, 0);
 

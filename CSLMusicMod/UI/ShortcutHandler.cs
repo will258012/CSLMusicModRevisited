@@ -1,6 +1,6 @@
-﻿using System.Linq;
-using ColossalFramework.UI;
+﻿using ColossalFramework.UI;
 using CSLMusicMod.Helpers;
+using System.Linq;
 using UnityEngine;
 
 namespace CSLMusicMod.UI
@@ -19,18 +19,18 @@ namespace CSLMusicMod.UI
         private bool m_ModifierShift = false;
         private bool m_ModiferAlt = false;
 
-		/// <summary>
-		/// The current radio panel (from vanilla UI)
-		/// Used as cache to prevent expensive FindObjectOfTypeAll calls 
-		/// </summary>
-		private RadioPanel m_CurrentRadioPanel = null;
+        /// <summary>
+        /// The current radio panel (from vanilla UI)
+        /// Used as cache to prevent expensive FindObjectOfTypeAll calls 
+        /// </summary>
+        private RadioPanel m_CurrentRadioPanel = null;
 
-		/// <summary>
-		/// Gets the current radio panel.
-		/// This function is expensive. Only call if necessary!
-		/// </summary>
-		/// <value>The current radio panel.</value>
-		private RadioPanel CurrentRadioPanel
+        /// <summary>
+        /// Gets the current radio panel.
+        /// This function is expensive. Only call if necessary!
+        /// </summary>
+        /// <value>The current radio panel.</value>
+        private RadioPanel CurrentRadioPanel
         {
             get
             {
@@ -59,27 +59,21 @@ namespace CSLMusicMod.UI
 
         private bool ShortcutDown(ModOptions.Shortcut shortcut)
         {
-            if (shortcut.Key == KeyCode.None)
-                return false;
-            
-            return (Input.GetKeyDown(shortcut.Key) &&
+            return shortcut.Key != KeyCode.None && Input.GetKeyDown(shortcut.Key) &&
             (shortcut.ModifierControl == m_ModifierCtrl) &&
             (shortcut.ModifierShift == m_ModifierShift) &&
-            (shortcut.ModifierAlt == m_ModiferAlt));
+            (shortcut.ModifierAlt == m_ModiferAlt);
         }
 
         private bool ShortcutUp(ModOptions.Shortcut shortcut)
         {
-            if (shortcut.Key == KeyCode.None)
-                return true;
-
-            return Input.GetKeyUp(shortcut.Key);
+            return shortcut.Key == KeyCode.None || Input.GetKeyUp(shortcut.Key);
         }
 
         public void Update()
         {
             // Check if some other UI has the focus
-            if(UIView.HasInputFocus())
+            if (UIView.HasInputFocus())
             {
                 m_NextTrackKey_IsDown = false;
                 m_OpenPanelKey_IsDown = false;
@@ -89,14 +83,14 @@ namespace CSLMusicMod.UI
 
             m_ModifierCtrl = (Input.GetKey(KeyCode.LeftControl) || Input.GetKey(KeyCode.RightControl));
             m_ModifierShift = (Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift));
-            m_ModiferAlt = (Input.GetKey(KeyCode.LeftAlt) || Input.GetKey(KeyCode.RightAlt));         
+            m_ModiferAlt = (Input.GetKey(KeyCode.LeftAlt) || Input.GetKey(KeyCode.RightAlt));
 
             //Next track
-            if(ShortcutDown(ModOptions.Instance.ShortcutNextTrack))
+            if (ShortcutDown(ModOptions.Instance.ShortcutNextTrack))
             {
                 m_NextTrackKey_IsDown = true;
             }
-            else if(m_NextTrackKey_IsDown && ShortcutUp(ModOptions.Instance.ShortcutNextTrack))
+            else if (m_NextTrackKey_IsDown && ShortcutUp(ModOptions.Instance.ShortcutNextTrack))
             {
                 m_NextTrackKey_IsDown = false;
                 CSLMusicMod.Log("Pressed shortcut for next track");
@@ -104,11 +98,11 @@ namespace CSLMusicMod.UI
             }
 
             //Next station
-            if(ShortcutDown(ModOptions.Instance.ShortcutNextStation))
+            if (ShortcutDown(ModOptions.Instance.ShortcutNextStation))
             {
                 m_NextStationKey_IsDown = true;
             }
-            else if(m_NextStationKey_IsDown && ShortcutUp(ModOptions.Instance.ShortcutNextStation))
+            else if (m_NextStationKey_IsDown && ShortcutUp(ModOptions.Instance.ShortcutNextStation))
             {
                 CSLMusicMod.Log("Pressed shortcut for next station");
                 m_NextStationKey_IsDown = false;
@@ -116,17 +110,17 @@ namespace CSLMusicMod.UI
             }
 
             //Panel
-            if(ShortcutDown(ModOptions.Instance.ShortcutOpenRadioPanel))
+            if (ShortcutDown(ModOptions.Instance.ShortcutOpenRadioPanel))
             {
                 m_OpenPanelKey_IsDown = true;
             }
-            else if(m_OpenPanelKey_IsDown && ShortcutUp(ModOptions.Instance.ShortcutOpenRadioPanel))
-            {                
+            else if (m_OpenPanelKey_IsDown && ShortcutUp(ModOptions.Instance.ShortcutOpenRadioPanel))
+            {
                 m_OpenPanelKey_IsDown = false;
                 CSLMusicMod.Log("Pressed shortcut for hide/show panel");
 
                 var radiopanel = CurrentRadioPanel;
-                if(radiopanel != null)
+                if (radiopanel != null)
                 {
                     var visible = ReflectionHelper.GetPrivateField<bool>(radiopanel, "m_isVisible");
 

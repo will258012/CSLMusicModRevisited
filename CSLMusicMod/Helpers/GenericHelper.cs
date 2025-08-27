@@ -16,10 +16,7 @@ namespace CSLMusicMod.Helpers
         /// <typeparam name="T">Any type</typeparam>
         public static List<T> CopyOrCreateList<T>(IEnumerable<T> source)
         {
-            if (source == null)
-                return new List<T>();
-            else
-                return new List<T>(source);
+            return source == null ? new List<T>() : new List<T>(source);
         }
     }
 }

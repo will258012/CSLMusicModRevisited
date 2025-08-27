@@ -1,7 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using CSLMusicMod.Contexts;
+﻿using CSLMusicMod.Contexts;
 using LitJson;
+using System;
 using UnityEngine;
 
 namespace CSLMusicMod
@@ -17,7 +16,7 @@ namespace CSLMusicMod
         {
             RadioContextCondition context = null;
 
-            switch((String)json["type"])
+            switch ((String)json["type"])
             {
                 case "time":
                     context = TimeContextCondition.LoadFromJson(json);

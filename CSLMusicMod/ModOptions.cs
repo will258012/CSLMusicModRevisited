@@ -436,8 +436,10 @@ namespace CSLMusicMod
             try
             {
                 StringWriter json = new StringWriter();
-                JsonWriter f = new JsonWriter(json);
-                f.PrettyPrint = true;
+                JsonWriter f = new JsonWriter(json)
+                {
+                    PrettyPrint = true
+                };
 
                 JsonMapper.ToJson(m_Options, f);
                 File.WriteAllText(SettingsFilename, json.ToString());

@@ -1,5 +1,5 @@
-﻿using System.IO;
-using ColossalFramework.UI;
+﻿using ColossalFramework.UI;
+using System.IO;
 using UnityEngine;
 
 namespace CSLMusicMod.Helpers
@@ -9,28 +9,28 @@ namespace CSLMusicMod.Helpers
     /// </summary>
     public static class TextureHelper
     {
-		/// <summary>
-		/// Creates an texture atlas.
-		/// All credits to Craxy, authour of Toggle Traffic Lights
-		/// </summary>
-		/// <returns>The atlas.</returns>
-		/// <param name="file">File.</param>
-		/// <param name="name">Name.</param>
-		/// <param name="baseMaterial">Base material.</param>
-		/// <param name="spriteWidth">Sprite width.</param>
-		/// <param name="spriteHeight">Sprite height.</param>
-		/// <param name="spriteNames">Sprite names.</param>
-		public static UITextureAtlas CreateAtlas(string file, string name, Material baseMaterial, int spriteWidth, int spriteHeight, string[] spriteNames)
+        /// <summary>
+        /// Creates an texture atlas.
+        /// All credits to Craxy, authour of Toggle Traffic Lights
+        /// </summary>
+        /// <returns>The atlas.</returns>
+        /// <param name="file">File.</param>
+        /// <param name="name">Name.</param>
+        /// <param name="baseMaterial">Base material.</param>
+        /// <param name="spriteWidth">Sprite width.</param>
+        /// <param name="spriteHeight">Sprite height.</param>
+        /// <param name="spriteNames">Sprite names.</param>
+        public static UITextureAtlas CreateAtlas(string file, string name, Material baseMaterial, int spriteWidth, int spriteHeight, string[] spriteNames)
         {
             CSLMusicMod.Log("Loading icon atlas from " + file + " as " + name);
-            
+
             var tex = new Texture2D(spriteWidth * spriteNames.Length, spriteHeight, TextureFormat.ARGB32, false)
-                {
-                    filterMode = FilterMode.Bilinear,
-                };
+            {
+                filterMode = FilterMode.Bilinear,
+            };
 
             //load texture
-            if(File.Exists(file))
+            if (File.Exists(file))
             {
                 using (var textureStream = File.Open(file, FileMode.Open))
                 {
@@ -43,14 +43,14 @@ namespace CSLMusicMod.Helpers
             else
             {
                 var assembly = System.Reflection.Assembly.GetExecutingAssembly();
-                
+
                 using (var textureStream = assembly.GetManifestResourceStream("CSLMusicMod." + file))
                 {
                     if (textureStream == null)
                     {
                         CSLMusicMod.Log("Texture stream is NULL!");
                     }
-                    
+
                     var buf = new byte[textureStream.Length];  //declare arraysize
                     textureStream.Read(buf, 0, buf.Length); // read from stream to byte array
                     tex.LoadImage(buf);
@@ -73,11 +73,11 @@ namespace CSLMusicMod.Helpers
                 var uw = 1.0f / spriteNames.Length;
 
                 var spriteInfo = new UITextureAtlas.SpriteInfo
-                    {
-                        name = spriteNames[i],
-                        texture = tex,
-                        region = new Rect(i * uw, 0, uw, 1),
-                    };
+                {
+                    name = spriteNames[i],
+                    texture = tex,
+                    region = new Rect(i * uw, 0, uw, 1),
+                };
 
                 atlas.AddSprite(spriteInfo);
             }
@@ -102,18 +102,18 @@ namespace CSLMusicMod.Helpers
                 "SortDescending",
                 "Search",
                 "Clear",
-                "Talk", 
+                "Talk",
                 "Broadcast",
-                "Commercial", 
-                "Blurb", 
-                "ListEntryNormal",  
-                "ListEntryHover", 
+                "Commercial",
+                "Blurb",
+                "ListEntryNormal",
+                "ListEntryHover",
                 "ContentDisabled",
                 "Open",
                 "Menu",
                 "ContentUnchecked",
                 "ContentChecked"
-            });  
+            });
         }
     }
 }

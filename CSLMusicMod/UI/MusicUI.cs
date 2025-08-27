@@ -1,10 +1,8 @@
+using ColossalFramework.UI;
+using CSLMusicMod.Helpers;
 using System;
 using System.Linq;
 using UnityEngine;
-using ColossalFramework.UI;
-using System.Collections.Generic;
-using System.Reflection;
-using CSLMusicMod.Helpers;
 
 namespace CSLMusicMod.UI
 {
@@ -12,14 +10,14 @@ namespace CSLMusicMod.UI
     /// Behavior that handles all UI
     /// </summary>
     public class MusicUI : MonoBehaviour
-    {  
+    {
         /// <summary>
         /// The list panel that appears if the radio button is extended
         /// </summary>
         private UIMusicListPanel m_ListPanel;
 
         private bool m_Initialized = false;
-     
+
         /// <summary>
         /// The current radio panel (from vanilla UI)
         /// Used as cache to prevent expensive FindObjectOfTypeAll calls 
@@ -56,7 +54,7 @@ namespace CSLMusicMod.UI
         {
             DontDestroyOnLoad(this);
         }
-      
+
         private void Initialize()
         {
             //Create ui
@@ -89,7 +87,7 @@ namespace CSLMusicMod.UI
                 {
                     Initialize();
                 }
-                catch(Exception e)
+                catch (Exception e)
                 {
                     Debug.LogError("[CSLMusic] Error while initializing music UI: " + e);
                 }
@@ -99,7 +97,7 @@ namespace CSLMusicMod.UI
 
         public void OnDestroy()
         {
-            if(m_ListPanel != null)
+            if (m_ListPanel != null)
                 Destroy(m_ListPanel);
         }
     }

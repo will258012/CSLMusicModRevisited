@@ -21,14 +21,9 @@ namespace CSLMusicMod.Patches
         {
             UserRadioCollection collection = Resources.FindObjectsOfTypeAll<UserRadioCollection>().FirstOrDefault();
 
-            if (collection != null && collection.m_Stations.ContainsKey(__instance.name))
-            {
-                __result = __instance.name;
-            }
-            else
-            {
-                __result = ColossalFramework.Globalization.Locale.Get("RADIO_CHANNEL_TITLE", __instance.gameObject.name);
-            }
+            __result = collection != null && collection.m_Stations.ContainsKey(__instance.name)
+                ? __instance.name
+                : ColossalFramework.Globalization.Locale.Get("RADIO_CHANNEL_TITLE", __instance.gameObject.name);
             return false;
         }
     }

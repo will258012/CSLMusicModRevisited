@@ -133,8 +133,7 @@ namespace CSLMusicMod.UI
                 var panel = ReflectionHelper.GetPrivateField<UIPanel>(radiopanel, "m_radioPanel");
                 var list = ReflectionHelper.GetPrivateField<UIPanel>(radiopanel, "m_radioList");
 
-                if (panel != null)
-                    panel.BringToFront();
+                panel?.BringToFront();
                 if (list != null)
                     panel.BringToFront();
 
@@ -228,7 +227,7 @@ namespace CSLMusicMod.UI
                 //Debug.Log(m_CurrentContent.Count + " entries ");
             }
 
-            m_CurrentContent.Sort((RadioContentInfo x, RadioContentInfo y) =>
+            m_CurrentContent.Sort((x, y) =>
                 {
                     if (m_SortAscending)
                     {
@@ -270,14 +269,7 @@ namespace CSLMusicMod.UI
 
             if (ModOptions.Instance.ImprovedDisableContentUI)
             {
-                if (!AudioManagerHelper.ContentIsEnabled(content))
-                {
-                    name = "<sprite ContentUnchecked>" + name;
-                }
-                else
-                {
-                    name = "<sprite ContentChecked>" + name;
-                }
+                name = !AudioManagerHelper.ContentIsEnabled(content) ? "<sprite ContentUnchecked>" + name : "<sprite ContentChecked>" + name;
             }
             else
             {
@@ -349,7 +341,7 @@ namespace CSLMusicMod.UI
                     return;
 
                 //I use x100 because it failed with 0..1?
-                value = value / 100f;
+                value /= 100f;
 
                 if (Math.Abs(m_MusicAudioVolume.value - value) > 0.01)
                 {
@@ -446,10 +438,7 @@ namespace CSLMusicMod.UI
             m_ClearFilter.hoveredColor = new Color32(255, 255, 255, 128);
 
             m_Filter.eventTextChanged += filterTextChanged;
-            m_ClearFilter.eventClick += (component, eventParam) =>
-            {
-                m_Filter.text = "";
-            };
+            m_ClearFilter.eventClick += (_, e) => m_Filter.text = "";
         }
 
         private void InitializeHeaderToolbarCloseButton()
@@ -706,23 +695,14 @@ namespace CSLMusicMod.UI
 
         private bool IsFiltered(String entrytext)
         {
-            if (!Filtered)
-                return false;
-
-            return !entrytext.ToLower().Contains(m_Filter.text.ToLower());
+            return !Filtered ? false : !entrytext.ToLower().Contains(m_Filter.text.ToLower());
         }
 
         public String ShortenString(String str, int size)
         {
             var diff = str.Length - size;
 
-            if (diff > 0)
-            {
-                return str.Substring(0, str.Length - diff - 4) + " ...";
-            }
-
-
-            return str;
+            return diff > 0 ? str.Substring(0, str.Length - diff - 4) + " ..." : str;
         }
     }
 }

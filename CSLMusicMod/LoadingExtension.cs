@@ -1,14 +1,13 @@
-﻿using System;
-using System.Linq;
-using ICities;
-using UnityEngine;
-using System.Collections.Generic;
-using CSLMusicMod.UI;
-using System.IO;
+﻿using AlgernonCommons.Patching;
 using ColossalFramework.IO;
 using CSLMusicMod.Helpers;
-using AlgernonCommons.Patching;
-using HarmonyLib;
+using CSLMusicMod.UI;
+using ICities;
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using UnityEngine;
 
 namespace CSLMusicMod
 {
@@ -32,13 +31,13 @@ namespace CSLMusicMod
         {
             base.OnCreated(loading);
 
-            if(!Directory.Exists(UserRadioCollection.GameDirUserCollectionDirectory))
+            if (!Directory.Exists(UserRadioCollection.GameDirUserCollectionDirectory))
             {
                 try
                 {
                     Directory.CreateDirectory(UserRadioCollection.GameDirUserCollectionDirectory);
                 }
-                catch(Exception e)
+                catch (Exception e)
                 {
                     Debug.LogError("Could not create CSLMusicMod_Music directory: " + e);
                 }
@@ -64,7 +63,7 @@ namespace CSLMusicMod
 
             CSLMusicMod.Log("Got OnLevelLoaded: " + mode);
 
-            if(mode == LoadMode.LoadGame || mode == LoadMode.NewGame || mode == LoadMode.NewGameFromScenario)
+            if (mode == LoadMode.LoadGame || mode == LoadMode.NewGame || mode == LoadMode.NewGameFromScenario)
             {
                 CSLMusicMod.Log("Level loaded. Loading mod components.");
 
@@ -90,7 +89,7 @@ namespace CSLMusicMod
                 {
                     DebugOutput();
                 }
-                catch(Exception ex)
+                catch (Exception ex)
                 {
                     Debug.LogError("[CSLMusic] DebugOutput Error: " + ex);
                 }
@@ -104,12 +103,12 @@ namespace CSLMusicMod
             {
                 UnityEngine.Object.Destroy(UI.gameObject);
                 UI = null;
-            }        
+            }
             if (UIShortcutHandler != null)
             {
                 UnityEngine.Object.Destroy(UI.gameObject);
                 UIShortcutHandler = null;
-            }        
+            }
             if (StationContainer != null)
             {
                 UnityEngine.Object.Destroy(StationContainer.gameObject);
@@ -160,9 +159,9 @@ namespace CSLMusicMod
                 message += "[ChannelInfo] " + info + "\n";
                 message += "Schedule:\n";
 
-                if(info.m_stateChain != null)
+                if (info.m_stateChain != null)
                 {
-                    foreach(RadioChannelInfo.State s in info.m_stateChain)
+                    foreach (RadioChannelInfo.State s in info.m_stateChain)
                     {
                         message += "\t" + s.m_contentType + " " + s.m_minCount + " - " + s.m_maxCount + "\n";
                     }
@@ -176,9 +175,9 @@ namespace CSLMusicMod
 
                     if (content == null)
                         continue;
-                    if( content.m_radioChannels != null)
+                    if (content.m_radioChannels != null)
                     {
-                        if(content.m_radioChannels.Contains(info))
+                        if (content.m_radioChannels.Contains(info))
                             message += "\t[ContentInfo] " + content + " " + content.m_fileName + "\n";
                     }
                 }
@@ -186,7 +185,7 @@ namespace CSLMusicMod
                 CSLMusicMod.Log(message);
             }
 
-            for(uint i = 0; i < PrefabCollection<DisasterInfo>.PrefabCount(); ++i)
+            for (uint i = 0; i < PrefabCollection<DisasterInfo>.PrefabCount(); ++i)
             {
                 DisasterInfo info = PrefabCollection<DisasterInfo>.GetPrefab(i);
 
@@ -213,36 +212,36 @@ namespace CSLMusicMod
             var options = ModOptions.Instance;
 
             List<RadioChannelInfo.State> states = new List<RadioChannelInfo.State>(info.m_stateChain);
-            states.RemoveAll((RadioChannelInfo.State obj) =>
-                {
-                    switch(obj.m_contentType)
+            states.RemoveAll(obj =>
+            {
+                    switch (obj.m_contentType)
                     {
                         case RadioContentInfo.ContentType.Blurb:
-                            if(!options.AllowContentBlurb)
+                            if (!options.AllowContentBlurb)
                             {
                                 return true;
                             }
                             break;
                         case RadioContentInfo.ContentType.Broadcast:
-                            if(!options.AllowContentBroadcast)
+                            if (!options.AllowContentBroadcast)
                             {
                                 return true;
                             }
                             break;
                         case RadioContentInfo.ContentType.Commercial:
-                            if(!options.AllowContentCommercial)
+                            if (!options.AllowContentCommercial)
                             {
                                 return true;
                             }
                             break;
                         case RadioContentInfo.ContentType.Music:
-                            if(!options.AllowContentMusic)
+                            if (!options.AllowContentMusic)
                             {
                                 return true;
                             }
                             break;
                         case RadioContentInfo.ContentType.Talk:
-                            if(!options.AllowContentTalk)
+                            if (!options.AllowContentTalk)
                             {
                                 return true;
                             }
@@ -264,19 +263,19 @@ namespace CSLMusicMod
             if (!ModOptions.Instance.AddVanillaSongsToMusicMix)
                 return;
 
-            for(uint i = 0; i < PrefabCollection<RadioChannelInfo>.PrefabCount(); ++i)
+            for (uint i = 0; i < PrefabCollection<RadioChannelInfo>.PrefabCount(); ++i)
             {
                 RadioChannelInfo info = PrefabCollection<RadioChannelInfo>.GetPrefab(i);
 
                 if (info == null)
                     continue;
-                
-                if(!UserRadioContainer.m_UserRadioDict.ContainsKey(info))
+
+                if (!UserRadioContainer.m_UserRadioDict.ContainsKey(info))
                 {
                     // Collect existing radio content
                     HashSet<string> existing = new HashSet<string>();
 
-                    for(uint j = 0; j < PrefabCollection<RadioContentInfo>.PrefabCount(); ++j)
+                    for (uint j = 0; j < PrefabCollection<RadioContentInfo>.PrefabCount(); ++j)
                     {
                         RadioContentInfo content = PrefabCollection<RadioContentInfo>.GetPrefab(j);
 
@@ -285,7 +284,7 @@ namespace CSLMusicMod
                         if (content.m_radioChannels == null)
                             continue;
 
-                        if(content.m_radioChannels.Contains(info))
+                        if (content.m_radioChannels.Contains(info))
                         {
                             string text = Path.Combine(DataLocation.gameContentPath, "Radio");
                             text = Path.Combine(text, content.m_contentType.ToString());
@@ -297,15 +296,15 @@ namespace CSLMusicMod
                     }
 
                     HashSet<string> validcollectionnames = new HashSet<string>();
-                    foreach(RadioContentInfo.ContentType type in Enum.GetValues(typeof(RadioContentInfo.ContentType)))
+                    foreach (RadioContentInfo.ContentType type in Enum.GetValues(typeof(RadioContentInfo.ContentType)))
                     {
                         validcollectionnames.Add(type + ": " + info.name);
                     }
 
                     // Check our collection for non-existing files
-                    foreach(UserRadioContent usercontent in UserRadioContainer.m_Songs.Values)
+                    foreach (UserRadioContent usercontent in UserRadioContainer.m_Songs.Values)
                     {
-                        if(!existing.Contains(usercontent.m_FileName) && validcollectionnames.Contains(usercontent.m_Collection))
+                        if (!existing.Contains(usercontent.m_FileName) && validcollectionnames.Contains(usercontent.m_Collection))
                         {
                             CSLMusicMod.Log("[ExtendedVanillaContent] Adding " + usercontent.m_FileName + " to vanilla station " + info.name);
 

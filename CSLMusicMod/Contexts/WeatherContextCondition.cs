@@ -7,7 +7,7 @@ namespace CSLMusicMod.Contexts
     /// Allows conditions based on the current weather
     /// </summary>
     public class WeatherContextCondition : RadioContextCondition
-    { 
+    {
         public float m_TempFrom = -100;
 
         public float m_TempTo = 100;
@@ -59,12 +59,12 @@ namespace CSLMusicMod.Contexts
 
             if (cloud < m_CloudFrom || cloud > m_CloudTo)
                 return false;
-            
+
             float fog = Singleton<WeatherManager>.instance.m_currentFog;
 
             if (fog < m_FogFrom || fog > m_FogTo)
                 return false;
-            
+
             float rainbow = Singleton<WeatherManager>.instance.m_targetRainbow;
 
             if (rainbow < m_RainbowFrom || rainbow > m_RainbowTo)
@@ -72,10 +72,7 @@ namespace CSLMusicMod.Contexts
 
             float northernlights = Singleton<WeatherManager>.instance.m_currentNorthernLights;
 
-            if (northernlights < m_NorthernLightsFrom || northernlights > m_NorthernLightsTo)
-                return false;
-
-            return true;
+            return northernlights >= m_NorthernLightsFrom && northernlights <= m_NorthernLightsTo;
         }
 
 
@@ -83,37 +80,37 @@ namespace CSLMusicMod.Contexts
         {
             WeatherContextCondition context = new WeatherContextCondition();
 
-            if(json.Keys.Contains("temperature"))
+            if (json.Keys.Contains("temperature"))
             {
                 context.m_TempFrom = (float)((int)json["temperature"][0]);
                 context.m_TempTo = (float)((int)json["temperature"][1]);
             }
-            if(json.Keys.Contains("rain"))
+            if (json.Keys.Contains("rain"))
             {
                 context.m_RainFrom = (float)((int)json["rain"][0]) / 10f;
                 context.m_RainTo = (float)((int)json["rain"][1]) / 10f;
             }
-            if(json.Keys.Contains("cloudy"))
+            if (json.Keys.Contains("cloudy"))
             {
                 context.m_CloudFrom = (float)((int)json["cloudy"][0]) / 10f;
                 context.m_CloudTo = (float)((int)json["cloudy"][1]) / 10f;
             }
-            if(json.Keys.Contains("foggy"))
+            if (json.Keys.Contains("foggy"))
             {
                 context.m_FogFrom = (float)((int)json["foggy"][0]) / 10f;
                 context.m_FogTo = (float)((int)json["foggy"][1]) / 10f;
             }
-            if(json.Keys.Contains("rainbow"))
+            if (json.Keys.Contains("rainbow"))
             {
                 context.m_RainbowFrom = (float)((int)json["rainbow"][0]) / 10f;
                 context.m_RainbowTo = (float)((int)json["rainbow"][1]) / 10f;
             }
-            if(json.Keys.Contains("northernlights"))
+            if (json.Keys.Contains("northernlights"))
             {
                 context.m_NorthernLightsFrom = (float)((int)json["northernlights"][0]) / 10f;
                 context.m_NorthernLightsTo = (float)((int)json["northernlights"][1]) / 10f;
             }
-            if(json.Keys.Contains("not"))
+            if (json.Keys.Contains("not"))
             {
                 context.m_Invert = (bool)json["not"];
             }

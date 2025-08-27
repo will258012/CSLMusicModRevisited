@@ -1,9 +1,7 @@
 ﻿using System;
-using System.Linq;
-using System.IO;
-using UnityEngine;
 using System.Collections.Generic;
-using ColossalFramework.IO;
+using System.Linq;
+using UnityEngine;
 
 namespace CSLMusicMod
 {
@@ -30,31 +28,31 @@ namespace CSLMusicMod
             var collectionnames = collection.m_Songs.Values.Select(song => song.m_Collection).Distinct().ToArray();
             CSLMusicMod.Log("Available collections: " + String.Join("\n", collectionnames));
 
-            foreach(UserRadioContent content in collection.m_Songs.Values)
+            foreach (UserRadioContent content in collection.m_Songs.Values)
             {
                 try
-                {                    
-                
+                {
+
                     // Bases all music on vanilla "Aukio" song. 
-	                CreatePrefab(content.m_Name, "aukio", new Action<RadioContentInfo>((RadioContentInfo obj) =>
-	                    {
-	                        obj.m_fileName = content.m_FileName;
-	                        obj.m_displayName = content.m_DisplayName;
-	                        obj.m_contentType = content.m_ContentType;
+                    CreatePrefab(content.m_Name, "aukio", new Action<RadioContentInfo>(obj =>
+                    {
+                            obj.m_fileName = content.m_FileName;
+                            obj.m_displayName = content.m_DisplayName;
+                            obj.m_contentType = content.m_ContentType;
 
                             // Add the channels this song is playing in into the song.
-	                        List<RadioChannelInfo> channels = new List<RadioChannelInfo>();
+                            List<RadioChannelInfo> channels = new List<RadioChannelInfo>();
 
-	                        foreach(UserRadioChannel uchannel in content.m_Channels)
-	                        {
-	                            var channel = FindChannelPrefab(uchannel.m_Name);
-	                            channels.Add(channel);
-	                        }
+                            foreach (UserRadioChannel uchannel in content.m_Channels)
+                            {
+                                var channel = FindChannelPrefab(uchannel.m_Name);
+                                channels.Add(channel);
+                            }
 
-	                        obj.m_radioChannels = channels.ToArray();
-	                    }));
+                            obj.m_radioChannels = channels.ToArray();
+                        }));
                 }
-                catch(Exception e)
+                catch (Exception e)
                 {
                     Debug.LogError("[CSLMusic] Error while initializing prefab in " + content.m_Name + "! Exception: " + e.ToString());
                 }
@@ -122,7 +120,7 @@ namespace CSLMusicMod
             var instance = UnityEngine.Object.Instantiate(originalPrefab.gameObject);
             instance.name = newName;
 
-            var newPrefab = instance.GetComponent<RadioContentInfo>();   
+            var newPrefab = instance.GetComponent<RadioContentInfo>();
 
 
             instance.SetActive(false);
@@ -132,24 +130,16 @@ namespace CSLMusicMod
 
         protected static RadioContentInfo FindOriginalPrefab(string originalPrefabName)
         {
-            RadioContentInfo foundPrefab;           
+            RadioContentInfo foundPrefab;
             foundPrefab = Resources.FindObjectsOfTypeAll<RadioContentInfo>().FirstOrDefault(netInfo => netInfo.name == originalPrefabName);
-            if (foundPrefab == null)
-            {
-                return null;
-            }
-            return foundPrefab;
+            return foundPrefab ?? null;
         }
 
         protected static RadioChannelInfo FindChannelPrefab(string originalPrefabName)
         {
-            RadioChannelInfo foundPrefab;           
+            RadioChannelInfo foundPrefab;
             foundPrefab = Resources.FindObjectsOfTypeAll<RadioChannelInfo>().FirstOrDefault(netInfo => netInfo.name == originalPrefabName);
-            if (foundPrefab == null)
-            {
-                return null;
-            }
-            return foundPrefab;
+            return foundPrefab ?? null;
         }
     }
 }

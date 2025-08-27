@@ -1,7 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using ColossalFramework;
+﻿using ColossalFramework;
 using LitJson;
+using System;
+using System.Collections.Generic;
 
 namespace CSLMusicMod.Contexts
 {
@@ -9,7 +9,7 @@ namespace CSLMusicMod.Contexts
     /// This condition handles if a disaster is currently in your city
     /// </summary>
     public class DisasterContextCondition : RadioContextCondition
-    {    
+    {
         public int m_DisasterCountFrom = 0;
 
         public int m_DisasterCountTo = DisasterManager.MAX_DISASTER_COUNT;
@@ -35,13 +35,13 @@ namespace CSLMusicMod.Contexts
 
             int count = 0;
 
-            for(int i = 0; i < disasterCount; ++i)
+            for (int i = 0; i < disasterCount; ++i)
             {
                 DisasterData data = Singleton<DisasterManager>.instance.m_disasters[i];
 
-                if(data.Info != null && (data.m_flags & DisasterData.Flags.Active) != DisasterData.Flags.None)
+                if (data.Info != null && (data.m_flags & DisasterData.Flags.Active) != DisasterData.Flags.None)
                 {
-                    if(m_DisasterFilter.Count == 0 || m_DisasterFilter.Contains(data.Info.name))
+                    if (m_DisasterFilter.Count == 0 || m_DisasterFilter.Contains(data.Info.name))
                     {
                         ++count;
                     }
@@ -53,12 +53,13 @@ namespace CSLMusicMod.Contexts
 
         public static DisasterContextCondition LoadFromJson(JsonData json)
         {
-            DisasterContextCondition context = new DisasterContextCondition();
+            DisasterContextCondition context = new DisasterContextCondition
+            {
+                m_DisasterCountFrom = (int)json["from"],
+                m_DisasterCountTo = (int)json["to"]
+            };
 
-            context.m_DisasterCountFrom = (int)json["from"];
-            context.m_DisasterCountTo = (int)json["to"];
-
-            if(json.Keys.Contains("not"))
+            if (json.Keys.Contains("not"))
             {
                 context.m_Invert = (bool)json["not"];
             }
