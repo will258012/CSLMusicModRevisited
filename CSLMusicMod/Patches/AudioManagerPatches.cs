@@ -1,33 +1,30 @@
-﻿using System;
+﻿using ColossalFramework;
+using CSLMusicMod.Helpers;
+using HarmonyLib;
+using System.Collections.Generic;
 using System.Threading;
 using UnityEngine;
-using ColossalFramework;
-using System.Collections.Generic;
-using CSLMusicMod.Helpers;
 
-namespace CSLMusicMod
+namespace CSLMusicMod.Patches
 {
     /// <summary>
-    /// Used for detouring methods from AudioManger. See Detours class for the detour code.
+    /// Used for detouring methods from AudioManger.
     /// </summary>
-    public class CustomAudioManager
+    [HarmonyPatch]
+    public class AudioManagerPatches
     {
-        public CustomAudioManager()
-        {
-        }
-
         /// <summary>
         /// Allows custom playback of broadcasts.
         /// </summary>
         /// <param name="info">The content to be played</param>
-        public void CustomQueueBroadcast(RadioContentInfo info)
+        [HarmonyPatch(typeof(AudioManager), nameof(AudioManager.QueueBroadcast))]
+        [HarmonyPrefix]
+        public static bool RadioContentInfoPatch(AudioManager __instance, RadioContentInfo info)
         {
             if (!ModOptions.Instance.AllowContentBroadcast)
-                return;
+                return false;
 
-            var mgr = Singleton<AudioManager>.instance;
-
-            var broadcastQueue = ReflectionHelper.GetPrivateField<FastList<RadioContentInfo>>(this, "m_broadcastQueue"); //Why does CO make everything private, so you can't access it ??
+            var broadcastQueue = ReflectionHelper.GetPrivateField<FastList<RadioContentInfo>>(__instance, "m_broadcastQueue"); //Why does CO make everything private, so you can't access it ??
 
             while (!Monitor.TryEnter(broadcastQueue, SimulationManager.SYNCHRONIZE_TIMEOUT))
             {
@@ -40,7 +37,7 @@ namespace CSLMusicMod
                     {
                         if (broadcastQueue.m_buffer[i] == info)
                         {
-                            return;
+                            return false;
                         }
                     }
                     broadcastQueue.Add(info);
@@ -50,6 +47,7 @@ namespace CSLMusicMod
             {
                 Monitor.Exit(broadcastQueue);
             }
+            return false;
         }
 
         /// <summary>
@@ -58,27 +56,28 @@ namespace CSLMusicMod
         /// <returns>The collect radio content info.</returns>
         /// <param name="type">Type.</param>
         /// <param name="channel">Channel.</param>
-        public FastList<ushort> CustomCollectRadioContentInfo(RadioContentInfo.ContentType type, RadioChannelInfo channel)
+        [HarmonyPatch(typeof(AudioManager), nameof(AudioManager.CollectRadioContentInfo))]
+        [HarmonyPrefix]
+        public static bool CollectRadioContentInfoPatch(AudioManager __instance, RadioContentInfo.ContentType type, RadioChannelInfo channel, ref FastList<ushort> __result)
         {
-            var mgr = Singleton<AudioManager>.instance;
             //Debug.Log("[CSLMusic][Internal] Rebuilding the radio content of channel " + channel.GetLocalizedTitle());
 
             // CO makes some things public and other things private. This is completely insane.
-            var m_tempRadioContentBuffer = ReflectionHelper.GetPrivateField<FastList<ushort>>(mgr, "m_tempRadioContentBuffer"); // This variable is being worked on
-            var m_radioContentTable = ReflectionHelper.GetPrivateField<FastList<ushort>[]>(mgr, "m_radioContentTable");
+            var m_tempRadioContentBuffer = ReflectionHelper.GetPrivateField<FastList<ushort>>(__instance, "m_tempRadioContentBuffer"); // This variable is being worked on
+            var m_radioContentTable = ReflectionHelper.GetPrivateField<FastList<ushort>[]>(__instance, "m_radioContentTable");
 
-            m_tempRadioContentBuffer.Clear(); 
+            m_tempRadioContentBuffer.Clear();
 
             if (m_radioContentTable == null)
             {
                 // Let's all sing the "Expensive Song!" ♬Expensive, Expensive♬ ♩OMG it's so expensive♩ (Rest of lyrics didn't load, yet)
-				ReflectionHelper.InvokePrivateVoidMethod(mgr, "RefreshRadioContentTable");
-                m_radioContentTable = ReflectionHelper.GetPrivateField<FastList<ushort>[]>(mgr, "m_radioContentTable");
+                ReflectionHelper.InvokePrivateVoidMethod(__instance, "RefreshRadioContentTable");
+                m_radioContentTable = ReflectionHelper.GetPrivateField<FastList<ushort>[]>(__instance, "m_radioContentTable");
             }
 
             // Get the allowed radio content
             HashSet<RadioContentInfo> disallowed_content = null;
-            if(channel != null)
+            if (channel != null)
             {
                 RadioContentWatcher.DisallowedContent.TryGetValue(channel, out disallowed_content);
             }
@@ -101,15 +100,15 @@ namespace CSLMusicMod
                         for (int i = 0; i < fastList.m_size; i++)
                         {
                             ushort num2 = fastList.m_buffer[i];
-                            RadioContentInfo prefab = PrefabCollection<RadioContentInfo>.GetPrefab((uint)num2);
+                            RadioContentInfo prefab = PrefabCollection<RadioContentInfo>.GetPrefab(num2);
 
                             if (prefab != null && Singleton<UnlockManager>.instance.Unlocked(prefab.m_UnlockMilestone))
                             {
                                 // Filter only content info that should be kept
-                                if( disallowed_content == null || disallowed_content.Count ==  0 || !disallowed_content.Contains(prefab))
+                                if (disallowed_content == null || disallowed_content.Count == 0 || !disallowed_content.Contains(prefab))
                                 {
-									prefab.m_cooldown = 1000000;
-									m_tempRadioContentBuffer.Add(num2);
+                                    prefab.m_cooldown = 1000000;
+                                    m_tempRadioContentBuffer.Add(num2);
                                 }
                             }
                         }
@@ -117,21 +116,21 @@ namespace CSLMusicMod
                 }
             }
 
-            for (int j = 0; j < mgr.m_radioContents.m_size; j++)
+            for (int j = 0; j < __instance.m_radioContents.m_size; j++)
             {
-                RadioContentData.Flags flags = mgr.m_radioContents.m_buffer[j].m_flags;
+                RadioContentData.Flags flags = __instance.m_radioContents.m_buffer[j].m_flags;
                 if ((flags & RadioContentData.Flags.Created) != RadioContentData.Flags.None)
                 {
-                    RadioContentInfo info = mgr.m_radioContents.m_buffer[j].Info;
+                    RadioContentInfo info = __instance.m_radioContents.m_buffer[j].Info;
                     if (info != null)
                     {
-                        info.m_cooldown = Mathf.Min(info.m_cooldown, (int)mgr.m_radioContents.m_buffer[j].m_cooldown);
+                        info.m_cooldown = Mathf.Min(info.m_cooldown, __instance.m_radioContents.m_buffer[j].m_cooldown);
                     }
                 }
             }
 
-            return m_tempRadioContentBuffer;
-
+            __result = m_tempRadioContentBuffer;
+            return false;
         }
     }
 }
