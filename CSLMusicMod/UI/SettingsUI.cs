@@ -1,132 +1,213 @@
-﻿using System;
+﻿using AlgernonCommons.Translation;
+using AlgernonCommons.UI;
+using ColossalFramework.Globalization;
+using ColossalFramework.IO;
+using ColossalFramework.UI;
+using ICities;
+using System;
+using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using UnityEngine;
-using ICities;
-using System.Collections.Generic;
-using ColossalFramework.UI;
-using System.IO;
-using ColossalFramework.IO;
+using static CSLMusicMod.ModOptions;
 
 namespace CSLMusicMod.UI
 {
-    public class SettingsUI
+    public class SettingsUI : OptionsPanelBase
     {
-        private List<String> KeyStringList = Enum.GetNames(typeof(KeyCode)).ToList();
-        private List<KeyCode> KeyList = new List<KeyCode>((KeyCode[])Enum.GetValues(typeof(KeyCode)));
-
-        private UIScrollablePanel _optionsPanel;
         private UITabstrip m_TabStrip;
-        private UITabContainer m_TabContainer;
-        private UIButton m_TabTemplate;
-        private int m_TabIndex = 0;
-
-        public void InitializeSettingsUI(UIHelperBase helper)
+        private int _tabIndex = 0;
+        private const float LeftMargin = 24f;
+        private const float Margin = 5f;
+        private const float GroupMargin = 40f;
+        private const float TitleMargin = 50f;
+        private const float SliderMargin = 60f;
+        protected override void Setup()
         {
-            InitializeTabStrip(helper);
+            m_TabStrip = AutoTabstrip.AddTabstrip(this, 0f, 0f, OptionsPanelManager<SettingsUI>.PanelWidth, OptionsPanelManager<SettingsUI>.PanelHeight, out _, 30f);
 
-            AddOptionsInfo(AddTab("Info"));
-            AddOptionsChannels(AddTab("Channels"));
-            AddOptionsContent(AddTab("Content"));
-            AddOptionsShortcuts(AddTab("Shortcuts"));
-            AddOptionsUI(AddTab("User Interface"));
+            AddOptionsInfo(AddTab(Translations.Translate("TAB_INFO")));
+            AddOptionsChannels(AddTab(Translations.Translate("TAB_CHANNELS")));
+            AddOptionsContent(new UIHelper(AddTab(Translations.Translate("TAB_CONT"), true)));
+            AddOptionsShortcuts(AddTab(Translations.Translate("TAB_SHORTCUTS")));
+            AddOptionsUI(new UIHelper(AddTab(Translations.Translate("TAB_UI"), true)));
+
+            m_TabStrip.selectedIndex = -1;
+            m_TabStrip.selectedIndex = 0;
         }
+        private UIPanel AddTab(string name, bool autoLayout = false) => UITabstrips.AddTextTab(m_TabStrip, name, _tabIndex++, out var _, autoLayout: autoLayout);
 
-        private void InitializeTabStrip(UIHelperBase helper)
-        {            
-            // https://github.com/Katalyst6/CSL.TransitAddonMod/blob/master/NetworkExtensions/Mod.Settings.cs
-            m_TabTemplate = Resources
-                .FindObjectsOfTypeAll<UITabstrip>()[0]
-                .GetComponentInChildren<UIButton>();
-
-            _optionsPanel = ((UIHelper)helper).self as UIScrollablePanel;
-            _optionsPanel.autoLayout = false;
-
-            m_TabStrip = _optionsPanel.AddUIComponent<UITabstrip>();
-            m_TabStrip.relativePosition = new Vector3(0, 0);
-            m_TabStrip.size = new Vector2(744, 40);
-
-            m_TabContainer = _optionsPanel.AddUIComponent<UITabContainer>();
-            m_TabContainer.relativePosition = new Vector3(0, 40);
-            m_TabContainer.size = new Vector3(744, 713);
-            m_TabStrip.tabPages = m_TabContainer;
-        }
-
-        private UIHelperBase AddTab(string name)
+        private void AddOptionsInfo(UIComponent component)
         {
-            m_TabStrip.AddTab(name, m_TabTemplate, true);
-            m_TabStrip.selectedIndex = m_TabIndex;
-
-            // Get the current container and use the UIHelper to have something in there
-            UIPanel stripRoot = m_TabStrip.tabContainer.components[m_TabIndex++] as UIPanel;
-            stripRoot.autoLayout = true;
-            stripRoot.autoLayoutDirection = LayoutDirection.Vertical;
-            stripRoot.autoLayoutPadding.top = 5;
-            stripRoot.autoLayoutPadding.left = 10;
-            UIHelper stripHelper = new UIHelper(stripRoot);
-
-            return stripHelper;
-        }
-
-        private void AddOptionsInfo(UIHelperBase helper)
-        {
-            helper.AddGroup("CSL Music Mod version " + CSLMusicMod.VersionName);
-
+            var currentY = Margin;
             {
-                var subgroup = helper.AddGroup("Performance");
-                subgroup.AddGroup("If you have performance problems, you can try\nto disable features marked with an asterisk (*).");
+                var language_DropDown = UIDropDowns.AddPlainDropDown(component, LeftMargin, currentY, Translations.Translate("LANGUAGE_CHOICE"), Translations.LanguageList, Translations.Index);
+                language_DropDown.eventSelectedIndexChanged += (_, index) =>
+                {
+                    Translations.Index = index;
+                    OptionsPanelManager<SettingsUI>.LocaleChanged();
+                    LoadingExtension.UI?.LocaleChanged();
+                };
+                currentY += language_DropDown.height + GroupMargin;
             }
             {
-                var subgroup = helper.AddGroup("Channels & content");
-                subgroup.AddGroup("You can add your own channels or music by installing\n" +
-                    "music packs, putting station configurations or music\n" +
-                    "files into the CSLMusicMod_Music folder or into the\n" +
-                    "folder containing vanilla radio content.");
+                var title = UISpacers.AddTitleSpacer(component, LeftMargin, currentY, OptionsPanelManager<SettingsUI>.PanelWidth, Translations.Translate("PERF"));
+                currentY += title.height + GroupMargin;
+                var tip = UISpacers.AddTitle(component, LeftMargin, currentY, Translations.Translate("PERF_TIP"));
+                tip.textScale = 1;
+                currentY += tip.height + GroupMargin;
+            }
+            {
+                var title = UISpacers.AddTitleSpacer(component, LeftMargin, currentY, OptionsPanelManager<SettingsUI>.PanelWidth, Translations.Translate("CHANNELS_CONT"));
+                currentY += title.height + GroupMargin;
+                var tip = UISpacers.AddTitle(component, LeftMargin, currentY,
+                Translations.Translate("CHANNELS_CONT_TIP"));
+                tip.textScale = 1;
+                currentY += tip.height + GroupMargin;
             }
             {
                 ModOptions options = ModOptions.Instance;
-                var subgroup = helper.AddGroup("Troubleshooting");
-                subgroup.AddGroup("You can find information in the CSLMusicMod wiki\n" +
-                                  "and the Steam workshop entry.\n" +
-                                  "Don't forget to enable debugging info if you want\n" +
-                                  "to provide a log.");
-                subgroup.AddCheckbox("Enable debugging info",
-                                     options.EnableDebugInfo,
-                                     (isChecked) =>
-                {
-                    options.EnableDebugInfo = isChecked;
-                });
-            }
+                var title = UISpacers.AddTitleSpacer(component, LeftMargin, currentY, OptionsPanelManager<SettingsUI>.PanelWidth, Translations.Translate("TRBL"));
+                currentY += title.height + GroupMargin;
+                var tip = UISpacers.AddTitle(component, LeftMargin, currentY,
+                Translations.Translate("TRBL_TIP"));
+                tip.textScale = 1;
+                currentY += tip.height + GroupMargin;
 
+                var logging_CheckBox = UICheckBoxes.AddPlainCheckBox(component, LeftMargin, currentY, Translations.Translate("DETAIL_LOGGING"));
+                logging_CheckBox.isChecked = options.EnableDebugInfo;
+                logging_CheckBox.eventCheckChanged += (_, isChecked) => options.EnableDebugInfo = isChecked;
+            }
         }
 
-        private void AddOptionsUI(UIHelperBase helper)
+
+
+        private void AddOptionsChannels(UIComponent component)
         {
             ModOptions options = ModOptions.Instance;
 
-            helper.AddCheckbox("Enable playlist*", 
-                options.EnableCustomUI, 
-                new OnCheckChanged((bool isChecked) =>
+            var scrollPanel = component.AddUIComponent<UIScrollablePanel>();
+            scrollPanel.relativePosition = new Vector2(0, LeftMargin);
+            scrollPanel.autoSize = false;
+            scrollPanel.autoLayout = false;
+            scrollPanel.width = component.width - 15f;
+            scrollPanel.height = component.height - 15f;
+            scrollPanel.clipChildren = true;
+            scrollPanel.builtinKeyNavigation = true;
+            scrollPanel.scrollWheelDirection = UIOrientation.Vertical;
+            scrollPanel.eventVisibilityChanged += (_, isShow) => { if (isShow) scrollPanel.Reset(); };
+            UIScrollbars.AddScrollbar(component, scrollPanel);
+
+            var currentY = Margin;
+            {
+                {
+                    var stationNamesDict = new Dictionary<string, string>();
+                    foreach (RadioContentInfo.ContentType type in Enum.GetValues(typeof(RadioContentInfo.ContentType)))
                     {
-                        options.EnableCustomUI = isChecked;
-                    }));     
-            helper.AddCheckbox("Improved radio station selection (needs reload)", 
-                options.EnableImprovedRadioStationList, 
-                new OnCheckChanged((bool isChecked) =>
+                        // They are not real channels
+                        if (type == RadioContentInfo.ContentType.Broadcast)
+                            continue;
+
+                        string path = Path.Combine(Path.Combine(DataLocation.gameContentPath, "Radio"), type.ToString());
+
+                        foreach (string d in Directory.GetDirectories(path))
+                        {
+                            if (Directory.GetFiles(d).Length != 0)
+                            {
+                                string folderName = Path.GetFileNameWithoutExtension(d);
+
+                                if (!stationNamesDict.ContainsKey(folderName))
+                                {
+                                    string friendlyName = (folderName == "Christmas" || folderName == "Common") ?
+                                        folderName : Locale.Get("RADIO_CHANNEL_TITLE", folderName);
+
+                                    stationNamesDict.Add(folderName, friendlyName);
+                                }
+                            }
+                        }
+                    }
+
+                    var title = UISpacers.AddTitle(scrollPanel, LeftMargin, currentY, Translations.Translate("VANILLA_CHANNELS"));
+                    currentY += title.height + GroupMargin;
+
+                    var sortedNames =
+                        stationNamesDict.OrderBy(kvp => kvp.Value, StringComparer.Create(System.Globalization.CultureInfo.CurrentUICulture, true)).ToList();
+
+                    foreach (var kvp in sortedNames)
+                    {
+                        string folderName = kvp.Key;
+                        string friendlyName = kvp.Value;
+
+                        var checkBox = UICheckBoxes.AddPlainCheckBox(scrollPanel, LeftMargin, currentY, friendlyName);
+                        checkBox.isChecked = !options.DisabledRadioStations.Contains(folderName);
+                        checkBox.eventCheckChanged += (_, isChecked) =>
+                        {
+                            if (isChecked)
+                            {
+                                options.DisabledRadioStations.Remove(folderName);
+                            }
+                            else
+                            {
+                                options.DisabledRadioStations.Add(folderName);
+                            }
+                        };
+                        currentY += checkBox.height + Margin;
+                    }
+                }
                 {
-                    options.EnableImprovedRadioStationList = isChecked;
-                }));     
-            helper.AddCheckbox("Open station directory button (needs reload)", 
-                options.EnableOpenStationDirButton, 
-                new OnCheckChanged((bool isChecked) =>
+                    var title = UISpacers.AddTitleSpacer(scrollPanel, LeftMargin, currentY, OptionsPanelManager<SettingsUI>.PanelWidth, Translations.Translate("MUSIC_PACKS"));
+                    currentY += title.height + GroupMargin;
+
+                    var enableMusicPacks = UICheckBoxes.AddPlainCheckBox(scrollPanel, LeftMargin, currentY, Translations.Translate("ENABLE_MUSIC_PACKS"));
+                    enableMusicPacks.isChecked = options.EnableMusicPacks;
+                    enableMusicPacks.eventCheckChanged += (_, isChecked) => options.EnableMusicPacks = isChecked;
+                    currentY += enableMusicPacks.height + Margin;
+
+                    var createChannelsFromLegacyPacks = UICheckBoxes.AddPlainCheckBox(scrollPanel, LeftMargin, currentY, Translations.Translate("CREATE_CHANNELS_FROM_LEGACY"));
+                    createChannelsFromLegacyPacks.isChecked = options.CreateChannelsFromLegacyPacks;
+                    createChannelsFromLegacyPacks.eventCheckChanged += (_, isChecked) => options.CreateChannelsFromLegacyPacks = isChecked;
+                    currentY += createChannelsFromLegacyPacks.height + Margin;
+                }
                 {
-                    options.EnableOpenStationDirButton = isChecked;
-                }));     
-            helper.AddCheckbox("Checkboxes to disable content", 
-                options.ImprovedDisableContentUI, 
-                new OnCheckChanged((bool isChecked) =>
-                {
-                    options.ImprovedDisableContentUI = isChecked;
-                }));     
+                    var title = UISpacers.AddTitleSpacer(scrollPanel, LeftMargin, currentY, OptionsPanelManager<SettingsUI>.PanelWidth, Translations.Translate("CHANNEL_ALL_CONT"));
+                    currentY += title.height + GroupMargin;
+
+                    var createMixChannel = UICheckBoxes.AddPlainCheckBox(scrollPanel, LeftMargin, currentY, Translations.Translate("CREATE_MIX_CHANNEL"));
+                    createMixChannel.isChecked = options.CreateMixChannels;
+                    createMixChannel.eventCheckChanged += (_, isChecked) => options.CreateMixChannels = isChecked;
+                    currentY += createMixChannel.height + Margin;
+
+                    var addVanillaSongsToMusicMix = UICheckBoxes.AddPlainCheckBox(scrollPanel, LeftMargin, currentY, Translations.Translate("INCLUDE_VANILLA_SONGS"));
+                    addVanillaSongsToMusicMix.isChecked = options.AddVanillaSongsToMusicMix;
+                    addVanillaSongsToMusicMix.eventCheckChanged += (_, isChecked) => options.AddVanillaSongsToMusicMix = isChecked;
+                    currentY += addVanillaSongsToMusicMix.height + Margin;
+
+                    var mixContentMusic = UICheckBoxes.AddPlainCheckBox(scrollPanel, LeftMargin, currentY, Translations.Translate("INCLUDE_MUSIC"));
+                    mixContentMusic.isChecked = options.MixContentMusic;
+                    mixContentMusic.eventCheckChanged += (_, isChecked) => options.MixContentMusic = isChecked;
+                    currentY += mixContentMusic.height + Margin;
+
+                    var mixContentBlurb = UICheckBoxes.AddPlainCheckBox(scrollPanel, LeftMargin, currentY, Translations.Translate("INCLUDE_BLURBS"));
+                    mixContentBlurb.isChecked = options.MixContentBlurb;
+                    mixContentBlurb.eventCheckChanged += (_, isChecked) => options.MixContentBlurb = isChecked;
+                    currentY += mixContentBlurb.height + Margin;
+
+                    var mixContentTalk = UICheckBoxes.AddPlainCheckBox(scrollPanel, LeftMargin, currentY, Translations.Translate("INCLUDE_TALKS"));
+                    mixContentTalk.isChecked = options.MixContentTalk;
+                    mixContentTalk.eventCheckChanged += (_, isChecked) => options.MixContentTalk = isChecked;
+                    currentY += mixContentTalk.height + Margin;
+
+                    var mixContentCommercial = UICheckBoxes.AddPlainCheckBox(scrollPanel, LeftMargin, currentY, Translations.Translate("INCLUDE_COMMERCIALS"));
+                    mixContentCommercial.isChecked = options.MixContentCommercial;
+                    mixContentCommercial.eventCheckChanged += (_, isChecked) => options.MixContentCommercial = isChecked;
+                    currentY += mixContentCommercial.height + Margin;
+
+                    var mixContentBroadcast = UICheckBoxes.AddPlainCheckBox(scrollPanel, LeftMargin, currentY, Translations.Translate("INCLUDE_BROADCASTS"));
+                    mixContentBroadcast.isChecked = options.MixContentBroadcast;
+                    mixContentBroadcast.eventCheckChanged += (_, isChecked) => options.MixContentBroadcast = isChecked;
+                    currentY += mixContentBroadcast.height + Margin;
+                }
+            }
         }
 
         private void AddOptionsContent(UIHelperBase helper)
@@ -134,275 +215,85 @@ namespace CSLMusicMod.UI
             ModOptions options = ModOptions.Instance;
 
             {
-                var subgroup = helper.AddGroup("Additional features");
+                var subgroup = helper.AddGroup(Translations.Translate("ADD_FEAT"));
 
-                subgroup.AddCheckbox("Content can be disabled*", 
-                    options.EnableDisabledContent, 
-                    new OnCheckChanged((bool isChecked) =>
-                        {
-                            options.EnableDisabledContent = isChecked;
-                        }));
-                subgroup.AddCheckbox("Context-sensitive content*", 
-                    options.EnableContextSensitivity, 
-                    new OnCheckChanged((bool isChecked) =>
-                        {
-                            options.EnableContextSensitivity = isChecked;
-                        }));
-                subgroup.AddCheckbox("Smooth transitions* (needs reload)",
+                subgroup.AddCheckbox(Translations.Translate("DISABLED_CONT"),
+                    options.EnableDisabledContent,
+                    new OnCheckChanged(isChecked => options.EnableDisabledContent = isChecked));
+                subgroup.AddCheckbox(Translations.Translate("CONT_SENS"),
+                    options.EnableContextSensitivity,
+                    new OnCheckChanged(isChecked => options.EnableContextSensitivity = isChecked));
+                subgroup.AddCheckbox(Translations.Translate("SMOOTH_TRANS"),
                                      options.EnableSmoothTransitions,
-                   new OnCheckChanged((bool isChecked) =>
-                       {
-                           options.EnableSmoothTransitions = isChecked;
-                       }));
+                   new OnCheckChanged(isChecked => options.EnableSmoothTransitions = isChecked));
                 //subgroup.AddSlider("Context-sensitivity update interval (Needs reload)",
-                        //           1,
-                        //           60,
-                        //           1,
-                        //           options.ContentWatcherInterval,
-                        //           new OnValueChanged((float v) =>
-                        //{
-                        //    options.ContentWatcherInterval = v;
-                        //}));
-                subgroup.AddCheckbox("Extend vanilla stations with custom content (Needs reload)", 
-                    options.EnableAddingContentToVanillaStations, 
-                    new OnCheckChanged((bool isChecked) =>
-                        {
-                            options.EnableAddingContentToVanillaStations = isChecked;
-                        }));
-                subgroup.AddButton("Reset disabled entries", new OnButtonClicked(() =>
-                    {
-                        options.DisabledContent.Clear();
-                        options.SaveSettings();
-                    }));
+                //           1,
+                //           60,
+                //           1,
+                //           options.ContentWatcherInterval,
+                //           new OnValueChanged((float v) =>
+                //{
+                //    options.ContentWatcherInterval = v;
+                //}));
+                subgroup.AddCheckbox(Translations.Translate("ADD_CONT_TO_VANILLA"),
+                    options.EnableAddingContentToVanillaStations,
+                    new OnCheckChanged(isChecked => options.EnableAddingContentToVanillaStations = isChecked));
+                subgroup.AddButton(Translations.Translate("RESET_DISABLED"), new OnButtonClicked(() =>
+                {
+                    options.DisabledContent.Clear();
+                    options.SaveSettings();
+                }));
             }
             {
-                var subgroup = helper.AddGroup("Radio station content (Needs reload)");
-                subgroup.AddCheckbox("Enable music", 
-                    options.AllowContentMusic, 
-                    new OnCheckChanged((bool isChecked) =>
-                        {
-                            options.AllowContentMusic = isChecked;
-                        }));
-                subgroup.AddCheckbox("Enable blurbs", 
-                    options.AllowContentBlurb, 
-                    new OnCheckChanged((bool isChecked) =>
-                        {
-                            options.AllowContentBlurb = isChecked;
-                        }));
-                subgroup.AddCheckbox("Enable talks", 
-                    options.AllowContentTalk, 
-                    new OnCheckChanged((bool isChecked) =>
-                        {
-                            options.AllowContentTalk = isChecked;
-                        }));
-                subgroup.AddCheckbox("Enable commercials", 
-                    options.AllowContentCommercial, 
-                    new OnCheckChanged((bool isChecked) =>
-                        {
-                            options.AllowContentCommercial = isChecked;
-                        }));
-                subgroup.AddCheckbox("Enable broadcasts", 
-                    options.AllowContentBroadcast, 
-                    new OnCheckChanged((bool isChecked) =>
-                        {
-                            options.AllowContentBroadcast = isChecked;
-                        }));
+                var subgroup = helper.AddGroup(Translations.Translate("RADIO_CONT"));
+                subgroup.AddCheckbox(Translations.Translate("ENABLE_MUSIC"),
+                    options.AllowContentMusic,
+                    new OnCheckChanged(isChecked => options.AllowContentMusic = isChecked));
+                subgroup.AddCheckbox(Translations.Translate("ENABLE_BLURBS"),
+                    options.AllowContentBlurb,
+                    new OnCheckChanged(isChecked => options.AllowContentBlurb = isChecked));
+                subgroup.AddCheckbox(Translations.Translate("ENABLE_TALKS"),
+                    options.AllowContentTalk,
+                    new OnCheckChanged(isChecked => options.AllowContentTalk = isChecked));
+                subgroup.AddCheckbox(Translations.Translate("ENABLE_COMMERCIALS"),
+                    options.AllowContentCommercial,
+                    new OnCheckChanged(isChecked => options.AllowContentCommercial = isChecked));
+                subgroup.AddCheckbox(Translations.Translate("ENABLE_BROADCASTS"),
+                    options.AllowContentBroadcast,
+                    new OnCheckChanged(isChecked => options.AllowContentBroadcast = isChecked));
             }
         }
 
-        private void AddOptionsChannels(UIHelperBase helper)
+
+        private void AddOptionsShortcuts(UIComponent helper)
         {
             ModOptions options = ModOptions.Instance;
+            var currentY = LeftMargin;
+            var shortcutOpenRadioPanel = ShortcutMapping.AddKeymapping(helper, LeftMargin, currentY, Translations.Translate("SHOUTCUT_OPENPLAYLIST"), options.ShortcutOpenRadioPanel);
+            currentY += shortcutOpenRadioPanel.Panel.height + Margin;
 
-            {
-                List<string> vanillastations = new List<string>();
+            var nextTrack = ShortcutMapping.AddKeymapping(helper, LeftMargin, currentY, Translations.Translate("SHOUTCUT_NEXTTRACK"), options.ShortcutNextTrack);
+            currentY += nextTrack.Panel.height + Margin;
 
-                foreach(RadioContentInfo.ContentType type in Enum.GetValues(typeof(RadioContentInfo.ContentType)))
-                {
-                    // They are no real channels
-                    if (type == RadioContentInfo.ContentType.Broadcast)
-                        continue;
-
-                    String path = Path.Combine(Path.Combine(DataLocation.gameContentPath, "Radio"), type.ToString());
-
-                    foreach (String d in Directory.GetDirectories(path))
-                    {
-                        if(Directory.GetFiles(d).Length != 0)
-                        {
-                            String station = Path.GetFileNameWithoutExtension(d);
-
-                            if(!vanillastations.Contains(station))
-                            {
-                                vanillastations.Add(station);
-                            }
-                        }
-                    }
-                }
-
-                vanillastations.Sort();
-                var subgroup = helper.AddGroup("Enabled vanilla channels");
-
-                foreach(String station in vanillastations)
-                {
-                    subgroup.AddCheckbox(station, 
-                        !options.DisabledRadioStations.Contains(station), 
-                        new OnCheckChanged((bool isChecked) =>
-                            {
-                                if(isChecked)
-                                {
-                                    options.DisabledRadioStations.Remove(station);
-                                }
-                                else
-                                {
-                                    options.DisabledRadioStations.Add(station);
-                                }
-
-                                options.SaveSettings();
-                            }));              
-                }
-            }
-            {
-                var subgroup = helper.AddGroup("Music packs (Needs reload)");
-                subgroup.AddCheckbox("Use music from music packs", 
-                    options.EnableMusicPacks, 
-                    new OnCheckChanged((bool isChecked) =>
-                        {
-                            options.EnableMusicPacks = isChecked;
-                        }));
-                subgroup.AddCheckbox("Create channels from unused music files", 
-                    options.CreateChannelsFromLegacyPacks, 
-                    new OnCheckChanged((bool isChecked) =>
-                        {
-                            options.CreateChannelsFromLegacyPacks = isChecked;
-                        }));
-            }
-            {
-                var subgroup = helper.AddGroup("Channel with all content (Needs reload)");
-
-                subgroup.AddCheckbox("Create CSLMusic Mix channel", 
-                    options.CreateMixChannels, 
-                    new OnCheckChanged((bool isChecked) =>
-                        {
-                            options.CreateMixChannels = isChecked;
-                        }));
-                subgroup.AddCheckbox("Include vanilla songs", 
-                    options.AddVanillaSongsToMusicMix, 
-                    new OnCheckChanged((bool isChecked) =>
-                    {
-                        options.AddVanillaSongsToMusicMix = isChecked;
-                    }));
-                subgroup.AddCheckbox("Include music", 
-                    options.MixContentMusic, 
-                    new OnCheckChanged((bool isChecked) =>
-                        {
-                            options.MixContentMusic = isChecked;
-                        }));
-                subgroup.AddCheckbox("Include blurbs", 
-                    options.MixContentBlurb, 
-                    new OnCheckChanged((bool isChecked) =>
-                        {
-                            options.MixContentBlurb = isChecked;
-                        }));
-                subgroup.AddCheckbox("Include talks", 
-                    options.MixContentTalk, 
-                    new OnCheckChanged((bool isChecked) =>
-                        {
-                            options.MixContentTalk = isChecked;
-                        }));
-                subgroup.AddCheckbox("Include commercials", 
-                    options.MixContentCommercial, 
-                    new OnCheckChanged((bool isChecked) =>
-                        {
-                            options.MixContentCommercial = isChecked;
-                        }));
-                subgroup.AddCheckbox("Include broadcasts", 
-                    options.MixContentBroadcast, 
-                    new OnCheckChanged((bool isChecked) =>
-                        {
-                            options.MixContentBroadcast = isChecked;
-                        }));
-            }
+            var nextStation = ShortcutMapping.AddKeymapping(helper, LeftMargin, currentY, Translations.Translate("SHOUTCUT_NEXTSTATION"), options.ShortcutNextStation);
         }
 
-        private void AddOptionsShortcuts(UIHelperBase helper)
+        private void AddOptionsUI(UIHelperBase helper)
         {
             ModOptions options = ModOptions.Instance;
-            helper.AddCheckbox("Enable* (Needs reload)", 
-                options.EnableShortcuts, 
-                new OnCheckChanged((bool isChecked) =>
-                    {
-                        options.EnableShortcuts = isChecked;
-                    }));   
 
-            {
-                var gr = helper.AddGroup("Open playlist and settings");
-                gr.AddDropdown("Key", KeyStringList.ToArray(), KeyStringList.IndexOf(ModOptions.Instance.ShortcutOpenRadioPanel.Key.ToString()), (selection) =>
-                    {
-                        ModOptions.Instance.ShortcutOpenRadioPanel.Key = KeyList[selection];
-                        ModOptions.Instance.SaveSettings();
-                    });
-                gr.AddCheckbox("Ctrl", ModOptions.Instance.ShortcutOpenRadioPanel.ModifierControl, (bool isChecked) =>
-                    {
-                        ModOptions.Instance.ShortcutOpenRadioPanel.ModifierControl = isChecked;
-                        ModOptions.Instance.SaveSettings();
-                    });
-                gr.AddCheckbox("Shift", ModOptions.Instance.ShortcutOpenRadioPanel.ModifierShift, (bool isChecked) =>
-                    {
-                        ModOptions.Instance.ShortcutOpenRadioPanel.ModifierShift = isChecked;
-                        ModOptions.Instance.SaveSettings();
-                    });
-                gr.AddCheckbox("Alt", ModOptions.Instance.ShortcutOpenRadioPanel.ModifierAlt, (bool isChecked) =>
-                    {
-                        ModOptions.Instance.ShortcutOpenRadioPanel.ModifierAlt = isChecked;
-                        ModOptions.Instance.SaveSettings();
-                    });
-            }
-            {
-                var gr = helper.AddGroup("Next track");
-                gr.AddDropdown("Key", KeyStringList.ToArray(), KeyStringList.IndexOf(ModOptions.Instance.ShortcutNextTrack.Key.ToString()), (selection) =>
-                    {
-                        ModOptions.Instance.ShortcutNextTrack.Key = KeyList[selection];
-                        ModOptions.Instance.SaveSettings();
-                    });
-                gr.AddCheckbox("Ctrl", ModOptions.Instance.ShortcutNextTrack.ModifierControl, (bool isChecked) =>
-                    {
-                        ModOptions.Instance.ShortcutNextTrack.ModifierControl = isChecked;
-                        ModOptions.Instance.SaveSettings();
-                    });
-                gr.AddCheckbox("Shift", ModOptions.Instance.ShortcutNextTrack.ModifierShift, (bool isChecked) =>
-                    {
-                        ModOptions.Instance.ShortcutNextTrack.ModifierShift = isChecked;
-                        ModOptions.Instance.SaveSettings();
-                    });
-                gr.AddCheckbox("Alt", ModOptions.Instance.ShortcutNextTrack.ModifierAlt, (bool isChecked) =>
-                    {
-                        ModOptions.Instance.ShortcutNextTrack.ModifierAlt = isChecked;
-                        ModOptions.Instance.SaveSettings();
-                    });
-            }
-            {
-                var gr = helper.AddGroup("Next station");
-                gr.AddDropdown("Key", KeyStringList.ToArray(), KeyStringList.IndexOf(ModOptions.Instance.ShortcutNextStation.Key.ToString()), (selection) =>
-                    {
-                        ModOptions.Instance.ShortcutNextStation.Key = KeyList[selection];
-                        ModOptions.Instance.SaveSettings();
-                    });
-                gr.AddCheckbox("Ctrl", ModOptions.Instance.ShortcutNextStation.ModifierControl, (bool isChecked) =>
-                    {
-                        ModOptions.Instance.ShortcutNextStation.ModifierControl = isChecked;
-                        ModOptions.Instance.SaveSettings();
-                    });
-                gr.AddCheckbox("Shift", ModOptions.Instance.ShortcutNextStation.ModifierShift, (bool isChecked) =>
-                    {
-                        ModOptions.Instance.ShortcutNextStation.ModifierShift = isChecked;
-                        ModOptions.Instance.SaveSettings();
-                    });
-                gr.AddCheckbox("Alt", ModOptions.Instance.ShortcutNextStation.ModifierAlt, (bool isChecked) =>
-                    {
-                        ModOptions.Instance.ShortcutNextStation.ModifierAlt = isChecked;
-                        ModOptions.Instance.SaveSettings();
-                    });
-            }
+            helper.AddCheckbox(Translations.Translate("ENABLE_PLAYLIST"),
+                options.EnableCustomUI,
+                new OnCheckChanged(isChecked => options.EnableCustomUI = isChecked));
+            helper.AddCheckbox(Translations.Translate("IMPROVED_RADIO_SELECTION"),
+                options.EnableImprovedRadioStationList,
+                new OnCheckChanged(isChecked => options.EnableImprovedRadioStationList = isChecked));
+            helper.AddCheckbox(Translations.Translate("OPEN_DIR"),
+                options.EnableOpenStationDirButton,
+                new OnCheckChanged(isChecked => options.EnableOpenStationDirButton = isChecked));
+            helper.AddCheckbox(Translations.Translate("DISABLE_CONT_CHECKBOXES"),
+                options.ImprovedDisableContentUI,
+                new OnCheckChanged(isChecked => options.ImprovedDisableContentUI = isChecked));
         }
     }
 }
