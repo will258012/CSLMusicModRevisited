@@ -1,7 +1,11 @@
 ﻿
-Microsoft Visual Studio Solution File, Format Version 11.00
-# Visual Studio 2010
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.14.36301.6
+MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CSLMusicMod", "CSLMusicMod\CSLMusicMod.csproj", "{BB3BE146-5E23-4472-81DA-1AF341D91B74}"
+EndProject
+Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "AlgernonCommonsPatchingShared", "AlgernonCommons\AlgernonCommonsPatchingShared.shproj", "{25AEF446-6F0D-43A8-BB84-D1306789B68C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -13,6 +17,16 @@ Global
 		{BB3BE146-5E23-4472-81DA-1AF341D91B74}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BB3BE146-5E23-4472-81DA-1AF341D91B74}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{BB3BE146-5E23-4472-81DA-1AF341D91B74}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {44F59246-685E-47D8-B433-E9BECA36C7C5}
+	EndGlobalSection
+	GlobalSection(SharedMSBuildProjectFiles) = preSolution
+		AlgernonCommons\AlgernonCommonsPatchingShared.projitems*{25aef446-6f0d-43a8-bb84-d1306789b68c}*SharedItemsImports = 13
+		AlgernonCommons\AlgernonCommonsPatchingShared.projitems*{bb3be146-5e23-4472-81da-1af341d91b74}*SharedItemsImports = 4
 	EndGlobalSection
 	GlobalSection(MonoDevelopProperties) = preSolution
 		StartupItem = CSLMusicMod\CSLMusicMod.csproj
