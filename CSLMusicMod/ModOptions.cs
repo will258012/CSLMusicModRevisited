@@ -1,11 +1,15 @@
-﻿using System;
-using System.Linq;
+﻿using AlgernonCommons;
+using AlgernonCommons.Keybinding;
+using AlgernonCommons.Notifications;
+using AlgernonCommons.Translation;
+using ColossalFramework;
+using ColossalFramework.IO;
+using ColossalFramework.UI;
+using LitJson;
+using System;
+using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
-using CSLMusicMod.LitJson;
-using ColossalFramework.IO;
-using System.Text;
-using System.Collections.Generic;
 
 namespace CSLMusicMod
 {
@@ -15,11 +19,11 @@ namespace CSLMusicMod
     public class ModOptions
     {
         private static ModOptions _Instance = null;
-        public static ModOptions Instance 
+        public static ModOptions Instance
         {
             get
             {
-                if(_Instance == null)
+                if (_Instance == null)
                 {
                     //_Instance = new GameObject("CSLMusicMod Settings").AddComponent<ModOptions>();
                     _Instance = new ModOptions();
@@ -33,6 +37,7 @@ namespace CSLMusicMod
 
         private Options m_Options = new Options();
 
+
         public bool CreateMixChannels
         {
             get
@@ -42,7 +47,7 @@ namespace CSLMusicMod
             set
             {
                 m_Options.CreateMixChannels = value;
-                SaveSettings();
+
             }
         }
 
@@ -55,7 +60,7 @@ namespace CSLMusicMod
             set
             {
                 m_Options.CreateChannelsFromLegacyPacks = value;
-                SaveSettings();
+
             }
         }
 
@@ -68,7 +73,7 @@ namespace CSLMusicMod
             set
             {
                 m_Options.EnableMusicPacks = value;
-                SaveSettings();
+
             }
         }
 
@@ -81,7 +86,7 @@ namespace CSLMusicMod
             set
             {
                 m_Options.AllowContentMusic = value;
-                SaveSettings();
+
             }
         }
 
@@ -94,7 +99,7 @@ namespace CSLMusicMod
             set
             {
                 m_Options.AllowContentTalk = value;
-                SaveSettings();
+
             }
         }
 
@@ -107,7 +112,7 @@ namespace CSLMusicMod
             set
             {
                 m_Options.AllowContentBlurb = value;
-                SaveSettings();
+
             }
         }
 
@@ -120,7 +125,7 @@ namespace CSLMusicMod
             set
             {
                 m_Options.AllowContentBroadcast = value;
-                SaveSettings();
+
             }
         }
 
@@ -133,7 +138,7 @@ namespace CSLMusicMod
             set
             {
                 m_Options.AllowContentCommercial = value;
-                SaveSettings();
+
             }
         }
 
@@ -146,7 +151,7 @@ namespace CSLMusicMod
             set
             {
                 m_Options.MixContentMusic = value;
-                SaveSettings();
+
             }
         }
 
@@ -159,7 +164,7 @@ namespace CSLMusicMod
             set
             {
                 m_Options.MixContentTalk = value;
-                SaveSettings();
+
             }
         }
 
@@ -172,7 +177,7 @@ namespace CSLMusicMod
             set
             {
                 m_Options.MixContentBlurb = value;
-                SaveSettings();
+
             }
         }
 
@@ -185,7 +190,7 @@ namespace CSLMusicMod
             set
             {
                 m_Options.MixContentBroadcast = value;
-                SaveSettings();
+
             }
         }
 
@@ -198,7 +203,7 @@ namespace CSLMusicMod
             set
             {
                 m_Options.MixContentCommercial = value;
-                SaveSettings();
+
             }
         }
 
@@ -211,23 +216,9 @@ namespace CSLMusicMod
             set
             {
                 m_Options.EnableCustomUI = value;
-                SaveSettings();
+
             }
         }
-
-        public bool EnableShortcuts
-        {
-            get
-            {
-                return m_Options.EnableShortcuts;
-            }
-            set
-            {
-                m_Options.EnableShortcuts = value;
-                SaveSettings();
-            }
-        }
-
         public Shortcut ShortcutNextTrack
         {
             get
@@ -237,7 +228,7 @@ namespace CSLMusicMod
             set
             {
                 m_Options.ShortcutNextTrack = value;
-                SaveSettings();
+
             }
         }
 
@@ -250,7 +241,7 @@ namespace CSLMusicMod
             set
             {
                 m_Options.ShortcutNextStation = value;
-                SaveSettings();
+
             }
         }
 
@@ -263,7 +254,7 @@ namespace CSLMusicMod
             set
             {
                 m_Options.ShortcutOpenRadioPanel = value;
-                SaveSettings();
+
             }
         }
 
@@ -276,7 +267,7 @@ namespace CSLMusicMod
             set
             {
                 m_Options.EnableDisabledContent = value;
-                SaveSettings();
+
             }
         }
 
@@ -289,7 +280,7 @@ namespace CSLMusicMod
             set
             {
                 m_Options.DisabledContent = value;
-                SaveSettings();
+
             }
         }
 
@@ -302,9 +293,9 @@ namespace CSLMusicMod
             set
             {
                 m_Options.EnableContextSensitivity = value;
-                SaveSettings();
+
             }
-        }	
+        }
 
         public bool EnableAddingContentToVanillaStations
         {
@@ -315,7 +306,7 @@ namespace CSLMusicMod
             set
             {
                 m_Options.EnableAddingContentToVanillaStations = value;
-                SaveSettings();
+
             }
         }
 
@@ -328,7 +319,7 @@ namespace CSLMusicMod
             set
             {
                 m_Options.EnableSmoothTransitions = value;
-                SaveSettings();
+
             }
         }
 
@@ -341,23 +332,23 @@ namespace CSLMusicMod
             set
             {
                 m_Options.DisabledRadioStations = value;
-                SaveSettings();
+
             }
         }
 
         public bool EnableDebugInfo
-		{
-			get
-			{
-				return m_Options.EnableDebugInfo;
-			}
-			set
-			{
-				m_Options.EnableDebugInfo = value;
-				SaveSettings();
-			}
-		}
-        
+        {
+            get
+            {
+                return m_Options.EnableDebugInfo;
+            }
+            set
+            {
+                m_Options.EnableDebugInfo = value;
+
+            }
+        }
+
         public bool AddVanillaSongsToMusicMix
         {
             get
@@ -367,10 +358,10 @@ namespace CSLMusicMod
             set
             {
                 m_Options.AddVanillaSongsToMusicMix = value;
-                SaveSettings();
+
             }
         }
-        
+
         public bool EnableImprovedRadioStationList
         {
             get
@@ -380,10 +371,10 @@ namespace CSLMusicMod
             set
             {
                 m_Options.EnableImprovedRadioStationList = value;
-                SaveSettings();
+
             }
         }
-        
+
         public bool EnableOpenStationDirButton
         {
             get
@@ -393,10 +384,9 @@ namespace CSLMusicMod
             set
             {
                 m_Options.EnableOpenStationDirButton = value;
-                SaveSettings();
             }
         }
-        
+
         public bool MusicListVisible
         {
             get
@@ -406,10 +396,10 @@ namespace CSLMusicMod
             set
             {
                 m_Options.MusicListVisible = value;
-                SaveSettings();
+
             }
         }
-        
+
         public bool ImprovedDisableContentUI
         {
             get
@@ -419,7 +409,7 @@ namespace CSLMusicMod
             set
             {
                 m_Options.ImprovedDisableContentUI = value;
-                SaveSettings();
+
             }
         }
 
@@ -453,7 +443,7 @@ namespace CSLMusicMod
                 File.WriteAllText(SettingsFilename, json.ToString());
 
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 Debug.LogError(ex);
             }
@@ -465,14 +455,14 @@ namespace CSLMusicMod
 
         public void LoadSettings()
         {
-            if(File.Exists(SettingsFilename))
+            if (File.Exists(SettingsFilename))
             {
                 try
                 {
                     String data = File.ReadAllText(SettingsFilename);
                     m_Options = JsonMapper.ToObject<Options>(data);
                 }
-                catch(Exception ex)
+                catch (Exception ex)
                 {
                     Debug.LogError(ex);
                 }
@@ -483,7 +473,7 @@ namespace CSLMusicMod
             }
             else
             {
-                SaveSettings();
+
             }
         }
 
@@ -496,9 +486,9 @@ namespace CSLMusicMod
 
             public Shortcut()
             {
-                
+
             }
-           
+
             public Shortcut(KeyCode key, bool ctrl, bool alt, bool shift)
             {
                 Key = key;
@@ -511,10 +501,57 @@ namespace CSLMusicMod
             {
                 return string.Format("[Shortcut: Key={0}, ModifierControl={1}, ModifierAlt={2}, ModifierShift={3}]", Key, ModifierControl, ModifierAlt, ModifierShift);
             }
+
+            public Keybinding ToKeybinding() => new Keybinding(Key, ModifierControl, ModifierShift, ModifierAlt);
+            public InputKey Encode() => SavedInputKey.Encode(Key, ModifierControl, ModifierShift, ModifierAlt);
+            public void SetKey(InputKey inputKey)
+            {
+                Key = (KeyCode)(inputKey & 0xFFFFFFF);
+                ModifierControl = (inputKey & 0x40000000) != 0;
+                ModifierShift = (inputKey & 0x20000000) != 0;
+                ModifierAlt = (inputKey & 0x10000000) != 0;
+            }
         }
 
+        public class ShortcutMapping : OptionsKeymapping
+        {
+            public Shortcut Shortcut { get; set; }
+
+            public static ShortcutMapping AddKeymapping(UIComponent parent, float xPos, float yPos, string text, Shortcut shoutcut)
+            {
+                // Basic setup.
+                ShortcutMapping newKeymapping = parent.gameObject.AddComponent<ShortcutMapping>();
+                newKeymapping.Label = text;
+                newKeymapping.Binding = shoutcut.ToKeybinding();
+                newKeymapping.Panel.relativePosition = new Vector2(xPos, yPos);
+                newKeymapping.Shortcut = shoutcut;
+
+                return newKeymapping;
+            }
+
+            public override InputKey KeySetting
+            {
+                get => base.KeySetting;
+                set
+                {
+                    Shortcut.SetKey(value);
+                    ButtonLabel = SavedInputKey.ToLocalizedString("KEYNAME", value);
+                }
+            }
+        }
         public class Options
         {
+            public string Language
+            {
+                get => Translations.CurrentLanguage;
+                set => Translations.CurrentLanguage = value;
+            }
+            public string WhatsNewVersion
+            {
+                get => WhatsNew.LastNotifiedVersionString;
+                set => WhatsNew.LastNotifiedVersionString = value;
+            }
+
             public bool CreateMixChannels { get; set; }
             public bool CreateChannelsFromLegacyPacks { get; set; }
             public bool EnableMusicPacks { get; set; }
@@ -532,8 +569,6 @@ namespace CSLMusicMod
             public bool MixContentTalk { get; set; }
             public bool MixContentCommercial { get; set; }
             public bool MixContentBroadcast { get; set; }
-
-            public bool EnableShortcuts { get; set; }
             public Shortcut ShortcutNextTrack { get; set; }
             public Shortcut ShortcutNextStation { get; set; }
             public Shortcut ShortcutOpenRadioPanel { get; set; }
@@ -549,15 +584,17 @@ namespace CSLMusicMod
             public bool EnableSmoothTransitions { get; set; }
 
             public List<String> DisabledRadioStations { get; set; }
-
-            public bool EnableDebugInfo { get; set; }
-            
+            public bool EnableDebugInfo
+            {
+                get => Logging.DetailLogging;
+                set => Logging.DetailLogging = value;
+            }
             public bool AddVanillaSongsToMusicMix { get; set; }
             public bool EnableImprovedRadioStationList { get; set; }
             public bool EnableOpenStationDirButton { get; set; }
-            
+
             public bool MusicListVisible { get; set; }
-            
+
             public bool ImprovedDisableContentUI { get; set; }
 
             public Options()
@@ -578,7 +615,6 @@ namespace CSLMusicMod
                 AllowContentBroadcast = true;
                 EnableCustomUI = true;
 
-                EnableShortcuts = true;
                 ShortcutNextTrack = new Shortcut(KeyCode.N, false, false, false);
                 ShortcutNextStation = new Shortcut(KeyCode.N, true, false, false);
                 ShortcutOpenRadioPanel = new Shortcut(KeyCode.M, false, false, false);
@@ -593,8 +629,6 @@ namespace CSLMusicMod
                 EnableSmoothTransitions = true;
 
                 DisabledRadioStations = new List<string>();
-
-                EnableDebugInfo = false;
 
                 AddVanillaSongsToMusicMix = true;
                 EnableImprovedRadioStationList = true;
