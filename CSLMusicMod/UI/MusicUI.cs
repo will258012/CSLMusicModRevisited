@@ -31,7 +31,7 @@ namespace CSLMusicMod.UI
         /// This function is expensive. Only call if necessary!
         /// </summary>
         /// <value>The current radio panel.</value>
-        private RadioPanel CurrentRadioPanel
+        public RadioPanel CurrentRadioPanel
         {
             get
             {
@@ -56,38 +56,31 @@ namespace CSLMusicMod.UI
         {
             DontDestroyOnLoad(this);
         }
-
-        public void Start()
-        {
-
-        }
       
-        private void AddListPanel(UIView view)
-        {
-            
-        }
-
         private void Initialize()
         {
             //Create ui
             UIView v = UIView.GetAView();
-            m_ListPanel = (UIMusicListPanel)v.AddUIComponent(typeof(UIMusicListPanel));           
+            m_ListPanel = (UIMusicListPanel)v.AddUIComponent(typeof(UIMusicListPanel));
             m_ListPanel.Hide();
 
             m_Initialized = true;
 
             CSLMusicMod.Log("Initialized music UI");
         }
+        public void LocaleChanged()
+        {
+            OnDestroy();
+            Initialize();
+        }
 
         public void Update()
         {
             if (m_Initialized)
             {
-                var radiopanel = CurrentRadioPanel;
-
-                if (radiopanel != null && m_ListPanel != null)
+                if (m_ListPanel != null)
                 {
-                    m_ListPanel.isVisible = ModOptions.Instance.EnableCustomUI && ModOptions.Instance.MusicListVisible && ReflectionHelper.GetPrivateField<bool>(radiopanel, "m_isVisible");
+                    m_ListPanel.isVisible = ModOptions.Instance.EnableCustomUI && ModOptions.Instance.MusicListVisible && ReflectionHelper.GetPrivateField<bool>(CurrentRadioPanel, "m_isVisible");
                 }
             }
             else
@@ -107,7 +100,7 @@ namespace CSLMusicMod.UI
         public void OnDestroy()
         {
             if(m_ListPanel != null)
-                MonoBehaviour.Destroy(m_ListPanel);
+                Destroy(m_ListPanel);
         }
     }
 }

@@ -104,7 +104,7 @@ namespace CSLMusicMod.Helpers
         /// <returns><c>true</c>, if it was possible to switch to the next station, <c>false</c> otherwise.</returns>
         public static bool NextStation()
         {
-            var radiopanel = Resources.FindObjectsOfTypeAll<RadioPanel>().FirstOrDefault();
+            var radiopanel = LoadingExtension.UI.CurrentRadioPanel;
 
             if(radiopanel != null)
             {
