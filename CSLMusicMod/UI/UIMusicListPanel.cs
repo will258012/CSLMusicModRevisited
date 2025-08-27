@@ -1,12 +1,12 @@
+using AlgernonCommons.Translation;
+using ColossalFramework;
+using ColossalFramework.IO;
+using ColossalFramework.UI;
+using CSLMusicMod.Helpers;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
-using ColossalFramework.UI;
-using ColossalFramework;
-using System.IO;
-using System.Collections.Generic;
-using ColossalFramework.IO;
-using CSLMusicMod.Helpers;
 
 namespace CSLMusicMod.UI
 {
@@ -18,7 +18,7 @@ namespace CSLMusicMod.UI
         private bool m_Initialized = false;
 
         //UILabel m_LabelCurrentMusic;
-        UIListBox m_MusicList;      
+        UIListBox m_MusicList;
 
         private bool m_MusicListInitialized = false;
 
@@ -26,7 +26,7 @@ namespace CSLMusicMod.UI
         private UITextureAtlas m_IconAtlas;
 
         //Settings UI
-        private SavedFloat m_MusicAudioVolume = new SavedFloat(Settings.musicAudioVolume, 
+        private SavedFloat m_MusicAudioVolume = new SavedFloat(Settings.musicAudioVolume,
             Settings.gameSettingsFile,
             DefaultSettings.musicAudioVolume, true);
         private UISlider m_VolumeSlider;
@@ -37,7 +37,7 @@ namespace CSLMusicMod.UI
         private UIButton m_ButtonSortDescending;
         private UIButton m_Close;
         private UILabel m_RadioChannelInfo;
-        
+
         // Additional options UI
         private int m_AdditionalButtonCount = 0;
         private UIButton m_TopShowMusicList;
@@ -49,25 +49,7 @@ namespace CSLMusicMod.UI
         private List<RadioContentInfo> m_CurrentContent = new List<RadioContentInfo>();
 
         private ModOptions m_ModOptionsInstance = ModOptions.Instance;
-
-        private RadioPanel m_CurrentRadioPanel = null;
-
-        private RadioPanel CurrentRadioPanel
-        {
-            get
-            {
-                if (m_CurrentRadioPanel != null)
-                    return m_CurrentRadioPanel;
-                else
-                {
-                    var radiopanel = Resources.FindObjectsOfTypeAll<RadioPanel>().FirstOrDefault();
-                    m_CurrentRadioPanel = radiopanel;
-
-                    return radiopanel;
-                }
-            }
-        }
-
+        private RadioPanel CurrentRadioPanel => LoadingExtension.UI.CurrentRadioPanel;
         private bool Filtered
         {
             get
@@ -98,25 +80,25 @@ namespace CSLMusicMod.UI
             this.canFocus = true;
             this.isInteractive = true;
             this.m_ZIndex = -100;
-            
+
             InitializeShowMusicPanelButton();
             InitializeTopNextTrackButton();
-            
-            if(ModOptions.Instance.EnableOpenStationDirButton)
+
+            if (ModOptions.Instance.EnableOpenStationDirButton)
                 InitializeOpenStationDirectoryButton();
 
             //Add header
-            InitializeHeaderToolbar();         
+            InitializeHeaderToolbar();
 
             //Add list
-            InitializeMusicList();  
+            InitializeMusicList();
 
             m_Initialized = true;
 
             Singleton<AudioManager>.instance.m_radioContentChanged += RadioContentChanged;
         }
 
-        void RadioContentChanged ()
+        void RadioContentChanged()
         {
             RebuildList();
         }
@@ -146,7 +128,7 @@ namespace CSLMusicMod.UI
             // Bring the radio panel to the front
             var radiopanel = CurrentRadioPanel;
 
-            if(radiopanel != null)
+            if (radiopanel != null)
             {
                 var panel = ReflectionHelper.GetPrivateField<UIPanel>(radiopanel, "m_radioPanel");
                 var list = ReflectionHelper.GetPrivateField<UIPanel>(radiopanel, "m_radioList");
@@ -187,8 +169,8 @@ namespace CSLMusicMod.UI
                 if (Math.Abs(m_VolumeSlider.value / 100f - m_MusicAudioVolume.value) > 0.01)
                 {
                     m_VolumeSlider.value = m_MusicAudioVolume.value * 100f;
-                }            
-            }           
+                }
+            }
         }
 
         private void RebuildList()
@@ -201,24 +183,24 @@ namespace CSLMusicMod.UI
 
             //Dictionary<RadioContentInfo, String> entrytexts = new Dictionary<RadioContentInfo, string>();
 
-            if(activechannel >= 0)
+            if (activechannel >= 0)
             {
                 RadioChannelData channeldata = mgr.m_radioChannels[activechannel];
                 RadioChannelInfo info = channeldata.Info;
 
                 m_CurrentContent.Clear();
 
-                if(info != null)
+                if (info != null)
                 {
                     // Only show supported content entries
                     HashSet<RadioContentInfo.ContentType> supported_content = new HashSet<RadioContentInfo.ContentType>();
 
-                    foreach(var state in info.m_stateChain)
+                    foreach (var state in info.m_stateChain)
                     {
                         supported_content.Add(state.m_contentType);
                     }
 
-                    for(uint i = 0; i < PrefabCollection<RadioContentInfo>.PrefabCount(); ++i)
+                    for (uint i = 0; i < PrefabCollection<RadioContentInfo>.PrefabCount(); ++i)
                     {
                         var c = PrefabCollection<RadioContentInfo>.GetPrefab(i);
 
@@ -227,12 +209,12 @@ namespace CSLMusicMod.UI
                         if (c.m_radioChannels == null)
                             continue;
 
-                        if(supported_content.Contains(c.m_contentType) && c.m_radioChannels.Contains(info))
+                        if (supported_content.Contains(c.m_contentType) && c.m_radioChannels.Contains(info))
                         {
                             //entrytexts[c] = GetEntryTextFor(c);
 
                             //if(!IsFiltered(entrytexts[c]))
-                            if(!IsFiltered(AudioManagerHelper.GetContentName(c)))
+                            if (!IsFiltered(AudioManagerHelper.GetContentName(c)))
                             {
                                 m_CurrentContent.Add(c);
                             }
@@ -242,12 +224,13 @@ namespace CSLMusicMod.UI
 
                 m_RadioChannelInfo.isVisible = m_CurrentContent.Count == 0;
 
+                m_RadioChannelInfo.text = Filtered ? Translations.Translate("NO_RESULTS") : Translations.Translate("NOT_RADIO");
                 //Debug.Log(m_CurrentContent.Count + " entries ");
             }
-            
+
             m_CurrentContent.Sort((RadioContentInfo x, RadioContentInfo y) =>
                 {
-                    if(m_SortAscending)
+                    if (m_SortAscending)
                     {
                         //return string.Compare(entrytexts[x], entrytexts[y], StringComparison.CurrentCulture);
                         return string.Compare(AudioManagerHelper.GetContentName(x), AudioManagerHelper.GetContentName(y), StringComparison.CurrentCulture);
@@ -266,7 +249,7 @@ namespace CSLMusicMod.UI
         {
             String name = AudioManagerHelper.GetContentName(content);
 
-            switch(content.m_contentType)
+            switch (content.m_contentType)
             {
                 case RadioContentInfo.ContentType.Blurb:
                     name = "<sprite Blurb> " + name;
@@ -298,12 +281,12 @@ namespace CSLMusicMod.UI
             }
             else
             {
-                if(!AudioManagerHelper.ContentIsEnabled(content))
+                if (!AudioManagerHelper.ContentIsEnabled(content))
                 {
                     name = "<sprite ContentDisabled>" + name;
                 }
             }
-            
+
 
 
             return name;
@@ -329,7 +312,7 @@ namespace CSLMusicMod.UI
         private void UpdateValues()
         {
             if (m_Initialized)
-            {               
+            {
                 //_enable_Playlist_random.isChecked = SettingsManager.ModOptions.RandomTrackSelection;               
                 m_VolumeSlider.value = m_MusicAudioVolume.value * 100f; //I use x100 because it failed with 0..1?
 
@@ -346,7 +329,7 @@ namespace CSLMusicMod.UI
             //_MusicVolumeSlider.color = new Color32(255, 255, 255, 100);
             m_VolumeSlider.minValue = 0;
             m_VolumeSlider.maxValue = 100;
-            m_VolumeSlider.tooltip = "Drag to change the music volume";
+            m_VolumeSlider.tooltip = Translations.Translate("VOLUMESLIDER");
 
             UIPanel thumb = m_VolumeSlider.AddUIComponent<UIPanel>();
             thumb.width = 15;
@@ -365,8 +348,8 @@ namespace CSLMusicMod.UI
                 if (this.m_IsDisposing)
                     return;
 
-                    //I use x100 because it failed with 0..1?
-                    value = value / 100f;
+                //I use x100 because it failed with 0..1?
+                value = value / 100f;
 
                 if (Math.Abs(m_MusicAudioVolume.value - value) > 0.01)
                 {
@@ -382,7 +365,7 @@ namespace CSLMusicMod.UI
             m_NextTrack.height = 36;
             m_NextTrack.relativePosition = new Vector3(130, 10);
             m_NextTrack.normalBgSprite = "GenericPanel";
-            m_NextTrack.tooltip = "Play next track";
+            m_NextTrack.tooltip = Translations.Translate("SHOUTCUT_NEXTTRACK");
 
             m_NextTrack.atlas = m_IconAtlas;
             m_NextTrack.hoveredBgSprite = "OptionBaseFocused";
@@ -399,7 +382,7 @@ namespace CSLMusicMod.UI
             m_ButtonSortAscending.height = 36;
             m_ButtonSortAscending.relativePosition = new Vector3(130 + 40, 10);
             m_ButtonSortAscending.normalBgSprite = "GenericPanel";
-            m_ButtonSortAscending.tooltip = "Sort ascending";
+            m_ButtonSortAscending.tooltip = Translations.Translate("SORT_ASCEND");
 
             m_ButtonSortAscending.atlas = m_IconAtlas;
             m_ButtonSortAscending.hoveredBgSprite = "OptionBaseFocused";
@@ -420,7 +403,7 @@ namespace CSLMusicMod.UI
             m_ButtonSortDescending.height = 36;
             m_ButtonSortDescending.relativePosition = new Vector3(130 + 40 * 2, 10);
             m_ButtonSortDescending.normalBgSprite = "GenericPanel";
-            m_ButtonSortDescending.tooltip = "Sort descending";
+            m_ButtonSortDescending.tooltip = Translations.Translate("SORT_DESCEND");
 
             m_ButtonSortDescending.atlas = m_IconAtlas;
             m_ButtonSortDescending.hoveredBgSprite = "OptionBaseFocused";
@@ -476,7 +459,7 @@ namespace CSLMusicMod.UI
             m_Close.height = 36;
             m_Close.relativePosition = new Vector3(width - 10 - 36, 10);
             m_Close.normalBgSprite = "GenericPanel";
-            m_Close.tooltip = "Close this panel";
+            m_Close.tooltip = Translations.Translate("CLOSE_PANEL");
 
             m_Close.atlas = m_IconAtlas;
             m_Close.normalBgSprite = "GenericPanel";
@@ -504,7 +487,7 @@ namespace CSLMusicMod.UI
             InitializeHeaderToolbarSortDescendingButton();
             InitializeHeaderToolbarFilterBar();
             InitializeHeaderToolbarCloseButton();
-         
+
         }
 
         private void InitializeShowMusicPanelButton()
@@ -521,9 +504,9 @@ namespace CSLMusicMod.UI
             m_TopShowMusicList.hoveredBgSprite = "Menu";
             m_TopShowMusicList.color = new Color32(225, 225, 225, 255);
             m_TopShowMusicList.hoveredColor = new Color32(255, 255, 255, 255);
-            m_TopShowMusicList.tooltip = "Shows/hides the playlist.";
+            m_TopShowMusicList.tooltip = Translations.Translate("SHOW_PLAYLIST");
             m_TopShowMusicList.Show();
-            
+
             m_TopShowMusicList.eventClick += TopShowMusicListOnEventClick;
         }
 
@@ -546,7 +529,7 @@ namespace CSLMusicMod.UI
             m_TopNextTrack.hoveredBgSprite = "Next";
             m_TopNextTrack.color = new Color32(225, 225, 225, 255);
             m_TopNextTrack.hoveredColor = new Color32(255, 255, 255, 255);
-            m_TopNextTrack.tooltip = "Switches to the next track.";
+            m_TopNextTrack.tooltip = Translations.Translate("BUTTON_NEXTTRACK");
             m_TopNextTrack.Show();
 
             m_TopNextTrack.eventClick += buttonNextTrackClicked;
@@ -566,9 +549,9 @@ namespace CSLMusicMod.UI
             m_TopOpenStationDirectory.hoveredBgSprite = "Open";
             m_TopOpenStationDirectory.color = new Color32(225, 225, 225, 255);
             m_TopOpenStationDirectory.hoveredColor = new Color32(255, 255, 255, 255);
-            m_TopOpenStationDirectory.tooltip = "Open folder containing the radio station.";
+            m_TopOpenStationDirectory.tooltip = Translations.Translate("BUTTON_OPENDIR");
             m_TopOpenStationDirectory.Show();
-           
+
             m_TopOpenStationDirectory.eventClick += TopOpenStationDirectoryOnEventClick;
 
         }
@@ -585,37 +568,37 @@ namespace CSLMusicMod.UI
                 {
                     dir = info.m_DefinitionDirectory;
                 }
-                    
+
                 DesktopHelper.OpenFileExternally(dir);
             }
         }
 
-        void buttonNextTrackClicked (UIComponent component, UIMouseEventParameter eventParam)
+        void buttonNextTrackClicked(UIComponent component, UIMouseEventParameter eventParam)
         {
-            AudioManagerHelper.NextTrack();           
+            AudioManagerHelper.NextTrack();
         }
 
-        void musicEntrySelected (UIComponent component, int value)
+        void musicEntrySelected(UIComponent component, int value)
         {
             if (ModOptions.Instance.ImprovedDisableContentUI)
             {
                 Vector3 mouse = Input.mousePosition / component.GetUIView().inputScale;
                 Vector3 diff = mouse - component.absolutePosition;
-          
+
                 if (diff.x <= 20)
                 {
                     musicEntryEnableDisable(component, value);
                     return;
-                } 
+                }
 
             }
-            
+
             RadioContentInfo info = m_CurrentContent[value];
             AudioManagerHelper.SwitchToContent(info);
         }
 
 
-        void musicEntryEnableDisable (UIComponent component, int value)
+        void musicEntryEnableDisable(UIComponent component, int value)
         {
             RadioContentInfo info = m_CurrentContent[value];
             AudioManagerHelper.SetContentEnabled(info, !AudioManagerHelper.ContentIsEnabled(info));
@@ -623,31 +606,26 @@ namespace CSLMusicMod.UI
             RebuildList();
         }
 
-        void filterTextChanged (UIComponent component, string value)
+        void filterTextChanged(UIComponent component, string value)
         {
-            if (!Filtered)
-                m_ClearFilter.normalFgSprite = "Search";
-            else
-                m_ClearFilter.normalFgSprite = "Clear";
+            m_ClearFilter.normalFgSprite = !Filtered ? "Search" : "Clear";
 
             RebuildList();
         }
 
-        void buttonCloseClicked (UIComponent component, UIMouseEventParameter eventParam)
+        void buttonCloseClicked(UIComponent component, UIMouseEventParameter eventParam)
         {
-            var radiopanel = CurrentRadioPanel;
-            radiopanel.HideRadio();
+            CurrentRadioPanel.HideRadio();
         }
 
         private void InitializeMusicListChannelInfo()
         {
             m_RadioChannelInfo = AddUIComponent<UILabel>();
             m_RadioChannelInfo.relativePosition = new Vector3(10, 60 + 10);
-            m_RadioChannelInfo.width = m_MusicList.width;
-            m_RadioChannelInfo.height = m_MusicList.height;
+            m_RadioChannelInfo.size = m_MusicList.size;
             m_RadioChannelInfo.textColor = new Color32(150, 150, 150, 255);
-            m_RadioChannelInfo.text = "This channel is not a radio-channel.\nYour custom music can be found in\n'Userdefined', 'CSLMusic Mix' and\nchannels created by music packs.";
-            m_RadioChannelInfo.wordWrap = false;
+            m_RadioChannelInfo.text = Translations.Translate("NOT_RADIO");
+            m_RadioChannelInfo.autoSize = false;
             m_RadioChannelInfo.Show();
         }
 
@@ -700,12 +678,12 @@ namespace CSLMusicMod.UI
             m_MusicList.itemHover = "ListEntryHover";
             m_MusicList.itemHeight = 32;
             m_MusicList.itemPadding = new RectOffset(0, 0, 4, 4);
-            m_MusicList.tooltip = !ModOptions.Instance.ImprovedDisableContentUI ? "Double-click to disable an entry" : "";
+            m_MusicList.tooltip = !ModOptions.Instance.ImprovedDisableContentUI ? Translations.Translate("DISABLE_CONT_CHECKBOXES_TIP") : "";
             m_MusicList.zOrder = -50;
             m_MusicList.atlas = m_IconAtlas;
             m_MusicList.processMarkup = true;
             //m_MusicList.animateHover = true;
-         
+
             m_MusicList.Show();
 
             InitializeMusicListChannelInfo();
