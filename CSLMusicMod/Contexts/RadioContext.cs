@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using CSLMusicMod.LitJson;
+using LitJson;
 
 namespace CSLMusicMod.Contexts
 {

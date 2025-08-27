@@ -7,7 +7,7 @@ using System.IO;
 using ColossalFramework.IO;
 using CSLMusicMod.Contexts;
 using CSLMusicMod.Helpers;
-using CSLMusicMod.LitJson;
+using LitJson;
 
 namespace CSLMusicMod
 {

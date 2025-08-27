@@ -1,5 +1,5 @@
 ﻿using ColossalFramework;
-using CSLMusicMod.LitJson;
+using LitJson;
 
 namespace CSLMusicMod.Contexts
 {

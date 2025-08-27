@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using ColossalFramework;
-using CSLMusicMod.LitJson;
+using LitJson;
 
 namespace CSLMusicMod.Contexts
 {
