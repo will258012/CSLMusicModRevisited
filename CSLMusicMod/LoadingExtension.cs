@@ -7,18 +7,19 @@ using CSLMusicMod.UI;
 using System.IO;
 using ColossalFramework.IO;
 using CSLMusicMod.Helpers;
+using AlgernonCommons.Patching;
+using HarmonyLib;
 
 namespace CSLMusicMod
 {
     /// <summary>
     /// The main class for loading the mod.
     /// </summary>
-    public class LoadingExtension : LoadingExtensionBase
+    public class LoadingExtension : PatcherLoadingBase<SettingsUI, PatcherBase>
     {
         public static UserRadioCollection UserRadioContainer;
         public static ChannelInitializer StationContainer;
         public static ContentInitializer ContentContainer;
-        public static Detours MethodDetours;
         public static MusicUI UI;
         public static ShortcutHandler UIShortcutHandler;
         public static RadioContentWatcher DisabledContentContainer;
@@ -55,10 +56,6 @@ namespace CSLMusicMod
             {
                 ContentContainer = new GameObject("CSLMusicMod_Content").AddComponent<ContentInitializer>();
             }
-            if (MethodDetours == null)
-            {
-                MethodDetours = new GameObject("CSLMusicMod_Detours").AddComponent<Detours>();
-            }
         }
 
         public override void OnLevelLoaded(LoadMode mode)
@@ -80,7 +77,7 @@ namespace CSLMusicMod
                 {
                     UI = new GameObject("CSLMusicMod_UI").AddComponent<MusicUI>();
                 }
-                if(UIShortcutHandler == null && ModOptions.Instance.EnableShortcuts)
+                if (UIShortcutHandler == null)
                 {
                     UIShortcutHandler = new GameObject("CSLMusicMod_UIShortcutHandler").AddComponent<ShortcutHandler>();
                 }
@@ -122,11 +119,6 @@ namespace CSLMusicMod
             {
                 UnityEngine.Object.Destroy(ContentContainer.gameObject);
                 ContentContainer = null;
-            }
-            if (MethodDetours != null)
-            {
-                UnityEngine.Object.Destroy(MethodDetours.gameObject);
-                MethodDetours = null;
             }
             if (UserRadioContainer != null)
             {
