@@ -23,10 +23,6 @@ namespace CSLMusicMod
         private ushort m_currentChannel = 0;
         private string[] m_musicFileBackup = null;
 
-        public RadioContentWatcher()
-        {
-        }
-
         public void Start()
         {
             InvokeRepeating("ApplyDisallowedContentRestrictions", 1f, 5f);

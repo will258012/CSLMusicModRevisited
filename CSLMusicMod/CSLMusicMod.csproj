@@ -55,7 +55,6 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="CSLMusicMod.cs" />
     <Compile Include="Compatibility\CSLMusicChirperMessage.cs" />
-    <Compile Include="Helpers\ModHelper.cs" />
     <Compile Include="Helpers\TextureHelper.cs" />
     <Compile Include="Patches\RadioContentInfoPatch.cs" />
     <Compile Include="LoadingExtension.cs" />

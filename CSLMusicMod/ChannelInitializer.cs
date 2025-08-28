@@ -1,4 +1,5 @@
-﻿using System;
+﻿using AlgernonCommons;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -13,10 +14,6 @@ namespace CSLMusicMod
     {
         private bool _isInitialized;
         private Dictionary<string, RadioChannelInfo> _customPrefabs;
-
-        public ChannelInitializer()
-        {
-        }
 
         /// <summary>
         /// Initializes the custom radio channels
@@ -42,15 +39,6 @@ namespace CSLMusicMod
             DontDestroyOnLoad(this);
             _customPrefabs = new Dictionary<string, RadioChannelInfo>();
         }
-
-        /*public void OnLevelWasLoaded(int level)
-        {
-            if (level == 6)
-            {
-                _customPrefabs.Clear();
-                _isInitialized = false;
-            }
-        }*/
 
         public void OnEnable()
         {
@@ -116,7 +104,7 @@ namespace CSLMusicMod
 
         protected static RadioChannelInfo ClonePrefab(RadioChannelInfo originalPrefab, string newName, Transform parentTransform)
         {
-            var instance = UnityEngine.Object.Instantiate(originalPrefab.gameObject);
+            var instance = Instantiate(originalPrefab.gameObject);
             instance.name = newName;
             var newPrefab = instance.GetComponent<RadioChannelInfo>();
             newPrefab.m_Atlas = originalPrefab.m_Atlas;
@@ -130,7 +118,7 @@ namespace CSLMusicMod
         {
             RadioChannelInfo foundPrefab;
             foundPrefab = Resources.FindObjectsOfTypeAll<RadioChannelInfo>().FirstOrDefault(netInfo => netInfo.name == originalPrefabName);
-            return foundPrefab == null ? null : foundPrefab;
+            return foundPrefab ?? null;
         }
     }
 }

@@ -16,7 +16,7 @@ namespace CSLMusicMod
         {
             RadioContextCondition context = null;
 
-            switch ((String)json["type"])
+            switch ((string)json["type"])
             {
                 case "time":
                     context = TimeContextCondition.LoadFromJson(json);

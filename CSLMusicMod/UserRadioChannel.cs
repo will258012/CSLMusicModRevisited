@@ -16,9 +16,9 @@ namespace CSLMusicMod
     /// </summary>
     public class UserRadioChannel
     {
-        public String m_Name;
+        public string m_Name;
 
-        public HashSet<String> m_Collections;
+        public HashSet<string> m_Collections;
 
         public List<UserRadioContent> m_Content;
 
@@ -28,18 +28,16 @@ namespace CSLMusicMod
 
         public RadioContentInfo.ContentType[] m_SupportedContent = (RadioContentInfo.ContentType[])Enum.GetValues(typeof(RadioContentInfo.ContentType));
 
-        public String m_ThumbnailFile;
+        public string m_ThumbnailFile;
 
-        public String m_DefinitionDirectory = DataLocation.gameContentPath;
+        public string m_DefinitionDirectory = DataLocation.gameContentPath;
 
         // Post-launch
         public RadioChannelInfo m_VanillaChannelInfo;
 
-        public UserRadioChannel()
-        {
-        }
+        public UserRadioChannel() { }
 
-        public UserRadioChannel(String name)
+        public UserRadioChannel(string name)
         {
             m_Name = name;
             m_Collections = new HashSet<string>() { name };
@@ -47,7 +45,7 @@ namespace CSLMusicMod
 
         public UITextureAtlas GetThumbnailAtlas(Material baseMaterial)
         {
-            String filename;
+            string filename;
             var assembly = System.Reflection.Assembly.GetExecutingAssembly();
 
             if (m_ThumbnailFile != null && File.Exists(m_ThumbnailFile))
@@ -100,7 +98,7 @@ namespace CSLMusicMod
                 m_StateChain != null && m_StateChain.Length != 0;
         }
 
-        public static UserRadioChannel LoadFromJson(String filename)
+        public static UserRadioChannel LoadFromJson(string filename)
         {
             try
             {
@@ -109,16 +107,16 @@ namespace CSLMusicMod
 
                 UserRadioChannel channel = new UserRadioChannel
                 {
-                    m_Name = (String)json["name"]
+                    m_Name = (string)json["name"]
                 };
 
                 if (json.Keys.Contains("collections"))
                 {
-                    List<String> collections = new List<string>();
+                    List<string> collections = new List<string>();
 
                     foreach (JsonData v in json["collections"])
                     {
-                        collections.Add((String)v);
+                        collections.Add((string)v);
                     }
 
                     channel.m_Collections = new HashSet<string>(collections);
@@ -130,7 +128,7 @@ namespace CSLMusicMod
 
                 if (json.Keys.Contains("thumbnail"))
                 {
-                    channel.m_ThumbnailFile = Path.Combine(Path.GetDirectoryName(filename), (String)json["thumbnail"]);
+                    channel.m_ThumbnailFile = Path.Combine(Path.GetDirectoryName(filename), (string)json["thumbnail"]);
                 }
 
                 if (json.Keys.Contains("schedule"))
@@ -141,7 +139,7 @@ namespace CSLMusicMod
                     {
                         RadioChannelInfo.State state = new RadioChannelInfo.State
                         {
-                            m_contentType = (RadioContentInfo.ContentType)Enum.Parse(typeof(RadioContentInfo.ContentType), (String)entry["type"], true),
+                            m_contentType = (RadioContentInfo.ContentType)Enum.Parse(typeof(RadioContentInfo.ContentType), (string)entry["type"], true),
                             m_minCount = (int)entry["min"],
                             m_maxCount = (int)entry["max"]
                         };

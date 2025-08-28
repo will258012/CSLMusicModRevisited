@@ -16,12 +16,7 @@ namespace CSLMusicMod.Contexts
 
         public bool m_Invert = false;
 
-        public HashSet<String> m_Collections = new HashSet<string>();
-
-        public MoodContextCondition()
-        {
-        }
-
+        public HashSet<string> m_Collections = new HashSet<string>();
         public override bool Applies()
         {
             return m_Invert ? !_Applies() : _Applies();

@@ -34,10 +34,6 @@ namespace CSLMusicMod.Contexts
 
         public bool m_Invert = false;
 
-        public WeatherContextCondition()
-        {
-        }
-
         public override bool Applies()
         {
             return m_Invert ? !_Applies() : _Applies();

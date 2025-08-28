@@ -18,11 +18,7 @@ namespace CSLMusicMod.Contexts
 
         public HashSet<string> m_DisasterFilter = new HashSet<string>();
 
-        public HashSet<String> m_Collections = new HashSet<string>();
-
-        public DisasterContextCondition()
-        {
-        }
+        public HashSet<string> m_Collections = new HashSet<string>();
 
         public override bool Applies()
         {
@@ -68,7 +64,7 @@ namespace CSLMusicMod.Contexts
             {
                 foreach (JsonData e in json["of"])
                 {
-                    context.m_DisasterFilter.Add((String)e);
+                    context.m_DisasterFilter.Add((string)e);
                 }
             }
 

@@ -27,10 +27,6 @@ namespace CSLMusicMod.Contexts
         /// </summary>
         public List<List<RadioContextCondition>> m_Conditions = new List<List<RadioContextCondition>>();
 
-        public RadioContext()
-        {
-        }
-
         /// <summary>
         /// Returns if there is one of the station defined conditions that apply.
         /// </summary>
@@ -104,14 +100,14 @@ namespace CSLMusicMod.Contexts
 
             foreach (JsonData e in json["collections"])
             {
-                radiocontext.m_Collections.Add((String)e);
+                radiocontext.m_Collections.Add((string)e);
             }
 
             if (json.Keys.Contains("songs"))
             {
                 foreach (JsonData e in json["songs"])
                 {
-                    radiocontext.m_Songs.Add((String)e);
+                    radiocontext.m_Songs.Add((string)e);
                 }
             }
 

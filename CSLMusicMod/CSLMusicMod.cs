@@ -12,7 +12,7 @@ namespace CSLMusicMod
     public class CSLMusicMod : PatcherMod<SettingsUI, PatcherBase>, IUserMod
     {
         public static System.Random RANDOM = new System.Random();
-        public override string BaseName => "CSL Music Mod";
+        public override string BaseName => "CSL Music Mod Revisited";
         public string Description => Translations.Translate("MOD_DESCRIPTION");
         public override string HarmonyID => "Will258012.CSLMusicMod";
 

@@ -61,7 +61,7 @@ namespace CSLMusicMod.Helpers
 
             var atlas = ScriptableObject.CreateInstance<UITextureAtlas>();
             // Setup atlas
-            var material = UnityEngine.Object.Instantiate(baseMaterial);
+            var material = Object.Instantiate(baseMaterial);
             material.mainTexture = tex;
 
             atlas.material = material;

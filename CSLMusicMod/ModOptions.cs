@@ -271,7 +271,7 @@ namespace CSLMusicMod
             }
         }
 
-        public List<String> DisabledContent
+        public List<string> DisabledContent
         {
             get
             {
@@ -323,7 +323,7 @@ namespace CSLMusicMod
             }
         }
 
-        public List<String> DisabledRadioStations
+        public List<string> DisabledRadioStations
         {
             get
             {
@@ -413,7 +413,7 @@ namespace CSLMusicMod
             }
         }
 
-        public static String SettingsFilename
+        public static string SettingsFilename
         {
             get
             {
@@ -461,7 +461,7 @@ namespace CSLMusicMod
             {
                 try
                 {
-                    String data = File.ReadAllText(SettingsFilename);
+                    string data = File.ReadAllText(SettingsFilename);
                     m_Options = JsonMapper.ToObject<Options>(data);
                 }
                 catch (Exception ex)
@@ -575,7 +575,7 @@ namespace CSLMusicMod
             public Shortcut ShortcutNextStation { get; set; }
             public Shortcut ShortcutOpenRadioPanel { get; set; }
 
-            public List<String> DisabledContent { get; set; }
+            public List<string> DisabledContent { get; set; }
             public bool EnableDisabledContent { get; set; }
 
             public bool EnableContextSensitivity { get; set; }
@@ -585,7 +585,7 @@ namespace CSLMusicMod
 
             public bool EnableSmoothTransitions { get; set; }
 
-            public List<String> DisabledRadioStations { get; set; }
+            public List<string> DisabledRadioStations { get; set; }
             public bool EnableDebugInfo
             {
                 get => Logging.DetailLogging;

@@ -25,8 +25,6 @@ namespace CSLMusicMod.Patches
                 return _listAtlas;
             }
         }
-
-
         private static void AssignStationToButtonInPanel(UIButton button, UISprite iconsprite, RadioChannelInfo station, UserRadioCollection collection)
         {
             button.atlas = station.m_Atlas;
@@ -63,7 +61,6 @@ namespace CSLMusicMod.Patches
             button.text = "";
             button.spritePadding = new RectOffset(0, 0, 0, 0);
         }
-
         private static void AssignStationToButtonInList(UIButton button, UISprite iconsprite, RadioChannelInfo station,
             UserRadioCollection collection)
         {
@@ -97,7 +94,6 @@ namespace CSLMusicMod.Patches
             iconsprite.spriteName = station.m_Thumbnail;
             iconsprite.isVisible = true;
         }
-
         private static void AddComboboxVisualClue(UIButton button, UISprite iconsprite, RadioChannelInfo station)
         {
             iconsprite.position = new Vector3(23, -23);

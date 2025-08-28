@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 namespace CSLMusicMod
 {
@@ -14,10 +15,6 @@ namespace CSLMusicMod
         private bool _isInitialized;
         private Dictionary<string, RadioContentInfo> _customPrefabs;
 
-        public ContentInitializer()
-        {
-        }
-
         /// <summary>
         /// Initializes the custom songs
         /// </summary>
@@ -26,7 +23,7 @@ namespace CSLMusicMod
             UserRadioCollection collection = LoadingExtension.UserRadioContainer;
 
             var collectionnames = collection.m_Songs.Values.Select(song => song.m_Collection).Distinct().ToArray();
-            CSLMusicMod.Log("Available collections: " + String.Join("\n", collectionnames));
+            CSLMusicMod.Log("Available collections: " + string.Join("\n", collectionnames));
 
             foreach (UserRadioContent content in collection.m_Songs.Values)
             {
@@ -65,9 +62,18 @@ namespace CSLMusicMod
             _customPrefabs = new Dictionary<string, RadioContentInfo>();
         }
 
-        public void OnLevelWasLoaded(int level)
+        public void OnEnable()
         {
-            if (level == 6)
+            SceneManager.sceneLoaded += OnLevelFinishedLoading;
+        }
+
+        public void OnDisable()
+        {
+            SceneManager.sceneLoaded -= OnLevelFinishedLoading;
+        }
+        void OnLevelFinishedLoading(Scene scene, LoadSceneMode mode)
+        {
+            if (mode == LoadSceneMode.Single)
             {
                 _customPrefabs.Clear();
                 _isInitialized = false;
@@ -117,7 +123,7 @@ namespace CSLMusicMod
 
         protected static RadioContentInfo ClonePrefab(RadioContentInfo originalPrefab, string newName, Transform parentTransform)
         {
-            var instance = UnityEngine.Object.Instantiate(originalPrefab.gameObject);
+            var instance = Instantiate(originalPrefab.gameObject);
             instance.name = newName;
 
             var newPrefab = instance.GetComponent<RadioContentInfo>();

@@ -10,13 +10,13 @@ namespace CSLMusicMod
     {
         public RadioContentInfo.ContentType m_ContentType;
 
-        public String m_Name;
+        public string m_Name;
 
-        public String m_DisplayName;
+        public string m_DisplayName;
 
-        public String m_Collection;
+        public string m_Collection;
 
-        public String m_FileName;
+        public string m_FileName;
 
         public bool m_isVanilla;
 
@@ -25,19 +25,14 @@ namespace CSLMusicMod
         // Post-launch
 
         public RadioContentInfo m_VanillaContentInfo;
-
-        public UserRadioContent()
-        {
-        }
-
-        public UserRadioContent(String collection, String filename)
+        public UserRadioContent(string collection, string filename)
         {
             m_Name = "CSLMusic" + "/" + collection + "/" + Path.GetFileNameWithoutExtension(filename);
             m_DisplayName = Path.GetFileNameWithoutExtension(filename);
             m_FileName = filename;
             m_Collection = collection;
 
-            String basename = Path.GetFileNameWithoutExtension(filename);
+            string basename = Path.GetFileNameWithoutExtension(filename);
 
             if (basename.EndsWith("#blurb"))
             {

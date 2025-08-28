@@ -66,7 +66,7 @@ namespace CSLMusicMod.UI
                 currentY += tip.height + GroupMargin;
             }
             {
-                ModOptions options = ModOptions.Instance;
+                ModOptions options = Instance;
                 var title = UISpacers.AddTitleSpacer(component, LeftMargin, currentY, OptionsPanelManager<SettingsUI>.PanelWidth, Translations.Translate("TRBL"));
                 currentY += title.height + GroupMargin;
                 var tip = UISpacers.AddTitle(component, LeftMargin, currentY,
@@ -84,10 +84,10 @@ namespace CSLMusicMod.UI
 
         private void AddOptionsChannels(UIComponent component)
         {
-            ModOptions options = ModOptions.Instance;
+            ModOptions options = Instance;
 
             var scrollPanel = component.AddUIComponent<UIScrollablePanel>();
-            scrollPanel.relativePosition = new Vector2(0, LeftMargin);
+            scrollPanel.relativePosition = new Vector2(0, Margin);
             scrollPanel.autoSize = false;
             scrollPanel.autoLayout = false;
             scrollPanel.width = component.width - 15f;
@@ -212,7 +212,7 @@ namespace CSLMusicMod.UI
 
         private void AddOptionsContent(UIHelperBase helper)
         {
-            ModOptions options = ModOptions.Instance;
+            ModOptions options = Instance;
 
             {
                 var subgroup = helper.AddGroup(Translations.Translate("ADD_FEAT"));
@@ -267,7 +267,7 @@ namespace CSLMusicMod.UI
 
         private void AddOptionsShortcuts(UIComponent helper)
         {
-            ModOptions options = ModOptions.Instance;
+            ModOptions options = Instance;
             var currentY = LeftMargin;
             var shortcutOpenRadioPanel = ShortcutMapping.AddKeymapping(helper, LeftMargin, currentY, Translations.Translate("SHOUTCUT_OPENPLAYLIST"), options.ShortcutOpenRadioPanel);
             currentY += shortcutOpenRadioPanel.Panel.height + Margin;
@@ -280,7 +280,7 @@ namespace CSLMusicMod.UI
 
         private void AddOptionsUI(UIHelperBase helper)
         {
-            ModOptions options = ModOptions.Instance;
+            ModOptions options = Instance;
 
             helper.AddCheckbox(Translations.Translate("ENABLE_PLAYLIST"),
                 options.EnableCustomUI,

@@ -23,10 +23,6 @@ namespace CSLMusicMod
         public static ShortcutHandler UIShortcutHandler;
         public static RadioContentWatcher DisabledContentContainer;
 
-        public LoadingExtension()
-        {
-        }
-
         public override void OnCreated(ILoading loading)
         {
             base.OnCreated(loading);
@@ -149,7 +145,7 @@ namespace CSLMusicMod
         {
             for (uint i = 0; i < PrefabCollection<RadioChannelInfo>.PrefabCount(); ++i)
             {
-                String message = "";
+                string message = "";
 
                 RadioChannelInfo info = PrefabCollection<RadioChannelInfo>.GetPrefab(i);
 
