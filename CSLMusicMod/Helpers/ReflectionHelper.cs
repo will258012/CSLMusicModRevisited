@@ -1,6 +1,5 @@
+using HarmonyLib;
 using System;
-using System.Reflection;
-using UnityEngine;
 
 namespace CSLMusicMod.Helpers
 {
@@ -16,27 +15,7 @@ namespace CSLMusicMod.Helpers
         /// <param name="instance">The object</param>
         /// <param name="name">Name of the private field</param>
         /// <typeparam name="T">Type of the private field</typeparam>
-        public static T GetPrivateField<T>(object instance, String name)
-        {
-            if (instance == null)
-            {
-                Debug.LogError("GetPrivateField: Instance is null!");
-                return default;
-            }
-
-            FieldInfo field = instance.GetType().GetField(name, BindingFlags.NonPublic | BindingFlags.Instance);
-
-            if (field == null)
-            {
-                Debug.LogError("GetPrivateField: Field is null!");
-                return default;
-            }
-
-            object obj = field.GetValue(instance);
-
-            return obj == null ? default : (T)obj;
-        }
-
+        public static T GetPrivateField<T>(object instance, string name) => Traverse.Create(instance).Field(name).GetValue<T>();
         /// <summary>
         /// Gets a private static field of a class
         /// </summary>
@@ -44,13 +23,7 @@ namespace CSLMusicMod.Helpers
         /// <param name="type">Class with the private field</param>
         /// <param name="name">Name of the field</param>
         /// <typeparam name="T">Type of the field</typeparam>
-        public static T GetPrivateStaticField<T>(Type type, String name)
-        {
-            object obj = type.GetField(name, BindingFlags.NonPublic | BindingFlags.Static).
-                GetValue(null);
-
-            return obj == null ? default : (T)obj;
-        }
+        public static T GetPrivateStaticField<T>(Type type, string name) => Traverse.Create(type).Field(name).GetValue<T>();
 
         /// <summary>
         /// Sets a private field.
@@ -58,11 +31,7 @@ namespace CSLMusicMod.Helpers
         /// <param name="instance">The object</param>
         /// <param name="name">Name of the private field</param>
         /// <param name="value">Value to be set</param>
-        public static void SetPrivateField(object instance, String name, object value)
-        {
-            instance.GetType().GetField(name, BindingFlags.NonPublic | BindingFlags.Instance).
-                SetValue(instance, value);
-        }
+        public static void SetPrivateField(object instance, string name, object value) => Traverse.Create(instance).Field(name).SetValue(value);
 
         /// <summary>
         /// Sets a private static field of a class.
@@ -70,11 +39,7 @@ namespace CSLMusicMod.Helpers
         /// <param name="type">The class</param>
         /// <param name="name">Name of the private static field</param>
         /// <param name="value">Value to be set</param>
-        public static void SetPrivateStaticField(Type type, String name, object value)
-        {
-            type.GetField(name, BindingFlags.NonPublic | BindingFlags.Static).
-                SetValue(null, value);
-        }
+        public static void SetPrivateStaticField(Type type, string name, object value) => Traverse.Create(type).Field(name).SetValue(value);
 
         /// <summary>
         /// Invokes a private function.
@@ -84,21 +49,14 @@ namespace CSLMusicMod.Helpers
         /// <param name="method">Name of the method</param>
         /// <param name="parameters">Parameters of the method</param>
         /// <typeparam name="T">Return type of the method</typeparam>
-        public static T InvokePrivateMethod<T>(object instance, String method, params object[] parameters)
-        {
-            return (T)instance.GetType().GetMethod(method, BindingFlags.NonPublic | BindingFlags.Instance).Invoke(instance, parameters);
-        }
-
+        public static T InvokePrivateMethod<T>(object instance, string method, params object[] parameters) => Traverse.Create(instance).Method(method, parameters).GetValue<T>();
         /// <summary>
         /// Invokes a private procedure.
         /// </summary>
         /// <param name="instance">Object with the private method.</param>
         /// <param name="method">Name of the method.</param>
         /// <param name="parameters">Parameters of the method.</param>
-        public static void InvokePrivateVoidMethod(object instance, String method, params object[] parameters)
-        {
-            instance.GetType().GetMethod(method, BindingFlags.NonPublic | BindingFlags.Instance).Invoke(instance, parameters);
-        }
+        public static void InvokePrivateVoidMethod(object instance, string method, params object[] parameters) => Traverse.Create(instance).Method(method, parameters).GetValue();
     }
 }
 

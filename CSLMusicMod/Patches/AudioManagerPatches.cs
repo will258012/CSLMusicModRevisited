@@ -1,7 +1,10 @@
-﻿using ColossalFramework;
+﻿using AlgernonCommons;
+using ColossalFramework;
 using CSLMusicMod.Helpers;
 using HarmonyLib;
+using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Threading;
 using UnityEngine;
 
@@ -60,21 +63,21 @@ namespace CSLMusicMod.Patches
         [HarmonyPrefix]
         public static bool CollectRadioContentInfoPatch(AudioManager __instance, RadioContentInfo.ContentType type, RadioChannelInfo channel, ref FastList<ushort> __result)
         {
-            //Debug.Log("[CSLMusic][Internal] Rebuilding the radio content of channel " + channel.GetLocalizedTitle());
-
+            //Logging.Message("[Internal] Rebuilding the radio content of channel " + channel.GetLocalizedTitle());
+            
+            var traverse = new Traverse(__instance);
             // CO makes some things public and other things private. This is completely insane.
-            var m_tempRadioContentBuffer = ReflectionHelper.GetPrivateField<FastList<ushort>>(__instance, "m_tempRadioContentBuffer"); // This variable is being worked on
-            var m_radioContentTable = ReflectionHelper.GetPrivateField<FastList<ushort>[]>(__instance, "m_radioContentTable");
+            var m_tempRadioContentBuffer = traverse.Field("m_tempRadioContentBuffer").GetValue<FastList<ushort>>();
+            var m_radioContentTable = traverse.Field("m_radioContentTable").GetValue<FastList<ushort>[]>();
 
             m_tempRadioContentBuffer.Clear();
 
             if (m_radioContentTable == null)
             {
                 // Let's all sing the "Expensive Song!" ♬Expensive, Expensive♬ ♩OMG it's so expensive♩ (Rest of lyrics didn't load, yet)
-                ReflectionHelper.InvokePrivateVoidMethod(__instance, "RefreshRadioContentTable");
+                traverse.Method("RefreshRadioContentTable").GetValue();
                 m_radioContentTable = ReflectionHelper.GetPrivateField<FastList<ushort>[]>(__instance, "m_radioContentTable");
             }
-
             // Get the allowed radio content
             HashSet<RadioContentInfo> disallowed_content = null;
             if (channel != null)
