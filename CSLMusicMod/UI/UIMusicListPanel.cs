@@ -1,10 +1,14 @@
+using AlgernonCommons;
 using AlgernonCommons.Translation;
+using AlgernonCommons.UI;
 using ColossalFramework;
+using ColossalFramework.DataBinding;
 using ColossalFramework.IO;
 using ColossalFramework.UI;
 using CSLMusicMod.Helpers;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using UnityEngine;
 
@@ -19,8 +23,6 @@ namespace CSLMusicMod.UI
 
         //UILabel m_LabelCurrentMusic;
         UIListBox m_MusicList;
-
-        private bool m_MusicListInitialized = false;
 
         //Texture atlas
         private UITextureAtlas m_IconAtlas;
@@ -49,7 +51,7 @@ namespace CSLMusicMod.UI
         private List<RadioContentInfo> m_CurrentContent = new List<RadioContentInfo>();
 
         private ModOptions m_ModOptionsInstance = ModOptions.Instance;
-        private RadioPanel CurrentRadioPanel => LoadingExtension.UI.CurrentRadioPanel;
+        private RadioPanel CurrentRadioPanel => AudioManagerHelper.CurrentRadioPanel;
         private bool Filtered
         {
             get
@@ -57,11 +59,6 @@ namespace CSLMusicMod.UI
                 return m_Filter.text.Trim() != "";
             }
         }
-
-        public UIMusicListPanel()
-        {
-        }
-
         public override void Start()
         {
             base.Start();
@@ -73,13 +70,13 @@ namespace CSLMusicMod.UI
 
             backgroundSprite = "MenuPanel2";
             wrapLayout = true;
-            this.width = 500;
-            this.height = screenResolution.y - 120 - 100;
+            width = 500;
+            height = screenResolution.y - 120 - 100;
             relativePosition = new Vector3(screenResolution.x - width - 10, screenResolution.y - height - 120);
-            this.isVisible = false;
-            this.canFocus = true;
-            this.isInteractive = true;
-            this.m_ZIndex = -100;
+            isVisible = false;
+            canFocus = true;
+            isInteractive = true;
+            m_ZIndex = -100;
 
             InitializeShowMusicPanelButton();
             InitializeTopNextTrackButton();
@@ -92,9 +89,14 @@ namespace CSLMusicMod.UI
 
             //Add list
             InitializeMusicList();
+            RebuildList();
+
+            if (Mathf.Abs(m_VolumeSlider.value / 100f - m_MusicAudioVolume.value) > 0.01f)
+            {
+                m_VolumeSlider.value = m_MusicAudioVolume.value * 100f;
+            }
 
             m_Initialized = true;
-
             Singleton<AudioManager>.instance.m_radioContentChanged += RadioContentChanged;
         }
 
@@ -137,39 +139,10 @@ namespace CSLMusicMod.UI
                 if (list != null)
                     panel.BringToFront();
 
-                this.SendToBack();
+                SendToBack();
             }
 
             UpdateValues();
-        }
-
-        public override void Update()
-        {
-            base.Update();
-
-            if (isVisible && m_Initialized)
-            {
-                if (!m_MusicListInitialized)
-                {
-                    try
-                    {
-                        RebuildList();
-                        m_MusicListInitialized = true;
-                    }
-                    catch (Exception ex)
-                    {
-                        Debug.LogError(ex);
-                    }
-
-                }
-
-                //m_LabelCurrentMusic.text = "";               
-
-                if (Math.Abs(m_VolumeSlider.value / 100f - m_MusicAudioVolume.value) > 0.01)
-                {
-                    m_VolumeSlider.value = m_MusicAudioVolume.value * 100f;
-                }
-            }
         }
 
         private void RebuildList()
@@ -244,9 +217,9 @@ namespace CSLMusicMod.UI
             RefreshListWidget();
         }
 
-        private String GetEntryTextFor(RadioContentInfo content)
+        private string GetEntryTextFor(RadioContentInfo content)
         {
-            String name = AudioManagerHelper.GetContentName(content);
+            string name = AudioManagerHelper.GetContentName(content);
 
             switch (content.m_contentType)
             {
@@ -278,9 +251,6 @@ namespace CSLMusicMod.UI
                     name = "<sprite ContentDisabled>" + name;
                 }
             }
-
-
-
             return name;
         }
 
@@ -289,7 +259,6 @@ namespace CSLMusicMod.UI
             float scroll = m_MusicList.scrollPosition;
 
             m_MusicList.items = m_CurrentContent.Select(content => GetEntryTextFor(content)).ToArray();
-
 
             //Restore the scroll position
             try
@@ -337,7 +306,7 @@ namespace CSLMusicMod.UI
 
             m_VolumeSlider.eventValueChanged += delegate (UIComponent component, float value)
             {
-                if (this.m_IsDisposing)
+                if (m_IsDisposing)
                     return;
 
                 //I use x100 because it failed with 0..1?
@@ -465,7 +434,7 @@ namespace CSLMusicMod.UI
             {
                 var header = AddUIComponent<UIPanel>();
                 header.relativePosition = Vector3.zero;
-                header.width = this.width;
+                header.width = width;
                 header.height = 60;
                 header.backgroundSprite = "GenericTab";
             }
@@ -502,6 +471,7 @@ namespace CSLMusicMod.UI
         private void TopShowMusicListOnEventClick(UIComponent uiComponent, UIMouseEventParameter param)
         {
             ModOptions.Instance.MusicListVisible = !ModOptions.Instance.MusicListVisible;
+            enabled = ModOptions.Instance.MusicListVisible;
         }
 
         private void InitializeTopNextTrackButton()
@@ -562,10 +532,7 @@ namespace CSLMusicMod.UI
             }
         }
 
-        void buttonNextTrackClicked(UIComponent component, UIMouseEventParameter eventParam)
-        {
-            AudioManagerHelper.NextTrack();
-        }
+        void buttonNextTrackClicked(UIComponent component, UIMouseEventParameter eventPara) => AudioManagerHelper.NextTrack();
 
         void musicEntrySelected(UIComponent component, int value)
         {
@@ -598,62 +565,10 @@ namespace CSLMusicMod.UI
         void filterTextChanged(UIComponent component, string value)
         {
             m_ClearFilter.normalFgSprite = !Filtered ? "Search" : "Clear";
-
             RebuildList();
         }
 
-        void buttonCloseClicked(UIComponent component, UIMouseEventParameter eventParam)
-        {
-            CurrentRadioPanel.HideRadio();
-        }
-
-        private void InitializeMusicListChannelInfo()
-        {
-            m_RadioChannelInfo = AddUIComponent<UILabel>();
-            m_RadioChannelInfo.relativePosition = new Vector3(10, 60 + 10);
-            m_RadioChannelInfo.size = m_MusicList.size;
-            m_RadioChannelInfo.textColor = new Color32(150, 150, 150, 255);
-            m_RadioChannelInfo.text = Translations.Translate("NOT_RADIO");
-            m_RadioChannelInfo.autoSize = false;
-            m_RadioChannelInfo.Show();
-        }
-
-        private void InitializeMusicListScrollBar()
-        {
-            var scroller = m_MusicList.AddUIComponent<UIScrollbar>();
-            scroller.width = 15;
-            scroller.height = m_MusicList.height;
-            scroller.relativePosition = new Vector3(width - 15 - 15f, 0);
-            scroller.orientation = UIOrientation.Vertical;
-
-            //All credits to https://github.com/justacid/Skylines-ExtendedPublicTransport
-            {
-                var track = scroller.AddUIComponent<UISlicedSprite>();
-                track.relativePosition = Vector2.zero;
-                track.autoSize = true;
-                track.size = track.parent.size;
-                track.fillDirection = UIFillDirection.Vertical;
-                track.spriteName = "ScrollbarTrack";
-                scroller.trackObject = track;
-
-                {
-                    UISlicedSprite thumbSprite = track.AddUIComponent<UISlicedSprite>();
-                    thumbSprite.relativePosition = Vector2.zero;
-                    thumbSprite.fillDirection = UIFillDirection.Vertical;
-                    thumbSprite.autoSize = true;
-                    thumbSprite.width = thumbSprite.parent.width;
-                    thumbSprite.spriteName = "ChirpScrollbarThumb";
-                    thumbSprite.color = new Color32(255, 255, 255, 128);
-                    //thumbSprite.color = new Color32(0, 100, 180, 255);
-
-                    scroller.thumbObject = thumbSprite;
-                }
-            }
-
-            m_MusicList.scrollbar = scroller;
-
-            scroller.isVisible = true;
-        }
+        void buttonCloseClicked(UIComponent component, UIMouseEventParameter eventParam) => CurrentRadioPanel.HideRadio();
 
         private void InitializeMusicList()
         {
@@ -676,8 +591,11 @@ namespace CSLMusicMod.UI
             m_MusicList.Show();
 
             InitializeMusicListChannelInfo();
-
-            InitializeMusicListScrollBar();
+            
+            UIScrollbar scrollbar = UIScrollbars.AddScrollbar(m_MusicList);
+            scrollbar.relativePosition = new Vector3(width - 15 - 15f, 0);
+            scrollbar.height = m_MusicList.height;
+            m_MusicList.scrollbar = scrollbar;
 
             //UpdateMusicList();
 
@@ -693,12 +611,22 @@ namespace CSLMusicMod.UI
             }
         }
 
-        private bool IsFiltered(String entrytext)
+        private void InitializeMusicListChannelInfo()
+        {
+            m_RadioChannelInfo = AddUIComponent<UILabel>();
+            m_RadioChannelInfo.relativePosition = new Vector3(10, 60 + 10);
+            m_RadioChannelInfo.size = m_MusicList.size;
+            m_RadioChannelInfo.textColor = new Color32(150, 150, 150, 255);
+            m_RadioChannelInfo.text = Translations.Translate("NOT_RADIO");
+            m_RadioChannelInfo.autoSize = false;
+            m_RadioChannelInfo.Show();
+        }
+        private bool IsFiltered(string entrytext)
         {
             return !Filtered ? false : !entrytext.ToLower().Contains(m_Filter.text.ToLower());
         }
 
-        public String ShortenString(String str, int size)
+        public string ShortenString(string str, int size)
         {
             var diff = str.Length - size;
 
