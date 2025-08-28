@@ -14,57 +14,18 @@ namespace CSLMusicMod.UI
         /// <summary>
         /// The list panel that appears if the radio button is extended
         /// </summary>
-        private UIMusicListPanel m_ListPanel;
+        public UIMusicListPanel ListPanel { get; private set; }
 
         private bool m_Initialized = false;
-
-        /// <summary>
-        /// The current radio panel (from vanilla UI)
-        /// Used as cache to prevent expensive FindObjectOfTypeAll calls 
-        /// </summary>
-        private RadioPanel m_CurrentRadioPanel = null;
-
-        /// <summary>
-        /// Gets the current radio panel.
-        /// This function is expensive. Only call if necessary!
-        /// </summary>
-        /// <value>The current radio panel.</value>
-        public RadioPanel CurrentRadioPanel
-        {
-            get
-            {
-                if (m_CurrentRadioPanel != null)
-                    return m_CurrentRadioPanel;
-                else
-                {
-                    var radiopanel = Resources.FindObjectsOfTypeAll<RadioPanel>().FirstOrDefault();
-                    m_CurrentRadioPanel = radiopanel;
-
-                    return radiopanel;
-                }
-            }
-        }
-
-
-        public MusicUI()
-        {
-        }
-
         public void Awake()
         {
             DontDestroyOnLoad(this);
         }
-
         private void Initialize()
         {
-            //Create ui
-            UIView v = UIView.GetAView();
-            m_ListPanel = (UIMusicListPanel)v.AddUIComponent(typeof(UIMusicListPanel));
-            m_ListPanel.Hide();
-
-            m_Initialized = true;
-
+            ListPanel = (UIMusicListPanel)UIView.GetAView().AddUIComponent(typeof(UIMusicListPanel));
             CSLMusicMod.Log("Initialized music UI");
+            m_Initialized = true;
         }
         public void LocaleChanged()
         {
@@ -76,9 +37,9 @@ namespace CSLMusicMod.UI
         {
             if (m_Initialized)
             {
-                if (m_ListPanel != null)
+                if (ListPanel != null)
                 {
-                    m_ListPanel.isVisible = ModOptions.Instance.EnableCustomUI && ModOptions.Instance.MusicListVisible && ReflectionHelper.GetPrivateField<bool>(CurrentRadioPanel, "m_isVisible");
+                    ListPanel.isVisible = ModOptions.Instance.EnableCustomUI && ModOptions.Instance.MusicListVisible && ReflectionHelper.GetPrivateField<bool>(AudioManagerHelper.CurrentRadioPanel, "m_isVisible");
                 }
             }
             else
@@ -94,11 +55,10 @@ namespace CSLMusicMod.UI
             }
 
         }
-
         public void OnDestroy()
         {
-            if (m_ListPanel != null)
-                Destroy(m_ListPanel);
+            if (ListPanel != null)
+                Destroy(ListPanel);
         }
     }
 }

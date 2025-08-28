@@ -19,37 +19,6 @@ namespace CSLMusicMod.UI
         private bool m_ModifierShift = false;
         private bool m_ModiferAlt = false;
 
-        /// <summary>
-        /// The current radio panel (from vanilla UI)
-        /// Used as cache to prevent expensive FindObjectOfTypeAll calls 
-        /// </summary>
-        private RadioPanel m_CurrentRadioPanel = null;
-
-        /// <summary>
-        /// Gets the current radio panel.
-        /// This function is expensive. Only call if necessary!
-        /// </summary>
-        /// <value>The current radio panel.</value>
-        private RadioPanel CurrentRadioPanel
-        {
-            get
-            {
-                if (m_CurrentRadioPanel != null)
-                    return m_CurrentRadioPanel;
-                else
-                {
-                    var radiopanel = Resources.FindObjectsOfTypeAll<RadioPanel>().FirstOrDefault();
-                    m_CurrentRadioPanel = radiopanel;
-
-                    return radiopanel;
-                }
-            }
-        }
-
-        public ShortcutHandler()
-        {
-        }
-
         public void Start()
         {
             CSLMusicMod.Log(ModOptions.Instance.ShortcutNextTrack);
@@ -119,15 +88,15 @@ namespace CSLMusicMod.UI
                 m_OpenPanelKey_IsDown = false;
                 CSLMusicMod.Log("Pressed shortcut for hide/show panel");
 
-                var radiopanel = CurrentRadioPanel;
-                if (radiopanel != null)
+                var radioPanel = AudioManagerHelper.CurrentRadioPanel;
+                if (radioPanel != null)
                 {
-                    var visible = ReflectionHelper.GetPrivateField<bool>(radiopanel, "m_isVisible");
+                    var visible = ReflectionHelper.GetPrivateField<bool>(radioPanel, "m_isVisible");
 
                     if (visible)
-                        radiopanel.HideRadio();
+                        radioPanel.HideRadio();
                     else
-                        radiopanel.ShowRadio();
+                        radioPanel.ShowRadio();
                 }
             }
         }

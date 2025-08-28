@@ -1,5 +1,7 @@
 ﻿using ColossalFramework;
 using System;
+using System.Linq;
+using UnityEngine;
 
 namespace CSLMusicMod.Helpers
 {
@@ -8,6 +10,30 @@ namespace CSLMusicMod.Helpers
     /// </summary>
     public static class AudioManagerHelper
     {
+
+        /// <summary>
+        /// Gets the current radio panel.
+        /// This function is expensive. Only call if necessary!
+        /// </summary>
+        /// <value>The current radio panel.</value>
+        public static RadioPanel CurrentRadioPanel
+        {
+            get
+            {
+                if (m_CurrentRadioPanel == null)
+                {
+                    m_CurrentRadioPanel = Resources.FindObjectsOfTypeAll<RadioPanel>().FirstOrDefault();
+                }
+                return m_CurrentRadioPanel;
+            }
+        }
+
+        /// <summary>
+        /// The current radio panel (from vanilla UI)
+        /// Used as cache to prevent expensive FindObjectOfTypeAll calls 
+        /// </summary>
+        private static RadioPanel m_CurrentRadioPanel = null;
+
         /// <summary>
         /// Returns the currently active channel data
         /// </summary>
@@ -79,12 +105,10 @@ namespace CSLMusicMod.Helpers
         /// <returns><c>true</c>, if it was possible to switch to the next station, <c>false</c> otherwise.</returns>
         public static bool NextStation()
         {
-            var radiopanel = LoadingExtension.UI.CurrentRadioPanel;
-
-            if (radiopanel != null)
+            if (CurrentRadioPanel != null)
             {
-                RadioChannelInfo current = ReflectionHelper.GetPrivateField<RadioChannelInfo>(radiopanel, "m_selectedStation");
-                RadioChannelInfo[] stations = ReflectionHelper.GetPrivateField<RadioChannelInfo[]>(radiopanel, "m_stations");
+                RadioChannelInfo current = ReflectionHelper.GetPrivateField<RadioChannelInfo>(CurrentRadioPanel, "m_selectedStation");
+                RadioChannelInfo[] stations = ReflectionHelper.GetPrivateField<RadioChannelInfo[]>(CurrentRadioPanel, "m_stations");
 
                 if (stations != null && stations.Length != 0)
                 {
@@ -95,7 +119,7 @@ namespace CSLMusicMod.Helpers
 
                     if (next != null)
                     {
-                        ReflectionHelper.InvokePrivateVoidMethod(radiopanel, "SelectStation", next);
+                        ReflectionHelper.InvokePrivateVoidMethod(CurrentRadioPanel, "SelectStation", next);
                     }
                 }
             }
@@ -311,7 +335,7 @@ namespace CSLMusicMod.Helpers
 
         public static string GetContentName(RadioContentInfo info)
         {
-            return info == null ? "<Null>" : String.IsNullOrEmpty(info.m_displayName) ? info.name : info.m_displayName;
+            return info == null ? "<Null>" : string.IsNullOrEmpty(info.m_displayName) ? info.name : info.m_displayName;
         }
     }
 }
