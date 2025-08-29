@@ -1,7 +1,8 @@
-﻿using AlgernonCommons.Patching;
+﻿using AlgernonCommons;
+using AlgernonCommons.Patching;
 using ColossalFramework.IO;
-using CSLMusicMod.Helpers;
 using CSLMusicMod.UI;
+using HarmonyLib;
 using ICities;
 using System;
 using System.Collections.Generic;
@@ -81,14 +82,15 @@ namespace CSLMusicMod
                     DisabledContentContainer = new GameObject("CSLMusicMod_DisabledContent").AddComponent<RadioContentWatcher>();
                 }
 
-                try
-                {
-                    DebugOutput();
-                }
-                catch (Exception ex)
-                {
-                    Debug.LogError("[CSLMusic] DebugOutput Error: " + ex);
-                }
+                if (Logging.DetailLogging)
+                    try
+                    {
+                        DebugOutput();
+                    }
+                    catch (Exception ex)
+                    {
+                        Debug.LogError("[CSLMusic] DebugOutput Error: " + ex);
+                    }
             }
         }
 
@@ -210,41 +212,41 @@ namespace CSLMusicMod
             List<RadioChannelInfo.State> states = new List<RadioChannelInfo.State>(info.m_stateChain);
             states.RemoveAll(obj =>
             {
-                    switch (obj.m_contentType)
-                    {
-                        case RadioContentInfo.ContentType.Blurb:
-                            if (!options.AllowContentBlurb)
-                            {
-                                return true;
-                            }
-                            break;
-                        case RadioContentInfo.ContentType.Broadcast:
-                            if (!options.AllowContentBroadcast)
-                            {
-                                return true;
-                            }
-                            break;
-                        case RadioContentInfo.ContentType.Commercial:
-                            if (!options.AllowContentCommercial)
-                            {
-                                return true;
-                            }
-                            break;
-                        case RadioContentInfo.ContentType.Music:
-                            if (!options.AllowContentMusic)
-                            {
-                                return true;
-                            }
-                            break;
-                        case RadioContentInfo.ContentType.Talk:
-                            if (!options.AllowContentTalk)
-                            {
-                                return true;
-                            }
-                            break;
-                    }
-                    return false;
-                });
+                switch (obj.m_contentType)
+                {
+                    case RadioContentInfo.ContentType.Blurb:
+                        if (!options.AllowContentBlurb)
+                        {
+                            return true;
+                        }
+                        break;
+                    case RadioContentInfo.ContentType.Broadcast:
+                        if (!options.AllowContentBroadcast)
+                        {
+                            return true;
+                        }
+                        break;
+                    case RadioContentInfo.ContentType.Commercial:
+                        if (!options.AllowContentCommercial)
+                        {
+                            return true;
+                        }
+                        break;
+                    case RadioContentInfo.ContentType.Music:
+                        if (!options.AllowContentMusic)
+                        {
+                            return true;
+                        }
+                        break;
+                    case RadioContentInfo.ContentType.Talk:
+                        if (!options.AllowContentTalk)
+                        {
+                            return true;
+                        }
+                        break;
+                }
+                return false;
+            });
 
             info.m_stateChain = states.ToArray();
         }
@@ -263,51 +265,43 @@ namespace CSLMusicMod
             {
                 RadioChannelInfo info = PrefabCollection<RadioChannelInfo>.GetPrefab(i);
 
-                if (info == null)
+                if (info == null || UserRadioContainer.m_UserRadioDict.ContainsKey(info))
                     continue;
 
-                if (!UserRadioContainer.m_UserRadioDict.ContainsKey(info))
+                // Collect existing radio content
+                var existing = new HashSet<string>();
+
+                for (uint j = 0; j < PrefabCollection<RadioContentInfo>.PrefabCount(); ++j)
                 {
-                    // Collect existing radio content
-                    HashSet<string> existing = new HashSet<string>();
+                    RadioContentInfo content = PrefabCollection<RadioContentInfo>.GetPrefab(j);
 
-                    for (uint j = 0; j < PrefabCollection<RadioContentInfo>.PrefabCount(); ++j)
+                    if (content == null || content.m_radioChannels == null || !content.m_radioChannels.Contains(info))
+                        continue;
+
+                    string text = Path.Combine(DataLocation.gameContentPath, "Radio");
+                    text = Path.Combine(text, content.m_contentType.ToString());
+                    text = Path.Combine(text, content.m_folderName);
+                    text = Path.Combine(text, content.m_fileName);
+                    existing.Add(text);
+                }
+
+                var validCollectionNames = new HashSet<string>();
+                foreach (RadioContentInfo.ContentType type in Enum.GetValues(typeof(RadioContentInfo.ContentType)))
+                {
+                    validCollectionNames.Add(type + ": " + info.name);
+                }
+
+                // Add custom commercials in common folder only if the channel has commercials
+                if (info.m_stateChain.Any(state => state.m_contentType == RadioContentInfo.ContentType.Commercial))
+                    validCollectionNames.Add("Commercial: Common");
+
+                // Check our collection for non-existing files
+                foreach (UserRadioContent userContent in UserRadioContainer.m_Songs.Values)
+                {
+                    if (!existing.Contains(userContent.m_FileName) && validCollectionNames.Contains(userContent.m_Collection))
                     {
-                        RadioContentInfo content = PrefabCollection<RadioContentInfo>.GetPrefab(j);
-
-                        if (content == null)
-                            continue;
-                        if (content.m_radioChannels == null)
-                            continue;
-
-                        if (content.m_radioChannels.Contains(info))
-                        {
-                            string text = Path.Combine(DataLocation.gameContentPath, "Radio");
-                            text = Path.Combine(text, content.m_contentType.ToString());
-                            text = Path.Combine(text, content.m_folderName);
-                            text = Path.Combine(text, content.m_fileName);
-
-                            existing.Add(text);
-                        }
-                    }
-
-                    HashSet<string> validcollectionnames = new HashSet<string>();
-                    foreach (RadioContentInfo.ContentType type in Enum.GetValues(typeof(RadioContentInfo.ContentType)))
-                    {
-                        validcollectionnames.Add(type + ": " + info.name);
-                    }
-
-                    // Check our collection for non-existing files
-                    foreach (UserRadioContent usercontent in UserRadioContainer.m_Songs.Values)
-                    {
-                        if (!existing.Contains(usercontent.m_FileName) && validcollectionnames.Contains(usercontent.m_Collection))
-                        {
-                            CSLMusicMod.Log("[ExtendedVanillaContent] Adding " + usercontent.m_FileName + " to vanilla station " + info.name);
-
-                            List<RadioChannelInfo> v = GenericHelper.CopyOrCreateList<RadioChannelInfo>(usercontent.m_VanillaContentInfo.m_radioChannels);
-                            v.Add(info);
-                            usercontent.m_VanillaContentInfo.m_radioChannels = v.ToArray();
-                        }
+                        userContent.m_VanillaContentInfo.m_radioChannels = userContent.m_VanillaContentInfo.m_radioChannels.AddToArray(info);
+                        CSLMusicMod.Log("[ExtendedVanillaContent] Added " + userContent.m_FileName + " to vanilla station " + info.name);
                     }
                 }
             }
