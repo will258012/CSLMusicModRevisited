@@ -22,7 +22,6 @@ namespace CSLMusicMod.UI
         UIListBox m_MusicList;
 
         //Texture atlas
-        private UITextureAtlas m_IconAtlas;
 
         //Settings UI
         private SavedFloat m_MusicAudioVolume = new SavedFloat(Settings.musicAudioVolume,
@@ -49,6 +48,7 @@ namespace CSLMusicMod.UI
 
         private ModOptions m_ModOptionsInstance = ModOptions.Instance;
         private RadioPanel CurrentRadioPanel => AudioManagerHelper.CurrentRadioPanel;
+
         private bool Filtered
         {
             get
@@ -59,9 +59,6 @@ namespace CSLMusicMod.UI
         public override void Start()
         {
             base.Start();
-
-            //Create atlas
-            InitAtlases();
 
             Vector2 screenResolution = GetUIView().GetScreenResolution();
 
@@ -75,11 +72,14 @@ namespace CSLMusicMod.UI
             isInteractive = true;
             m_ZIndex = -100;
 
-            InitializeShowMusicPanelButton();
-            InitializeTopNextTrackButton();
+            var muteButton = ReflectionHelper.GetPrivateField<UIMultiStateButton>(CurrentRadioPanel, "m_muteButton");
+            var radioPanel = ReflectionHelper.GetPrivateField<UIPanel>(CurrentRadioPanel, "m_radioPanel");
+
+            InitializeShowMusicPanelButton(muteButton, radioPanel);
+            InitializeTopNextTrackButton(muteButton, radioPanel);
 
             if (ModOptions.Instance.EnableOpenStationDirButton)
-                InitializeOpenStationDirectoryButton();
+                InitializeOpenStationDirectoryButton(muteButton, radioPanel);
 
             //Add header
             InitializeHeaderToolbar();
@@ -107,17 +107,6 @@ namespace CSLMusicMod.UI
             Singleton<AudioManager>.instance.m_radioContentChanged -= RadioContentChanged;
 
             base.OnDestroy();
-        }
-
-        private void InitAtlases()
-        {
-            if (m_IconAtlas == null)
-            {
-
-                CSLMusicMod.Log("Creating icon atlases ...");
-                m_IconAtlas = TextureHelper.CreateDefaultIconAtlas();
-
-            }
         }
 
         protected override void OnVisibilityChanged()
@@ -323,7 +312,7 @@ namespace CSLMusicMod.UI
             m_NextTrack.normalBgSprite = "GenericPanel";
             m_NextTrack.tooltip = Translations.Translate("SHOUTCUT_NEXTTRACK");
 
-            m_NextTrack.atlas = m_IconAtlas;
+            m_NextTrack.atlas = TextureHelper.ListAtlas;
             m_NextTrack.hoveredBgSprite = "OptionBaseFocused";
             m_NextTrack.pressedBgSprite = "OptionBasePressed";
             m_NextTrack.normalFgSprite = "Next";
@@ -340,7 +329,7 @@ namespace CSLMusicMod.UI
             m_ButtonSortAscending.normalBgSprite = "GenericPanel";
             m_ButtonSortAscending.tooltip = Translations.Translate("SORT_ASCEND");
 
-            m_ButtonSortAscending.atlas = m_IconAtlas;
+            m_ButtonSortAscending.atlas = TextureHelper.ListAtlas;
             m_ButtonSortAscending.hoveredBgSprite = "OptionBaseFocused";
             m_ButtonSortAscending.pressedBgSprite = "OptionBasePressed";
             m_ButtonSortAscending.normalFgSprite = "SortAscending";
@@ -361,7 +350,7 @@ namespace CSLMusicMod.UI
             m_ButtonSortDescending.normalBgSprite = "GenericPanel";
             m_ButtonSortDescending.tooltip = Translations.Translate("SORT_DESCEND");
 
-            m_ButtonSortDescending.atlas = m_IconAtlas;
+            m_ButtonSortDescending.atlas = TextureHelper.ListAtlas;
             m_ButtonSortDescending.hoveredBgSprite = "OptionBaseFocused";
             m_ButtonSortDescending.pressedBgSprite = "OptionBasePressed";
             m_ButtonSortDescending.normalFgSprite = "SortDescending";
@@ -397,7 +386,7 @@ namespace CSLMusicMod.UI
             m_ClearFilter.width = 22;
             m_ClearFilter.height = 22;
             m_ClearFilter.relativePosition = m_Filter.relativePosition + new Vector3(7 + m_Filter.width - 36, 7);
-            m_ClearFilter.atlas = m_IconAtlas;
+            m_ClearFilter.atlas = TextureHelper.ListAtlas;
             m_ClearFilter.normalFgSprite = "Search";
             m_ClearFilter.hoveredColor = new Color32(255, 255, 255, 128);
 
@@ -414,7 +403,7 @@ namespace CSLMusicMod.UI
             m_Close.normalBgSprite = "GenericPanel";
             m_Close.tooltip = Translations.Translate("CLOSE_PANEL");
 
-            m_Close.atlas = m_IconAtlas;
+            m_Close.atlas = TextureHelper.ListAtlas;
             m_Close.normalBgSprite = "GenericPanel";
             m_Close.hoveredBgSprite = "OptionBaseFocused";
             m_Close.pressedBgSprite = "OptionBasePressed";
@@ -443,16 +432,15 @@ namespace CSLMusicMod.UI
 
         }
 
-        private void InitializeShowMusicPanelButton()
+        private void InitializeShowMusicPanelButton(UIMultiStateButton muteButton, UIPanel radioPanel)
         {
-            UIMultiStateButton mutebutton =
-                ReflectionHelper.GetPrivateField<UIMultiStateButton>(CurrentRadioPanel, "m_muteButton");
-            UIPanel radiopanel = ReflectionHelper.GetPrivateField<UIPanel>(CurrentRadioPanel, "m_radioPanel");
+            if (radioPanel.Find("ShowMusicListButton") != null) return;
 
-            m_TopShowMusicList = radiopanel.AddUIComponent<UIButton>();
-            m_TopShowMusicList.position = mutebutton.position + new Vector3((mutebutton.size.x + 5) + (m_AdditionalButtonCount++ * (mutebutton.size.y + 5)), 0);
-            m_TopShowMusicList.size = new Vector2(mutebutton.size.y, mutebutton.size.y);
-            m_TopShowMusicList.atlas = m_IconAtlas;
+            m_TopShowMusicList = radioPanel.AddUIComponent<UIButton>();
+            m_TopShowMusicList.name = "ShowMusicListButton";
+            m_TopShowMusicList.position = muteButton.position + new Vector3((muteButton.size.x + 5) + (m_AdditionalButtonCount++ * (muteButton.size.y + 5)), 0);
+            m_TopShowMusicList.size = new Vector2(muteButton.size.y, muteButton.size.y);
+            m_TopShowMusicList.atlas = TextureHelper.ListAtlas;
             m_TopShowMusicList.normalBgSprite = "Menu";
             m_TopShowMusicList.hoveredBgSprite = "Menu";
             m_TopShowMusicList.color = new Color32(225, 225, 225, 255);
@@ -466,19 +454,17 @@ namespace CSLMusicMod.UI
         private void TopShowMusicListOnEventClick(UIComponent uiComponent, UIMouseEventParameter param)
         {
             ModOptions.Instance.MusicListVisible = !ModOptions.Instance.MusicListVisible;
-            enabled = ModOptions.Instance.MusicListVisible;
         }
 
-        private void InitializeTopNextTrackButton()
+        private void InitializeTopNextTrackButton(UIMultiStateButton muteButton, UIPanel radioPanel)
         {
-            UIMultiStateButton mutebutton =
-                ReflectionHelper.GetPrivateField<UIMultiStateButton>(CurrentRadioPanel, "m_muteButton");
-            UIPanel radiopanel = ReflectionHelper.GetPrivateField<UIPanel>(CurrentRadioPanel, "m_radioPanel");
+            if (radioPanel.Find("NextTrackButton") != null) return;
 
-            m_TopNextTrack = radiopanel.AddUIComponent<UIButton>();
-            m_TopNextTrack.position = mutebutton.position + new Vector3((mutebutton.size.x + 5) + (m_AdditionalButtonCount++ * (mutebutton.size.y + 5)), 0);
-            m_TopNextTrack.size = new Vector2(mutebutton.size.y, mutebutton.size.y);
-            m_TopNextTrack.atlas = m_IconAtlas;
+            m_TopNextTrack = radioPanel.AddUIComponent<UIButton>();
+            m_TopNextTrack.name = "NextTrackButton";
+            m_TopNextTrack.position = muteButton.position + new Vector3((muteButton.size.x + 5) + (m_AdditionalButtonCount++ * (muteButton.size.y + 5)), 0);
+            m_TopNextTrack.size = new Vector2(muteButton.size.y, muteButton.size.y);
+            m_TopNextTrack.atlas = TextureHelper.ListAtlas;
             m_TopNextTrack.normalBgSprite = "Next";
             m_TopNextTrack.hoveredBgSprite = "Next";
             m_TopNextTrack.color = new Color32(225, 225, 225, 255);
@@ -489,16 +475,15 @@ namespace CSLMusicMod.UI
             m_TopNextTrack.eventClick += buttonNextTrackClicked;
         }
 
-        private void InitializeOpenStationDirectoryButton()
+        private void InitializeOpenStationDirectoryButton(UIMultiStateButton muteButton, UIPanel radioPanel)
         {
-            UIMultiStateButton mutebutton =
-                ReflectionHelper.GetPrivateField<UIMultiStateButton>(CurrentRadioPanel, "m_muteButton");
-            UIPanel radiopanel = ReflectionHelper.GetPrivateField<UIPanel>(CurrentRadioPanel, "m_radioPanel");
+            if (radioPanel.Find("OpenStationDir") != null) return;
 
-            m_TopOpenStationDirectory = radiopanel.AddUIComponent<UIButton>();
-            m_TopOpenStationDirectory.position = mutebutton.position + new Vector3((mutebutton.size.x + 5) + (m_AdditionalButtonCount++ * (mutebutton.size.y + 5)), 0);
-            m_TopOpenStationDirectory.size = new Vector2(mutebutton.size.y, mutebutton.size.y);
-            m_TopOpenStationDirectory.atlas = m_IconAtlas;
+            m_TopOpenStationDirectory = radioPanel.AddUIComponent<UIButton>();
+            m_TopOpenStationDirectory.name = "OpenStationDir";
+            m_TopOpenStationDirectory.position = muteButton.position + new Vector3((muteButton.size.x + 5) + (m_AdditionalButtonCount++ * (muteButton.size.y + 5)), 0);
+            m_TopOpenStationDirectory.size = new Vector2(muteButton.size.y, muteButton.size.y);
+            m_TopOpenStationDirectory.atlas = TextureHelper.ListAtlas;
             m_TopOpenStationDirectory.normalBgSprite = "Open";
             m_TopOpenStationDirectory.hoveredBgSprite = "Open";
             m_TopOpenStationDirectory.color = new Color32(225, 225, 225, 255);
@@ -579,7 +564,7 @@ namespace CSLMusicMod.UI
             m_MusicList.itemPadding = new RectOffset(0, 0, 4, 4);
             m_MusicList.tooltip = !ModOptions.Instance.ImprovedDisableContentUI ? Translations.Translate("DISABLE_CONT_CHECKBOXES_TIP") : "";
             m_MusicList.zOrder = -50;
-            m_MusicList.atlas = m_IconAtlas;
+            m_MusicList.atlas = TextureHelper.ListAtlas;
             m_MusicList.processMarkup = true;
             //m_MusicList.animateHover = true;
 
