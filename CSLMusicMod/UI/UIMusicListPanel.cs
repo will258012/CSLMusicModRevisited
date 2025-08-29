@@ -1,14 +1,11 @@
-using AlgernonCommons;
 using AlgernonCommons.Translation;
 using AlgernonCommons.UI;
 using ColossalFramework;
-using ColossalFramework.DataBinding;
 using ColossalFramework.IO;
 using ColossalFramework.UI;
 using CSLMusicMod.Helpers;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Linq;
 using UnityEngine;
 
@@ -128,12 +125,10 @@ namespace CSLMusicMod.UI
             base.OnVisibilityChanged();
 
             // Bring the radio panel to the front
-            var radiopanel = CurrentRadioPanel;
-
-            if (radiopanel != null)
+            if (CurrentRadioPanel != null)
             {
-                var panel = ReflectionHelper.GetPrivateField<UIPanel>(radiopanel, "m_radioPanel");
-                var list = ReflectionHelper.GetPrivateField<UIPanel>(radiopanel, "m_radioList");
+                var panel = ReflectionHelper.GetPrivateField<UIPanel>(CurrentRadioPanel, "m_radioPanel");
+                var list = ReflectionHelper.GetPrivateField<UIPanel>(CurrentRadioPanel, "m_radioList");
 
                 panel?.BringToFront();
                 if (list != null)
@@ -205,12 +200,12 @@ namespace CSLMusicMod.UI
                     if (m_SortAscending)
                     {
                         //return string.Compare(entrytexts[x], entrytexts[y], StringComparison.CurrentCulture);
-                        return string.Compare(AudioManagerHelper.GetContentName(x), AudioManagerHelper.GetContentName(y), StringComparison.CurrentCulture);
+                        return string.Compare(AudioManagerHelper.GetContentName(x), AudioManagerHelper.GetContentName(y), false, DesktopHelper.GetCorrectCultureInfo());
                     }
                     else
                     {
                         //return string.Compare(entrytexts[y], entrytexts[x], StringComparison.CurrentCulture);
-                        return string.Compare(AudioManagerHelper.GetContentName(y), AudioManagerHelper.GetContentName(x), StringComparison.CurrentCulture);
+                        return string.Compare(AudioManagerHelper.GetContentName(y), AudioManagerHelper.GetContentName(x), false, DesktopHelper.GetCorrectCultureInfo());
                     }
                 });
 

@@ -3,6 +3,7 @@ using AlgernonCommons.UI;
 using ColossalFramework.Globalization;
 using ColossalFramework.IO;
 using ColossalFramework.UI;
+using CSLMusicMod.Helpers;
 using ICities;
 using System;
 using System.Collections.Generic;
@@ -131,7 +132,7 @@ namespace CSLMusicMod.UI
                     currentY += title.height + GroupMargin;
 
                     var sortedNames =
-                        stationNamesDict.OrderBy(kvp => kvp.Value, StringComparer.Create(System.Globalization.CultureInfo.CurrentUICulture, true)).ToList();
+                        stationNamesDict.OrderBy(kvp => kvp.Value, StringComparer.Create(DesktopHelper.GetCorrectCultureInfo(), true)).ToList();
 
                     foreach (var kvp in sortedNames)
                     {
