@@ -11,20 +11,6 @@ namespace CSLMusicMod.Patches
     [HarmonyPatch]
     public class RadioPanelPatch : RadioPanel
     {
-        private static UITextureAtlas _listAtlas;
-
-        public static UITextureAtlas ListAtlas
-        {
-            get
-            {
-                if (_listAtlas == null)
-                {
-                    _listAtlas = TextureHelper.CreateDefaultIconAtlas();
-                }
-
-                return _listAtlas;
-            }
-        }
         private static void AssignStationToButtonInPanel(UIButton button, UISprite iconsprite, RadioChannelInfo station, UserRadioCollection collection)
         {
             button.atlas = station.m_Atlas;
@@ -69,7 +55,7 @@ namespace CSLMusicMod.Patches
 
             ((UIPanel)button.parent).autoLayoutPadding = new RectOffset(0, 0, 0, 0);
 
-            button.atlas = ListAtlas;
+            button.atlas = TextureHelper.ListAtlas;
             button.normalFgSprite = "ListEntryNormal";
             button.hoveredFgSprite = "ListEntryHover";
             button.pressedFgSprite = "ListEntryHover";
@@ -98,7 +84,7 @@ namespace CSLMusicMod.Patches
         {
             iconsprite.position = new Vector3(23, -23);
             iconsprite.size = new Vector2(16, 16);
-            iconsprite.atlas = ListAtlas;
+            iconsprite.atlas = TextureHelper.ListAtlas;
             iconsprite.spriteName = "Arrow";
             iconsprite.isVisible = true;
         }

@@ -85,9 +85,22 @@ namespace CSLMusicMod.Helpers
             return atlas;
         }
 
-        public static UITextureAtlas CreateDefaultIconAtlas()
+        private static UITextureAtlas _listAtlas;
+        public static UITextureAtlas ListAtlas
         {
-            return CreateAtlas("icons.png", "CSLMusicModUI", UIView.Find<UITabstrip>("ToolMode").atlas.material, 31, 31, new string[]
+            get
+            {
+                if (_listAtlas == null)
+                {
+                    _listAtlas = GetCreateDefaultIconAtlas();
+                }
+
+                return _listAtlas;
+            }
+        }
+
+        public static UITextureAtlas GetCreateDefaultIconAtlas() => 
+            CreateAtlas("icons.png", "CSLMusicModUI", UIView.Find<UITabstrip>("ToolMode").atlas.material, 31, 31, new string[]
             {
                 "OptionBase",
                 "OptionBaseDisabled",
@@ -114,7 +127,8 @@ namespace CSLMusicMod.Helpers
                 "ContentUnchecked",
                 "ContentChecked"
             });
-        }
+
+
     }
 }
 
