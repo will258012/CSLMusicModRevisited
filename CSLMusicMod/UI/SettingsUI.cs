@@ -103,27 +103,19 @@ namespace CSLMusicMod.UI
             {
                 {
                     var stationNamesDict = new Dictionary<string, string>();
-                    foreach (RadioContentInfo.ContentType type in Enum.GetValues(typeof(RadioContentInfo.ContentType)))
+
+                    string path = Path.Combine(Path.Combine(DataLocation.gameContentPath, "Radio"), "Music");
+
+                    foreach (string d in Directory.GetDirectories(path))
                     {
-                        // They are not real channels
-                        if (type == RadioContentInfo.ContentType.Broadcast)
-                            continue;
-
-                        string path = Path.Combine(Path.Combine(DataLocation.gameContentPath, "Radio"), type.ToString());
-
-                        foreach (string d in Directory.GetDirectories(path))
+                        if (Directory.GetFiles(d).Length != 0)
                         {
-                            if (Directory.GetFiles(d).Length != 0)
+                            string folderName = Path.GetFileNameWithoutExtension(d);
+
+                            if (!stationNamesDict.ContainsKey(folderName) && folderName != "Christmas")//Skip unreal channels
                             {
-                                string folderName = Path.GetFileNameWithoutExtension(d);
-
-                                if (!stationNamesDict.ContainsKey(folderName))
-                                {
-                                    string friendlyName = (folderName == "Christmas" || folderName == "Common") ?
-                                        folderName : Locale.Get("RADIO_CHANNEL_TITLE", folderName);
-
-                                    stationNamesDict.Add(folderName, friendlyName);
-                                }
+                                var friendlyName = Locale.Get("RADIO_CHANNEL_TITLE", folderName);
+                                stationNamesDict.Add(folderName, friendlyName);
                             }
                         }
                     }
