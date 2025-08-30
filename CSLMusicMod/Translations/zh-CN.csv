@@ -26,7 +26,7 @@ INCLUDE_TALKS,包含谈话节目
 INCLUDE_COMMERCIALS,包含广告
 INCLUDE_BROADCASTS,包含广播
 ADD_FEAT,附加功能
-DISABLED_CONT,内容可禁用*
+DISABLED_CONT,内容可禁用
 CONT_SENS,情境感知内容*
 SMOOTH_TRANS,平滑过渡*（需要重新加载）
 ADD_CONT_TO_VANILLA,使用自定义内容扩展原版电台（需要重新加载）

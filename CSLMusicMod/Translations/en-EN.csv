@@ -28,7 +28,7 @@ INCLUDE_TALKS,Include talks
 INCLUDE_COMMERCIALS,Include commercials
 INCLUDE_BROADCASTS,Include broadcasts
 ADD_FEAT,Additional features
-DISABLED_CONT,Content can be disabled*
+DISABLED_CONT,Content can be disabled
 CONT_SENS,Context-sensitive content*
 SMOOTH_TRANS,Smooth transitions* (Needs reload)
 ADD_CONT_TO_VANILLA,Extend vanilla stations with custom content (Needs reload)
