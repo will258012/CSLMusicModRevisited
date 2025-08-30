@@ -1,10 +1,7 @@
-﻿using AlgernonCommons;
-using ColossalFramework;
+﻿using ColossalFramework;
 using CSLMusicMod.Helpers;
 using HarmonyLib;
-using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Threading;
 using UnityEngine;
 
@@ -22,7 +19,7 @@ namespace CSLMusicMod.Patches
         /// <param name="info">The content to be played</param>
         [HarmonyPatch(typeof(AudioManager), nameof(AudioManager.QueueBroadcast))]
         [HarmonyPrefix]
-        public static bool RadioContentInfoPatch(AudioManager __instance, RadioContentInfo info)
+        public static bool QueueBroadcastPatch(AudioManager __instance, RadioContentInfo info)
         {
             if (!ModOptions.Instance.AllowContentBroadcast)
                 return false;
@@ -82,7 +79,7 @@ namespace CSLMusicMod.Patches
             HashSet<RadioContentInfo> disallowed_content = null;
             if (channel != null)
             {
-                RadioContentWatcher.DisallowedContent.TryGetValue(channel, out disallowed_content);
+                RadioContentWatcher.DisallowedContents.TryGetValue(channel, out disallowed_content);
             }
 
             //Debug.Log("[update]" + channel.GetLocalizedTitle() + " | " + allowed_content);
@@ -134,6 +131,13 @@ namespace CSLMusicMod.Patches
 
             __result = m_tempRadioContentBuffer;
             return false;
+        }
+
+        [HarmonyPatch(typeof(AudioManager), "ActivateCurrentContent")]
+        [HarmonyPostfix]
+        public static void ActivateCurrentContentPatch()
+        {
+            LoadingExtension.DisabledContentContainer.ApplyDisallowedContentRestrictions();
         }
     }
 }
