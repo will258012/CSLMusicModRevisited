@@ -15,11 +15,11 @@ or into the folder containing vanilla radio content."
 TRBL,Troubleshooting
 "TRBL_TIP","You can find information in the CSLMusicMod wiki and the Steam workshop entry.
 Don't forget to enable ""Enable detailed debugging logging"" if you want to provide a log."
-VANILLA_CHANNELS,Enable vanilla channels
+VANILLA_CHANNELS,Manage vanilla channels
 MUSIC_PACKS,Music packs (Needs reload)
 ENABLE_MUSIC_PACKS,Use music from music packs
 CREATE_CHANNELS_FROM_LEGACY,Create channels from unused music files
-CHANNEL_ALL_CONT,Channel with all content (Needs reload)
+CHANNEL_ALL_CONT,Channel with all contents (Needs reload)
 CREATE_MIX_CHANNEL,Create "CSLMusic Mix" channel
 INCLUDE_VANILLA_SONGS,Include vanilla songs
 INCLUDE_MUSIC,Include music
@@ -32,7 +32,7 @@ DISABLED_CONT,Content can be disabled*
 CONT_SENS,Context-sensitive content*
 SMOOTH_TRANS,Smooth transitions* (Needs reload)
 ADD_CONT_TO_VANILLA,Extend vanilla stations with custom content (Needs reload)
-RESET_DISABLED,Reset disabled entries
+RESET_DISABLED,Reset disabled contents
 RADIO_CONT,Radio station content (Needs reload)
 ENABLE_MUSIC,Enable music
 ENABLE_BLURBS,Enable blurbs

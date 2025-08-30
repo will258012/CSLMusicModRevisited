@@ -13,7 +13,7 @@ CHANNELS_CONT_TIP,"你可通过安装音乐包、将电台配置文件或音乐�
 TRBL,故障排除
 TRBL_TIP,"可在 CSLMusicMod 维基和 Steam 创意工坊页面查看相关信息。
 如需提交日志文件，请务必启用 “启用详细的调试日志记录”。"
-VANILLA_CHANNELS,启用原版频道
+VANILLA_CHANNELS,原版频道管理
 MUSIC_PACKS,音乐包（需要重新加载）
 ENABLE_MUSIC_PACKS,使用音乐包内的音乐
 CREATE_CHANNELS_FROM_LEGACY,从未使用的音乐文件创建频道
@@ -30,7 +30,7 @@ DISABLED_CONT,内容可禁用*
 CONT_SENS,情境感知内容*
 SMOOTH_TRANS,平滑过渡*（需要重新加载）
 ADD_CONT_TO_VANILLA,使用自定义内容扩展原版电台（需要重新加载）
-RESET_DISABLED,重置已禁用条目
+RESET_DISABLED,重置已禁用内容
 RADIO_CONT,电台内容（需要重新加载）
 ENABLE_MUSIC,启用音乐
 ENABLE_BLURBS,启用台呼
