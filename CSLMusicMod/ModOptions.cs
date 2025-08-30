@@ -27,8 +27,6 @@ namespace CSLMusicMod
                 {
                     //_Instance = new GameObject("CSLMusicMod Settings").AddComponent<ModOptions>();
                     _Instance = new ModOptions();
-                    _Instance.LoadSettings();
-
                 }
 
                 return _Instance;
