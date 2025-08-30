@@ -71,6 +71,7 @@ namespace CSLMusicMod.UI
             canFocus = true;
             isInteractive = true;
             m_ZIndex = -100;
+            disabledClickSound = UIView.GetAView().defaultDisabledClickSound;
 
             var muteButton = ReflectionHelper.GetPrivateField<UIMultiStateButton>(CurrentRadioPanel, "m_muteButton");
             var radioPanel = ReflectionHelper.GetPrivateField<UIPanel>(CurrentRadioPanel, "m_radioPanel");
@@ -530,6 +531,12 @@ namespace CSLMusicMod.UI
             }
 
             RadioContentInfo info = m_CurrentContent[value];
+
+            if (!AudioManagerHelper.ContentIsEnabled(info))
+            {
+                AudioManager.instance.PlaySound(disabledClickSound);
+                return;
+            }
             AudioManagerHelper.SwitchToContent(info);
         }
 
