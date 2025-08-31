@@ -1,6 +1,7 @@
 ﻿using AlgernonCommons;
 using ColossalFramework;
 using CSLMusicMod.Helpers;
+using HarmonyLib;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,28 +19,28 @@ namespace CSLMusicMod
             new Dictionary<RadioChannelInfo, HashSet<RadioContentInfo>>();
 
         private ushort m_currentChannel = 0;
-        private string[] m_musicFileBackup = null;
+        private string[] m_musicFilesBackup = null;
         public void Start()
         {
-            if (ModOptions.Instance.EnableSmoothTransitions)
-            {
-                InvokeRepeating("ApplySmoothTransition", 1f, 0.5f);
-            }
-
-            if (m_musicFileBackup == null)
+            if (m_musicFilesBackup == null)
             {
                 AudioManager mgr = Singleton<AudioManager>.instance;
-                m_musicFileBackup = ReflectionHelper.GetPrivateField<string[]>(mgr, "m_musicFiles");
+                m_musicFilesBackup = ReflectionHelper.GetPrivateField<string[]>(mgr, "m_musicFiles");
             }
+
+            AudioManager.instance.m_radioContentChanged += ApplySmoothTransition;
+            AudioManager.instance.m_radioContentChanged += ApplyDisallowedContentRestrictions;
         }
 
         public void OnDestroy()
         {
-            if (m_musicFileBackup != null)
+            if (m_musicFilesBackup != null)
             {
                 AudioManager mgr = Singleton<AudioManager>.instance;
-                ReflectionHelper.SetPrivateField(mgr, "m_musicFiles", m_musicFileBackup);
+                ReflectionHelper.SetPrivateField(mgr, "m_musicFiles", m_musicFilesBackup);
             }
+            AudioManager.instance.m_radioContentChanged -= ApplySmoothTransition;
+            AudioManager.instance.m_radioContentChanged -= ApplyDisallowedContentRestrictions;
         }
 
         /// <summary>
@@ -164,9 +165,13 @@ namespace CSLMusicMod
 
                         if (disallowed != null && disallowed.Contains(currentcontent.Value.Info))
                         {
-                            AudioManagerHelper.TriggerRebuildInternalSongList();
+
                             Logging.Message("Skipping " + currentcontent.Value.Info.m_fileName);
-                            StartCoroutine(NextTrack());
+                            AudioManagerHelper.TriggerRebuildInternalSongList();
+
+                            if (!ModOptions.Instance.EnableSmoothTransitions)
+                                StartCoroutine(NextTrack_Hard());
+                            else AudioManagerHelper.NextTrack_Smooth();
                         }
                     }
                 }
@@ -174,36 +179,40 @@ namespace CSLMusicMod
         }
         public void ApplySmoothTransition()
         {
+            if (!ModOptions.Instance.EnableSmoothTransitions)
+                return;
+
             RadioChannelData? channel = AudioManagerHelper.GetActiveChannelData();
 
-            if (channel != null)
+            if (!channel.HasValue)
+                return;
+            
+            ushort index = channel.Value.m_infoIndex;
+
+            if (m_currentChannel == index)
+                return;
+
+            m_currentChannel = index;
+
+            AudioManager mgr = Singleton<AudioManager>.instance;
+            var traverse = Traverse.Create(mgr).Field("m_musicFiles");
+
+            if (channel.Value.m_flags.IsFlagSet(RadioChannelData.Flags.PlayDefault))
             {
-                ushort index = channel.Value.m_infoIndex;
-
-                if (m_currentChannel == index)
-                    return;
-
-                m_currentChannel = index;
-
-                if (index == 0)
+                if (m_musicFilesBackup != null)
                 {
-                    if (m_musicFileBackup != null)
-                    {
-                        AudioManager mgr = Singleton<AudioManager>.instance;
-                        ReflectionHelper.SetPrivateField(mgr, "m_musicFiles", m_musicFileBackup);
-                    }
-                }
-                else
-                {
-                    AudioManager mgr = Singleton<AudioManager>.instance;
-                    ReflectionHelper.SetPrivateField(mgr, "m_musicFiles", null);
+                    traverse.SetValue(m_musicFilesBackup);
                 }
             }
+            else
+            {
+                traverse.SetValue(null);
+            }
         }
-        private IEnumerator NextTrack()
+        private IEnumerator NextTrack_Hard()
         {
             yield return new WaitForSeconds(0.05f);
-            AudioManagerHelper.NextTrack();
+            AudioManagerHelper.NextTrack_Hard();
         }
     }
 }

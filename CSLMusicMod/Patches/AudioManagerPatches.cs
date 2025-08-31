@@ -61,7 +61,6 @@ namespace CSLMusicMod.Patches
         public static bool CollectRadioContentInfoPatch(AudioManager __instance, RadioContentInfo.ContentType type, RadioChannelInfo channel, ref FastList<ushort> __result)
         {
             //Logging.Message("[Internal] Rebuilding the radio content of channel " + channel.GetLocalizedTitle());
-            
             var traverse = new Traverse(__instance);
             // CO makes some things public and other things private. This is completely insane.
             var m_tempRadioContentBuffer = traverse.Field("m_tempRadioContentBuffer").GetValue<FastList<ushort>>();
@@ -131,13 +130,6 @@ namespace CSLMusicMod.Patches
 
             __result = m_tempRadioContentBuffer;
             return false;
-        }
-
-        [HarmonyPatch(typeof(AudioManager), "ActivateCurrentContent")]
-        [HarmonyPostfix]
-        public static void ActivateCurrentContentPatch()
-        {
-            LoadingExtension.DisabledContentContainer.ApplyDisallowedContentRestrictions();
         }
     }
 }
