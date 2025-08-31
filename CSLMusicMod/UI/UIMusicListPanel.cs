@@ -72,6 +72,7 @@ namespace CSLMusicMod.UI
             isInteractive = true;
             m_ZIndex = -100;
             disabledClickSound = UIView.GetAView().defaultDisabledClickSound;
+            opacity = 0.9f;
 
             var muteButton = ReflectionHelper.GetPrivateField<UIMultiStateButton>(CurrentRadioPanel, "m_muteButton");
             var radioPanel = ReflectionHelper.GetPrivateField<UIPanel>(CurrentRadioPanel, "m_radioPanel");
