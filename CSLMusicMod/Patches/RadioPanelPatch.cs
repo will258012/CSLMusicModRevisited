@@ -1,4 +1,5 @@
-﻿using ColossalFramework.UI;
+﻿using AlgernonCommons;
+using ColossalFramework.UI;
 using CSLMusicMod.Helpers;
 using HarmonyLib;
 using UnityEngine;
@@ -31,7 +32,7 @@ namespace CSLMusicMod.Patches
             {
                 if (station.m_Thumbnail == null)
                 {
-                    Debug.LogError("Station " + station.GetLocalizedTitle() + " has no thumbnail assigned.");
+                    Logging.Error("Station " + station.GetLocalizedTitle() + " has no thumbnail assigned.");
                 }
                 button.normalFgSprite = station.m_Thumbnail;
                 button.hoveredFgSprite = station.m_Thumbnail + "Hovered";
@@ -100,7 +101,7 @@ namespace CSLMusicMod.Patches
         [HarmonyPatch(typeof(RadioPanel), "AssignStationToButton")]
         public static bool Prefix(UIButton button, RadioChannelInfo station)
         {
-            UserRadioCollection collection = LoadingExtension.UserRadioContainer;
+            UserRadioCollection collection = Loading.UserRadioContainer;
             UISprite iconsprite = button.Find<UISprite>("sprite");
 
             // Additional sprite on top of the button

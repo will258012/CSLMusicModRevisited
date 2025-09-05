@@ -1,4 +1,5 @@
-﻿using ColossalFramework.UI;
+﻿using AlgernonCommons;
+using ColossalFramework.UI;
 using System.IO;
 using UnityEngine;
 
@@ -22,7 +23,7 @@ namespace CSLMusicMod.Helpers
         /// <param name="spriteNames">Sprite names.</param>
         public static UITextureAtlas CreateAtlas(string file, string name, Material baseMaterial, int spriteWidth, int spriteHeight, string[] spriteNames)
         {
-            CSLMusicMod.Log("Loading icon atlas from " + file + " as " + name);
+            Logging.Message("Loading icon atlas from " + file + " as " + name);
 
             var tex = new Texture2D(spriteWidth * spriteNames.Length, spriteHeight, TextureFormat.ARGB32, false)
             {
@@ -48,7 +49,7 @@ namespace CSLMusicMod.Helpers
                 {
                     if (textureStream == null)
                     {
-                        CSLMusicMod.Log("Texture stream is NULL!");
+                        Logging.Message("Texture stream is NULL!");
                     }
 
                     var buf = new byte[textureStream.Length];  //declare arraysize
@@ -99,7 +100,7 @@ namespace CSLMusicMod.Helpers
             }
         }
 
-        public static UITextureAtlas GetCreateDefaultIconAtlas() => 
+        public static UITextureAtlas GetCreateDefaultIconAtlas() =>
             CreateAtlas("icons.png", "CSLMusicModUI", UIView.Find<UITabstrip>("ToolMode").atlas.material, 31, 31, new string[]
             {
                 "OptionBase",

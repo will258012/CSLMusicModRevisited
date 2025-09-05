@@ -1,5 +1,5 @@
+using AlgernonCommons;
 using System;
-using UnityEngine;
 
 namespace CSLMusicMod
 {
@@ -7,6 +7,7 @@ namespace CSLMusicMod
     /// Class that exists for compatibility reasons with very old CSLMusicMod versions.
     /// It is not used anywhere.
     /// </summary>
+    [Obsolete("Class that exists for compatibility reasons with very old CSLMusicMod versions. It is not used anywhere.")]
     public class CSLMusicChirperMessage : MessageBase
     {
         public enum MusicMessageType
@@ -40,7 +41,7 @@ namespace CSLMusicMod
             }
             catch (Exception)
             {
-                Debug.LogError("[CSLMusic] Could not get random resident ID for chirp");
+                Logging.Error("Could not get random resident ID for chirp");
 
                 return 0;
             }

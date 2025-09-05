@@ -20,7 +20,7 @@ namespace CSLMusicMod
         /// </summary>
         protected void InitializeImpl()
         {
-            UserRadioCollection collection = LoadingExtension.UserRadioContainer;
+            UserRadioCollection collection = Loading.UserRadioContainer;
 
             foreach (UserRadioChannel channel in collection.m_Stations.Values)
             {
@@ -69,7 +69,7 @@ namespace CSLMusicMod
 
                 if (collection != null && collection.isActiveAndEnabled)
                 {
-                    Loading.QueueLoadingAction(() =>
+                    LoadingManagerHelper.QueueLoadingAction(() =>
                         {
                             InitializeImpl();
                             PrefabCollection<RadioChannelInfo>.InitializePrefabs("CSLMusicChannel ", _customPrefabs.Values.ToArray(), null);
@@ -85,7 +85,7 @@ namespace CSLMusicMod
 
             if (originalPrefab == null)
             {
-                Debug.LogErrorFormat("AbstractInitializer#CreatePrefab - Prefab '{0}' not found (required for '{1}')", originalPrefabName, newPrefabName);
+                Logging.Error(string.Format("AbstractInitializer#CreatePrefab - Prefab '{0}' not found (required for '{1}')", originalPrefabName, newPrefabName));
                 return;
             }
             if (_customPrefabs.ContainsKey(newPrefabName))
@@ -95,7 +95,7 @@ namespace CSLMusicMod
             var newPrefab = ClonePrefab(originalPrefab, newPrefabName, transform);
             if (newPrefab == null)
             {
-                Debug.LogErrorFormat("AbstractInitializer#CreatePrefab - Couldn't make prefab '{0}'", newPrefabName);
+                Logging.Error($"AbstractInitializer#CreatePrefab - Couldn't make prefab '{newPrefabName}'");
                 return;
             }
             setupAction.Invoke(newPrefab);

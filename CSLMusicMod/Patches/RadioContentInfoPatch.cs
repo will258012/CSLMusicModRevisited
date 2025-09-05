@@ -1,4 +1,5 @@
-﻿using ColossalFramework.IO;
+﻿using AlgernonCommons;
+using ColossalFramework.IO;
 using HarmonyLib;
 using System;
 using System.IO;
@@ -27,7 +28,7 @@ namespace CSLMusicMod.Patches
                 uristring = uristring.Replace("%20", " ");
                 //var uristring = "file://" + this.m_fileName.Replace("\\","/").Replace("#", "%23");
 
-                CSLMusicMod.Log("Loading custom clip from " + __instance.m_fileName + " (" + uristring + ")");
+                Logging.Message("Loading custom clip from " + __instance.m_fileName + " (" + uristring + ")");
 
                 __result = new WWW(uristring);
             }
@@ -38,7 +39,7 @@ namespace CSLMusicMod.Patches
                 text = Path.Combine(text, __instance.m_folderName);
                 text = Path.Combine(text, __instance.m_fileName);
 
-                CSLMusicMod.Log("Loading Clip from " + text);
+                Logging.Message("Loading Clip from " + text);
                 __result = new WWW("file:///" + text);
             }
             return false;

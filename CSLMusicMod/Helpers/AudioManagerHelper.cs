@@ -1,4 +1,5 @@
-﻿using ColossalFramework;
+﻿using AlgernonCommons;
+using ColossalFramework;
 using System;
 using System.Linq;
 using UnityEngine;
@@ -84,7 +85,7 @@ namespace CSLMusicMod.Helpers
             AudioManager mgr = Singleton<AudioManager>.instance;
 
 
-            return LoadingExtension.UserRadioContainer.m_UserRadioDict.TryGetValue(info, out var userchannel) ? userchannel : null;
+            return Loading.UserRadioContainer.m_UserRadioDict.TryGetValue(info, out var userchannel) ? userchannel : null;
         }
 
         /// <summary>
@@ -96,7 +97,7 @@ namespace CSLMusicMod.Helpers
         public static UserRadioContent GetUserContentInfo(RadioContentInfo info)
         {
 
-            return LoadingExtension.UserRadioContainer.m_UserContentDict.TryGetValue(info, out var usercontent) ? usercontent : null;
+            return Loading.UserRadioContainer.m_UserContentDict.TryGetValue(info, out var usercontent) ? usercontent : null;
         }
 
         /// <summary>
@@ -170,7 +171,7 @@ namespace CSLMusicMod.Helpers
 
             if (ReflectionHelper.GetPrivateField<bool>(mgr, "m_musicFileIsRadio"))
             {
-                CSLMusicMod.Log("Radio switches to next track");
+                Logging.Message("Radio switches to next track");
 
                 var player = ReflectionHelper.GetPrivateField<AudioManager.AudioPlayer>(mgr, "m_currentRadioPlayer");
 
@@ -254,16 +255,16 @@ namespace CSLMusicMod.Helpers
 
                 if (!found)
                 {
-                    CSLMusicMod.Log("Switching to unloaded music " + info);
+                    Logging.Message("Switching to unloaded music " + info);
 
                     if (!mgr.CreateRadioContent(out contentindex, info))
                     {
-                        CSLMusicMod.Log("... failed to create content " + info);
+                        Logging.Message("... failed to create content " + info);
                         return false;
                     }
                 }
 
-                CSLMusicMod.Log("Radio switches to track " + info);
+                Logging.Message("Radio switches to track " + info);
 
                 //Debug.Log("Content index: " + contentindex);
 

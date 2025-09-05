@@ -1,4 +1,5 @@
-﻿using ColossalFramework.IO;
+﻿using AlgernonCommons;
+using ColossalFramework.IO;
 using ColossalFramework.UI;
 using CSLMusicMod.Contexts;
 using CSLMusicMod.Helpers;
@@ -190,7 +191,7 @@ namespace CSLMusicMod
             }
             catch (Exception ex)
             {
-                Debug.LogError(ex);
+                Logging.LogException(ex);
                 return null;
             }
         }

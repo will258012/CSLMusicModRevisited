@@ -186,7 +186,7 @@ namespace CSLMusicMod
 
             if (!channel.HasValue)
                 return;
-            
+
             ushort index = channel.Value.m_infoIndex;
 
             if (m_currentChannel == index)

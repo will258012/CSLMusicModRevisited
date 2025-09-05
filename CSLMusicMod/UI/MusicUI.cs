@@ -1,7 +1,6 @@
+using AlgernonCommons;
 using ColossalFramework.UI;
 using CSLMusicMod.Helpers;
-using System;
-using System.Linq;
 using UnityEngine;
 
 namespace CSLMusicMod.UI
@@ -20,11 +19,12 @@ namespace CSLMusicMod.UI
         public void Awake()
         {
             DontDestroyOnLoad(this);
+            Initialize();
         }
         private void Initialize()
         {
             ListPanel = (UIMusicListPanel)UIView.GetAView().AddUIComponent(typeof(UIMusicListPanel));
-            CSLMusicMod.Log("Initialized music UI");
+            Logging.Message("Initialized music UI");
             m_Initialized = true;
         }
         public void LocaleChanged()
@@ -35,25 +35,10 @@ namespace CSLMusicMod.UI
 
         public void Update()
         {
-            if (m_Initialized)
+            if (m_Initialized && ListPanel != null)
             {
-                if (ListPanel != null)
-                {
-                    ListPanel.isVisible = ModOptions.Instance.EnableCustomUI && ModOptions.Instance.MusicListVisible && ReflectionHelper.GetPrivateField<bool>(AudioManagerHelper.CurrentRadioPanel, "m_isVisible");
-                }
+                ListPanel.isVisible = ModOptions.Instance.EnableCustomUI && ModOptions.Instance.MusicListVisible && ReflectionHelper.GetPrivateField<bool>(AudioManagerHelper.CurrentRadioPanel, "m_isVisible");
             }
-            else
-            {
-                try
-                {
-                    Initialize();
-                }
-                catch (Exception e)
-                {
-                    Debug.LogError("[CSLMusic] Error while initializing music UI: " + e);
-                }
-            }
-
         }
         public void OnDestroy()
         {

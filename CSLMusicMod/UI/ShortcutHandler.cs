@@ -1,6 +1,6 @@
-﻿using ColossalFramework.UI;
+﻿using AlgernonCommons;
+using ColossalFramework.UI;
 using CSLMusicMod.Helpers;
-using System.Linq;
 using UnityEngine;
 
 namespace CSLMusicMod.UI
@@ -21,9 +21,9 @@ namespace CSLMusicMod.UI
 
         public void Start()
         {
-            CSLMusicMod.Log(ModOptions.Instance.ShortcutNextTrack);
-            CSLMusicMod.Log(ModOptions.Instance.ShortcutNextStation);
-            CSLMusicMod.Log(ModOptions.Instance.ShortcutOpenRadioPanel);
+            Logging.Message(ModOptions.Instance.ShortcutNextTrack);
+            Logging.Message(ModOptions.Instance.ShortcutNextStation);
+            Logging.Message(ModOptions.Instance.ShortcutOpenRadioPanel);
         }
 
         private bool ShortcutDown(ModOptions.Shortcut shortcut)
@@ -62,7 +62,7 @@ namespace CSLMusicMod.UI
             else if (m_NextTrackKey_IsDown && ShortcutUp(ModOptions.Instance.ShortcutNextTrack))
             {
                 m_NextTrackKey_IsDown = false;
-                CSLMusicMod.Log("Pressed shortcut for next track");
+                Logging.Message("Pressed shortcut for next track");
                 AudioManagerHelper.NextTrack();
             }
 
@@ -73,7 +73,7 @@ namespace CSLMusicMod.UI
             }
             else if (m_NextStationKey_IsDown && ShortcutUp(ModOptions.Instance.ShortcutNextStation))
             {
-                CSLMusicMod.Log("Pressed shortcut for next station");
+                Logging.Message("Pressed shortcut for next station");
                 m_NextStationKey_IsDown = false;
                 AudioManagerHelper.NextStation();
             }
@@ -86,7 +86,7 @@ namespace CSLMusicMod.UI
             else if (m_OpenPanelKey_IsDown && ShortcutUp(ModOptions.Instance.ShortcutOpenRadioPanel))
             {
                 m_OpenPanelKey_IsDown = false;
-                CSLMusicMod.Log("Pressed shortcut for hide/show panel");
+                Logging.Message("Pressed shortcut for hide/show panel");
 
                 var radioPanel = AudioManagerHelper.CurrentRadioPanel;
                 if (radioPanel != null)

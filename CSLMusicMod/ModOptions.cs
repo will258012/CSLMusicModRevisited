@@ -445,11 +445,11 @@ namespace CSLMusicMod
             }
             catch (Exception ex)
             {
-                Debug.LogError(ex);
+                Logging.LogException(ex);
             }
             finally
             {
-                CSLMusicMod.Log("Settings saved.");
+                Logging.Message("Settings saved.");
             }
         }
 
@@ -464,11 +464,11 @@ namespace CSLMusicMod
                 }
                 catch (Exception ex)
                 {
-                    Debug.LogError(ex);
+                    Logging.LogException(ex);
                 }
                 finally
                 {
-                    CSLMusicMod.Log("Settings loaded.");
+                    Logging.Message("Settings loaded.");
                 }
             }
             else

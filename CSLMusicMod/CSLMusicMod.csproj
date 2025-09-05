@@ -56,8 +56,8 @@
     <Compile Include="Compatibility\CSLMusicChirperMessage.cs" />
     <Compile Include="Helpers\TextureHelper.cs" />
     <Compile Include="Patches\RadioContentInfoPatch.cs" />
-    <Compile Include="LoadingExtension.cs" />
     <Compile Include="Loading.cs" />
+    <Compile Include="Helpers\LoadingManagerHelper.cs" />
     <Compile Include="ChannelInitializer.cs" />
     <Compile Include="ContentInitializer.cs" />
     <Compile Include="UserRadioContent.cs" />

@@ -1,5 +1,5 @@
-﻿using LitJson;
-using System;
+﻿using AlgernonCommons;
+using LitJson;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -91,7 +91,7 @@ namespace CSLMusicMod.Contexts
                         }
                         else
                         {
-                            CSLMusicMod.Log("Could not find named condition " + entry + "!");
+                            Logging.Message("Could not find named condition " + entry + "!");
                         }
                     }
 

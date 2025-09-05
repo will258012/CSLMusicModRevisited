@@ -45,8 +45,6 @@ namespace CSLMusicMod.UI
         private bool m_SortAscending = true;
 
         private List<RadioContentInfo> m_CurrentContent = new List<RadioContentInfo>();
-
-        private ModOptions m_ModOptionsInstance = ModOptions.Instance;
         private RadioPanel CurrentRadioPanel => AudioManagerHelper.CurrentRadioPanel;
 
         private bool Filtered
@@ -471,7 +469,7 @@ namespace CSLMusicMod.UI
             m_TopNextTrack.hoveredBgSprite = "Next";
             m_TopNextTrack.color = new Color32(225, 225, 225, 255);
             m_TopNextTrack.hoveredColor = new Color32(255, 255, 255, 255);
-            m_TopNextTrack.tooltip = Translations.Translate("BUTTON_NEXTTRACK");
+            m_TopNextTrack.tooltip = Translations.Translate("SHOUTCUT_NEXTTRACK");
             m_TopNextTrack.Show();
 
             m_TopNextTrack.eventClick += buttonNextTrackClicked;
@@ -579,7 +577,7 @@ namespace CSLMusicMod.UI
             m_MusicList.Show();
 
             InitializeMusicListChannelInfo();
-            
+
             UIScrollbar scrollbar = UIScrollbars.AddScrollbar(m_MusicList);
             scrollbar.relativePosition = new Vector3(width - 15 - 15f, 0);
             scrollbar.height = m_MusicList.height;

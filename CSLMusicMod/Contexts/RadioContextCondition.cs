@@ -1,7 +1,6 @@
-﻿using CSLMusicMod.Contexts;
+﻿using AlgernonCommons;
+using CSLMusicMod.Contexts;
 using LitJson;
-using System;
-using UnityEngine;
 
 namespace CSLMusicMod
 {
@@ -31,7 +30,7 @@ namespace CSLMusicMod
                     context = DisasterContextCondition.LoadFromJson(json);
                     break;
                 default:
-                    Debug.LogError("[CSLMusic] Error: Unknown context type!");
+                    Logging.Error($"Unknown context type: {(string)json["type"]}");
                     break;
             }
 

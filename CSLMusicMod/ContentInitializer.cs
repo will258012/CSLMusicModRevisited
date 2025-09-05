@@ -1,4 +1,5 @@
-﻿using System;
+﻿using AlgernonCommons;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -20,10 +21,10 @@ namespace CSLMusicMod
         /// </summary>
         protected void InitializeImpl()
         {
-            UserRadioCollection collection = LoadingExtension.UserRadioContainer;
+            UserRadioCollection collection = Loading.UserRadioContainer;
 
             var collectionnames = collection.m_Songs.Values.Select(song => song.m_Collection).Distinct().ToArray();
-            CSLMusicMod.Log("Available collections: " + string.Join("\n", collectionnames));
+            Logging.Message("Available collections: " + string.Join("\n", collectionnames));
 
             foreach (UserRadioContent content in collection.m_Songs.Values)
             {
@@ -33,25 +34,25 @@ namespace CSLMusicMod
                     // Bases all music on vanilla "Aukio" song. 
                     CreatePrefab(content.m_Name, "aukio", new Action<RadioContentInfo>(obj =>
                     {
-                            obj.m_fileName = content.m_FileName;
-                            obj.m_displayName = content.m_DisplayName;
-                            obj.m_contentType = content.m_ContentType;
+                        obj.m_fileName = content.m_FileName;
+                        obj.m_displayName = content.m_DisplayName;
+                        obj.m_contentType = content.m_ContentType;
 
-                            // Add the channels this song is playing in into the song.
-                            List<RadioChannelInfo> channels = new List<RadioChannelInfo>();
+                        // Add the channels this song is playing in into the song.
+                        List<RadioChannelInfo> channels = new List<RadioChannelInfo>();
 
-                            foreach (UserRadioChannel uchannel in content.m_Channels)
-                            {
-                                var channel = FindChannelPrefab(uchannel.m_Name);
-                                channels.Add(channel);
-                            }
+                        foreach (UserRadioChannel uchannel in content.m_Channels)
+                        {
+                            var channel = FindChannelPrefab(uchannel.m_Name);
+                            channels.Add(channel);
+                        }
 
-                            obj.m_radioChannels = channels.ToArray();
-                        }));
+                        obj.m_radioChannels = channels.ToArray();
+                    }));
                 }
                 catch (Exception e)
                 {
-                    Debug.LogError("[CSLMusic] Error while initializing prefab in " + content.m_Name + "! Exception: " + e.ToString());
+                    Logging.LogException(e, $"Error while initializing prefab in {content.m_Name}");
                 }
             }
         }
@@ -88,7 +89,7 @@ namespace CSLMusicMod
 
                 if (collection != null && collection.isActiveAndEnabled)
                 {
-                    Loading.QueueLoadingAction(() =>
+                    LoadingManagerHelper.QueueLoadingAction(() =>
                         {
                             InitializeImpl();
                             PrefabCollection<RadioContentInfo>.InitializePrefabs("CSLMusicContent ", _customPrefabs.Values.ToArray(), null);
@@ -104,7 +105,7 @@ namespace CSLMusicMod
 
             if (originalPrefab == null)
             {
-                Debug.LogErrorFormat("AbstractInitializer#CreatePrefab - Prefab '{0}' not found (required for '{1}')", originalPrefabName, newPrefabName);
+                Logging.Error(string.Format("AbstractInitializer#CreatePrefab - Prefab '{0}' not found (required for '{1}')", originalPrefabName, newPrefabName));
                 return;
             }
             if (_customPrefabs.ContainsKey(newPrefabName))
@@ -114,7 +115,7 @@ namespace CSLMusicMod
             var newPrefab = ClonePrefab(originalPrefab, newPrefabName, transform);
             if (newPrefab == null)
             {
-                Debug.LogErrorFormat("AbstractInitializer#CreatePrefab - Couldn't make prefab '{0}'", newPrefabName);
+                Logging.Error($"AbstractInitializer#CreatePrefab - Couldn't make prefab '{newPrefabName}'");
                 return;
             }
             setupAction.Invoke(newPrefab);
