@@ -1,6 +1,7 @@
 ﻿using AlgernonCommons;
 using AlgernonCommons.Patching;
 using ColossalFramework.IO;
+using ColossalFramework.Plugins;
 using CSLMusicMod.UI;
 using HarmonyLib;
 using ICities;
@@ -23,11 +24,8 @@ namespace CSLMusicMod
         public static MusicUI UI;
         public static ShortcutHandler UIShortcutHandler;
         public static RadioContentWatcher DisabledContentContainer;
-
-        public override void OnCreated(ILoading loading)
+        protected override void CreatedActions(ILoading loading)
         {
-            base.OnCreated(loading);
-
             if (!Directory.Exists(UserRadioCollection.GameDirUserCollectionDirectory))
             {
                 try
@@ -53,45 +51,35 @@ namespace CSLMusicMod
                 ContentContainer = new GameObject("CSLMusicMod_Content").AddComponent<ContentInitializer>();
             }
         }
-
-        public override void OnLevelLoaded(LoadMode mode)
+        protected override void LoadedActions(LoadMode mode)
         {
-            base.OnLevelLoaded(mode);
+            RemoveUnsupportedContent();
+            UserRadioContainer.CollectPostLoadingData();
+            ExtendVanillaContent();
 
-            Logging.Message("Got OnLevelLoaded: " + mode);
-
-            if (mode == LoadMode.LoadGame || mode == LoadMode.NewGame || mode == LoadMode.NewGameFromScenario)
+            // Build UI and other post loadtime
+            if (UI == null && ModOptions.Instance.EnableCustomUI)
             {
-                Logging.Message("Level loaded. Loading mod components.");
-
-                RemoveUnsupportedContent();
-                UserRadioContainer.CollectPostLoadingData();
-                ExtendVanillaContent();
-
-                // Build UI and other post loadtime
-                if (UI == null && ModOptions.Instance.EnableCustomUI)
-                {
-                    UI = new GameObject("CSLMusicMod_UI").AddComponent<MusicUI>();
-                }
-                if (UIShortcutHandler == null)
-                {
-                    UIShortcutHandler = new GameObject("CSLMusicMod_UIShortcutHandler").AddComponent<ShortcutHandler>();
-                }
-                if (DisabledContentContainer == null)
-                {
-                    DisabledContentContainer = new GameObject("CSLMusicMod_DisabledContent").AddComponent<RadioContentWatcher>();
-                }
-
-                if (Logging.DetailLogging)
-                    try
-                    {
-                        DebugOutput();
-                    }
-                    catch (Exception ex)
-                    {
-                        Logging.LogException(ex, "DebugOutput Error");
-                    }
+                UI = new GameObject("CSLMusicMod_UI").AddComponent<MusicUI>();
             }
+            if (UIShortcutHandler == null)
+            {
+                UIShortcutHandler = new GameObject("CSLMusicMod_UIShortcutHandler").AddComponent<ShortcutHandler>();
+            }
+            if (DisabledContentContainer == null)
+            {
+                DisabledContentContainer = new GameObject("CSLMusicMod_DisabledContent").AddComponent<RadioContentWatcher>();
+            }
+
+            if (Logging.DetailLogging)
+                try
+                {
+                    DebugOutput();
+                }
+                catch (Exception ex)
+                {
+                    Logging.LogException(ex, "DebugOutput Error");
+                }
         }
 
         public override void OnReleased()
@@ -129,6 +117,32 @@ namespace CSLMusicMod
             }
         }
 
+        protected override List<string> CheckModConflicts()
+        {
+            try
+            {
+                var conflictModNames = new List<string>();
+                foreach (var plugin in PluginManager.instance.GetPluginsInfo())
+                {
+                    foreach (var assembly in plugin.GetAssemblies())
+                    {
+                        switch (assembly.GetName().Name)
+                        {
+                            case "CSLMusicMod":
+                                if (assembly.GetType("CSLMusicMod.LoadingExtension") != null)
+                                    conflictModNames.Add("CSL Music Mod - Reupload");
+                                break;
+                        }
+                    }
+                }
+                return conflictModNames;
+            }
+            catch (Exception e)
+            {
+                Logging.LogException(e, "Failed to search conflict mods");
+            }
+            return null;
+        }
         private void RemoveUnsupportedContent()
         {
             // Apply filtering after loading
