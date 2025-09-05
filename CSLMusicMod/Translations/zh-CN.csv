@@ -6,7 +6,7 @@ TAB_CONT,内容
 TAB_SHORTCUTS,快捷键
 TAB_UI,用户界面
 PERF,性能
-PERF_TIP,"若遇到性能问题，可尝试禁用标有星号(*)的设置项"
+PERF_TIP,"若遇到性能问题，可尝试禁用标有星号(*)的设置项。"
 CHANNELS_CONT,频道与内容
 CHANNELS_CONT_TIP,"你可通过安装音乐包、将电台配置文件或音乐文件放入 “CSLMusicMod_Music” 文件夹
 或放入包含原版广播内容的文件夹来添加自定义频道或音乐。"
@@ -48,11 +48,10 @@ VOLUMESLIDER,拖动调整音乐音量
 SORT_ASCEND,升序排序
 SORT_DESCEND,降序排序
 CLOSE_PANEL,关闭此面板
-SHOW_PLAYLIST,显示/隐藏播放列表。
-BUTTON_NEXTTRACK,切换到下一曲目。
-BUTTON_OPENDIR,打开电台所在文件夹。
-NOT_RADIO,"当前频道非广播频道。你的自定义音乐可以在
-“由用户定义”、“天际线音乐混搭”及由音乐包创建的频道中找到。"
+SHOW_PLAYLIST,显示/隐藏播放列表
+BUTTON_OPENDIR,打开电台所在文件夹
+NOT_RADIO,"当前频道非广播频道。你的自定义音乐可以在“由用户定义”、
+“天际线音乐混搭”及由音乐包创建的频道中找到。"
 NO_RESULTS,未找到结果。
 DISABLE_CONT_CHECKBOXES_TIP,双击可禁用条目。
 USERDEFINED,由用户定义

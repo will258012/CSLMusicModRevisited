@@ -50,8 +50,7 @@ VOLUMESLIDER,Drag to change the music volume
 SORT_ASCEND,Sort ascending
 SORT_DESCEND,Sort descending
 CLOSE_PANEL,Close this panel
-SHOW_PLAYLIST,Shows/hides the playlist.
-BUTTON_NEXTTRACK,Switches to the next track.
+SHOW_PLAYLIST,Shows/hides the playlist
 BUTTON_OPENDIR,Open folder containing the radio station.
 NOT_RADIO,"This channel is not a radio-channel. Your custom music
 can be found in ""Userdefined"", ""CSLMusic Mix"" and
