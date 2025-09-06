@@ -1,4 +1,4 @@
-using AlgernonCommons.Translation;
+﻿using AlgernonCommons.Translation;
 using AlgernonCommons.UI;
 using ColossalFramework;
 using ColossalFramework.IO;
@@ -27,6 +27,7 @@ namespace CSLMusicMod.UI
         private SavedFloat m_MusicAudioVolume = new SavedFloat(Settings.musicAudioVolume,
             Settings.gameSettingsFile,
             DefaultSettings.musicAudioVolume, true);
+        private UIPanel m_Header;
         private UISlider m_VolumeSlider;
         private UIButton m_NextTrack;
         private UITextField m_Filter;
@@ -35,6 +36,7 @@ namespace CSLMusicMod.UI
         private UIButton m_ButtonSortDescending;
         private UIButton m_Close;
         private UILabel m_RadioChannelInfo;
+        private UISlider m_ProgressSlider;
 
         // Additional options UI
         private int m_AdditionalButtonCount = 0;
@@ -287,7 +289,6 @@ namespace CSLMusicMod.UI
             m_VolumeSlider.fillIndicatorObject = fill;
 
             m_VolumeSlider.thumbObject = thumb;
-
             m_VolumeSlider.eventValueChanged += delegate (UIComponent component, float value)
             {
                 if (m_IsDisposing)
@@ -296,10 +297,12 @@ namespace CSLMusicMod.UI
                 //I use x100 because it failed with 0..1?
                 value /= 100f;
 
-                if (Math.Abs(m_MusicAudioVolume.value - value) > 0.01)
-                {
+                if (Math.Abs(m_MusicAudioVolume.value - value) > 0.01f)
                     m_MusicAudioVolume.value = value;
-                }
+
+                if (fill.width < 10)
+                    fill.Hide();
+                else fill.Show();
             };
         }
 
@@ -412,15 +415,54 @@ namespace CSLMusicMod.UI
             m_Close.eventClicked += buttonCloseClicked;
         }
 
+        private void InitializeHeaderToolbarProgressSlider()
+        {
+            m_ProgressSlider = AddUIComponent<UISlider>();
+            m_ProgressSlider.relativePosition = UILayout.PositionUnder(m_Header, -5f);
+            m_ProgressSlider.width = 500;
+            m_ProgressSlider.height = 10;
+            m_ProgressSlider.minValue = 0;
+            m_ProgressSlider.maxValue = 100;
+
+            UIPanel thumb = m_ProgressSlider.AddUIComponent<UIPanel>();
+            thumb.name = "thumb";
+            thumb.width = 15;
+            thumb.height = 15;
+            thumb.backgroundSprite = "GenericProgressBarFill";
+
+            UIPanel fill = m_ProgressSlider.AddUIComponent<UIPanel>();
+            fill.name = "fill";
+            fill.backgroundSprite = "GenericProgressBarFill";
+            m_ProgressSlider.fillIndicatorObject = fill;
+
+            m_ProgressSlider.thumbObject = thumb;
+            m_ProgressSlider.eventValueChanged += delegate (UIComponent component, float value)
+            {
+                if (m_IsDisposing)
+                    return;
+
+                value /= 100f;
+
+                if (AudioManagerHelper.GetCurrentTrackProgress(out var time, out var length, out _))
+                {
+                    if (Mathf.Abs(time / length - value) > 0.01f)
+                        AudioManagerHelper.SetTrackProgress(value * length);
+                }
+
+                if (fill.width < 10)
+                    fill.Hide();
+                else fill.Show();
+            };
+        }
         private void InitializeHeaderToolbar()
         {
             //Header background
             {
-                var header = AddUIComponent<UIPanel>();
-                header.relativePosition = Vector3.zero;
-                header.width = width;
-                header.height = 60;
-                header.backgroundSprite = "GenericTab";
+                m_Header = AddUIComponent<UIPanel>();
+                m_Header.relativePosition = Vector3.zero;
+                m_Header.width = width;
+                m_Header.height = 60;
+                m_Header.backgroundSprite = "GenericTab";
             }
 
             InitializeHeaderToolbarVolumeSlider();
@@ -429,8 +471,9 @@ namespace CSLMusicMod.UI
             InitializeHeaderToolbarSortDescendingButton();
             InitializeHeaderToolbarFilterBar();
             InitializeHeaderToolbarCloseButton();
-
+            InitializeHeaderToolbarProgressSlider();
         }
+
 
         private void InitializeShowMusicPanelButton(UIMultiStateButton muteButton, UIPanel radioPanel)
         {
@@ -617,6 +660,34 @@ namespace CSLMusicMod.UI
             var diff = str.Length - size;
 
             return diff > 0 ? str.Substring(0, str.Length - diff - 4) + " ..." : str;
+        }
+        internal void UpdateVolumeSliderTooltip()
+        {
+            if (m_VolumeSlider != null && m_VolumeSlider.containsMouse)
+            {
+                m_VolumeSlider.tooltip = $"{Translations.Translate("VOLUMESLIDER")} ({m_VolumeSlider.value} %)";
+                m_VolumeSlider.RefreshTooltip();
+            }
+        }
+        internal void UpdateProgressSlider()
+        {
+            if (m_ProgressSlider != null)
+            {
+                if (AudioManagerHelper.GetCurrentTrackProgress(out var time, out var length, out var progress))
+                {
+                    m_ProgressSlider.Show();
+                    m_ProgressSlider.value = time / length * 100f;
+                    if (m_ProgressSlider.containsMouse)
+                    {
+                        m_ProgressSlider.tooltip = progress;
+                        m_ProgressSlider.RefreshTooltip();
+                    }
+                }
+                else
+                {
+                    m_ProgressSlider.Hide();
+                }
+            }
         }
     }
 }

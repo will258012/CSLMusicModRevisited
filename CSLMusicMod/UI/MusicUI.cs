@@ -16,6 +16,10 @@ namespace CSLMusicMod.UI
         public UIMusicListPanel ListPanel { get; private set; }
 
         private bool m_Initialized = false;
+
+        private const float m_updateInterval = .1f;
+        private float m_nextUpdateTime = default;
+
         public void Awake()
         {
             DontDestroyOnLoad(this);
@@ -35,9 +39,20 @@ namespace CSLMusicMod.UI
 
         public void Update()
         {
-            if (m_Initialized && ListPanel != null)
+            if (!m_Initialized) return;
+
+            if (Time.time < m_nextUpdateTime) return;
+
+            m_nextUpdateTime = Time.time + m_updateInterval;
+
+            if (ListPanel != null)
             {
                 ListPanel.isVisible = ModOptions.Instance.EnableCustomUI && ModOptions.Instance.MusicListVisible && ReflectionHelper.GetPrivateField<bool>(AudioManagerHelper.CurrentRadioPanel, "m_isVisible");
+                if (ListPanel.isVisible)
+                {
+                    ListPanel.UpdateVolumeSliderTooltip();
+                    ListPanel.UpdateProgressSlider();
+                }
             }
         }
         public void OnDestroy()

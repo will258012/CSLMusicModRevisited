@@ -338,6 +338,66 @@ namespace CSLMusicMod.Helpers
         {
             return info == null ? "<Null>" : string.IsNullOrEmpty(info.m_displayName) ? info.name : info.m_displayName;
         }
+        /// <summary>
+        /// Gets the progress data of the currently playing track.
+        /// </summary>
+        /// <param name="time">Current playback time in seconds.</param>
+        /// <param name="length">Total length of the track in seconds.</param>
+        /// <param name="formattedProgress">Formatted progress string (e.g., "01:23 / 04:56").</param>
+        /// <returns>True if successfully retrieved progress data; otherwise, false.</returns>
+        public static bool GetCurrentTrackProgress(out float time, out float length, out string formattedProgress)
+        {
+            time = length = default;
+            formattedProgress = null;
+            AudioManager mgr = Singleton<AudioManager>.instance;
+            if (ReflectionHelper.GetPrivateField<bool>(mgr, "m_musicFileIsRadio"))
+            {
+                var player = ReflectionHelper.GetPrivateField<AudioManager.AudioPlayer>(mgr, "m_currentRadioPlayer");
+                var source = player?.m_source;
+
+                if (source == null || source.clip == null)
+                    return false;
+
+                time = source.time;
+                length = source.clip.length;
+
+                var timeSpan = TimeSpan.FromSeconds(time);
+                var lengthSpan = TimeSpan.FromSeconds(length);
+
+                 var timeFormatted = timeSpan.Hours > 0
+                    ? $"{(int)timeSpan.TotalHours:00}:{timeSpan.Minutes:00}:{timeSpan.Seconds:00}"
+                    : $"{timeSpan.Minutes:00}:{timeSpan.Seconds:00}";
+
+                var lengthFormatted = lengthSpan.Hours > 0
+                    ? $"{(int)lengthSpan.TotalHours:00}:{lengthSpan.Minutes:00}:{lengthSpan.Seconds:00}"
+                    : $"{lengthSpan.Minutes:00}:{lengthSpan.Seconds:00}";
+
+                formattedProgress = $"{timeFormatted} / {lengthFormatted}";
+                return true;
+            }
+            return false;
+        }
+        /// <summary>
+        /// Sets the playback position of the current track.
+        /// </summary>
+        /// <param name="time">The target playback time in seconds.</param>
+        /// <remarks>
+        /// The time will be clamped to the valid range [0, track length - 1] to ensure 
+        /// the audio source can properly handle the seek operation.
+        /// </remarks>
+        public static void SetTrackProgress(float time)
+        {
+            AudioManager mgr = Singleton<AudioManager>.instance;
+            if (ReflectionHelper.GetPrivateField<bool>(mgr, "m_musicFileIsRadio"))
+            {
+                var player = ReflectionHelper.GetPrivateField<AudioManager.AudioPlayer>(mgr, "m_currentRadioPlayer");
+                var source = player?.m_source;
+                if (source != null && source.clip != null)
+                {
+                    source.time = Mathf.Clamp(time, 0f, source.clip.length - 1f);
+                }
+            }
+        }
     }
 }
 
