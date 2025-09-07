@@ -205,39 +205,39 @@ namespace CSLMusicMod.UI
 
         private string GetEntryTextFor(RadioContentInfo content)
         {
-            string name = AudioManagerHelper.GetContentName(content);
+            var nameBuilder = new System.Text.StringBuilder();
+
+            if (ModOptions.Instance.ImprovedDisableContentUI)
+                nameBuilder.Append(!AudioManagerHelper.ContentIsEnabled(content) ? "<sprite ContentUnchecked>" : "<sprite ContentChecked>");
+            else if (!AudioManagerHelper.ContentIsEnabled(content))
+                nameBuilder.Append("<sprite ContentDisabled>");
+
+            var currentContentData = AudioManagerHelper.GetActiveContentInfo()?.Info;
+            if (currentContentData == content)
+                nameBuilder.Append("<sprite Playing>");
 
             switch (content.m_contentType)
             {
                 case RadioContentInfo.ContentType.Blurb:
-                    name = "<sprite Blurb> " + name;
+                    nameBuilder.Append("<sprite Blurb>");
                     break;
                 case RadioContentInfo.ContentType.Broadcast:
-                    name = "<sprite Broadcast> " + name;
+                    nameBuilder.Append("<sprite Broadcast>");
                     break;
                 case RadioContentInfo.ContentType.Commercial:
-                    name = "<sprite Commercial> " + name;
+                    nameBuilder.Append("<sprite Commercial>");
                     break;
                 case RadioContentInfo.ContentType.Music:
-                    name = "<sprite Music> " + name;
+                    nameBuilder.Append("<sprite Music>");
                     break;
                 case RadioContentInfo.ContentType.Talk:
-                    name = "<sprite Talk> " + name;
+                    nameBuilder.Append("<sprite Talk>");
                     break;
             }
 
-            if (ModOptions.Instance.ImprovedDisableContentUI)
-            {
-                name = !AudioManagerHelper.ContentIsEnabled(content) ? "<sprite ContentUnchecked>" + name : "<sprite ContentChecked>" + name;
-            }
-            else
-            {
-                if (!AudioManagerHelper.ContentIsEnabled(content))
-                {
-                    name = "<sprite ContentDisabled>" + name;
-                }
-            }
-            return name;
+            nameBuilder.Append(AudioManagerHelper.GetContentName(content));
+
+            return nameBuilder.ToString();
         }
 
         private void RefreshListWidget()
@@ -576,7 +576,8 @@ namespace CSLMusicMod.UI
 
             if (!AudioManagerHelper.ContentIsEnabled(info))
             {
-                AudioManager.instance.PlaySound(disabledClickSound);
+                if (ModOptions.Instance.ImprovedDisableContentUI)
+                    AudioManager.instance.PlaySound(disabledClickSound);
                 return;
             }
             AudioManagerHelper.SwitchToContent(info);

@@ -126,7 +126,8 @@ namespace CSLMusicMod.Helpers
                 "Open",
                 "Menu",
                 "ContentUnchecked",
-                "ContentChecked"
+                "ContentChecked",
+                "Playing"
             });
 
 
