@@ -186,21 +186,7 @@ namespace CSLMusicMod.UI
                 //Debug.Log(m_CurrentContent.Count + " entries ");
             }
 
-            m_CurrentContent.Sort((x, y) =>
-                {
-                    if (m_SortAscending)
-                    {
-                        //return string.Compare(entrytexts[x], entrytexts[y], StringComparison.CurrentCulture);
-                        return string.Compare(AudioManagerHelper.GetContentName(x), AudioManagerHelper.GetContentName(y), false, DesktopHelper.GetCorrectCultureInfo());
-                    }
-                    else
-                    {
-                        //return string.Compare(entrytexts[y], entrytexts[x], StringComparison.CurrentCulture);
-                        return string.Compare(AudioManagerHelper.GetContentName(y), AudioManagerHelper.GetContentName(x), false, DesktopHelper.GetCorrectCultureInfo());
-                    }
-                });
-
-            RefreshListWidget();
+            SortList();
         }
 
         private string GetEntryTextFor(RadioContentInfo content)
@@ -254,6 +240,14 @@ namespace CSLMusicMod.UI
             catch (Exception)
             {
             }
+        }
+        private void SortList()
+        {
+            m_CurrentContent.Sort((x, y) =>
+                m_SortAscending
+                ? string.Compare(AudioManagerHelper.GetContentName(x), AudioManagerHelper.GetContentName(y), false, DesktopHelper.CorrectedCultureInfo)
+                : string.Compare(AudioManagerHelper.GetContentName(y), AudioManagerHelper.GetContentName(x), false, DesktopHelper.CorrectedCultureInfo));
+            RefreshListWidget();
         }
 
         private void UpdateValues()
@@ -312,13 +306,12 @@ namespace CSLMusicMod.UI
             m_NextTrack.width = 36;
             m_NextTrack.height = 36;
             m_NextTrack.relativePosition = new Vector3(130, 10);
-            m_NextTrack.normalBgSprite = "GenericPanel";
             m_NextTrack.tooltip = Translations.Translate("SHOUTCUT_NEXTTRACK");
 
             m_NextTrack.atlas = TextureHelper.ListAtlas;
-            m_NextTrack.hoveredBgSprite = "OptionBaseFocused";
-            m_NextTrack.pressedBgSprite = "OptionBasePressed";
             m_NextTrack.normalFgSprite = "Next";
+            m_NextTrack.color = m_NextTrack.focusedColor = new Color32(225, 225, 225, 255);
+            m_NextTrack.hoveredColor = new Color32(255, 255, 255, 255);
 
             m_NextTrack.eventClick += buttonNextTrackClicked;
         }
@@ -329,18 +322,17 @@ namespace CSLMusicMod.UI
             m_ButtonSortAscending.width = 36;
             m_ButtonSortAscending.height = 36;
             m_ButtonSortAscending.relativePosition = new Vector3(130 + 40, 10);
-            m_ButtonSortAscending.normalBgSprite = "GenericPanel";
             m_ButtonSortAscending.tooltip = Translations.Translate("SORT_ASCEND");
 
             m_ButtonSortAscending.atlas = TextureHelper.ListAtlas;
-            m_ButtonSortAscending.hoveredBgSprite = "OptionBaseFocused";
-            m_ButtonSortAscending.pressedBgSprite = "OptionBasePressed";
             m_ButtonSortAscending.normalFgSprite = "SortAscending";
+            m_ButtonSortAscending.color = new Color32(225, 225, 225, 255);
+            m_ButtonSortAscending.hoveredColor = new Color32(255, 255, 255, 255);
 
             m_ButtonSortAscending.eventClick += delegate (UIComponent component, UIMouseEventParameter eventParam)
             {
                 m_SortAscending = true;
-                RebuildList();
+                SortList();
             };
         }
 
@@ -350,18 +342,17 @@ namespace CSLMusicMod.UI
             m_ButtonSortDescending.width = 36;
             m_ButtonSortDescending.height = 36;
             m_ButtonSortDescending.relativePosition = new Vector3(130 + 40 * 2, 10);
-            m_ButtonSortDescending.normalBgSprite = "GenericPanel";
             m_ButtonSortDescending.tooltip = Translations.Translate("SORT_DESCEND");
 
             m_ButtonSortDescending.atlas = TextureHelper.ListAtlas;
-            m_ButtonSortDescending.hoveredBgSprite = "OptionBaseFocused";
-            m_ButtonSortDescending.pressedBgSprite = "OptionBasePressed";
             m_ButtonSortDescending.normalFgSprite = "SortDescending";
+            m_ButtonSortDescending.color = new Color32(225, 225, 225, 255);
+            m_ButtonSortDescending.hoveredColor = new Color32(255, 255, 255, 255);
 
             m_ButtonSortDescending.eventClick += delegate (UIComponent component, UIMouseEventParameter eventParam)
             {
                 m_SortAscending = false;
-                RebuildList();
+                SortList();
             };
         }
 
@@ -403,14 +394,12 @@ namespace CSLMusicMod.UI
             m_Close.width = 36;
             m_Close.height = 36;
             m_Close.relativePosition = new Vector3(width - 10 - 36, 10);
-            m_Close.normalBgSprite = "GenericPanel";
             m_Close.tooltip = Translations.Translate("CLOSE_PANEL");
 
             m_Close.atlas = TextureHelper.ListAtlas;
-            m_Close.normalBgSprite = "GenericPanel";
-            m_Close.hoveredBgSprite = "OptionBaseFocused";
-            m_Close.pressedBgSprite = "OptionBasePressed";
             m_Close.normalFgSprite = "Close";
+            m_Close.color = m_Close.focusedColor = new Color32(225, 225, 225, 255);
+            m_Close.hoveredColor = new Color32(255, 255, 255, 255);
 
             m_Close.eventClicked += buttonCloseClicked;
         }
@@ -484,9 +473,8 @@ namespace CSLMusicMod.UI
             m_TopShowMusicList.position = muteButton.position + new Vector3((muteButton.size.x + 5) + (m_AdditionalButtonCount++ * (muteButton.size.y + 5)), 0);
             m_TopShowMusicList.size = new Vector2(muteButton.size.y, muteButton.size.y);
             m_TopShowMusicList.atlas = TextureHelper.ListAtlas;
-            m_TopShowMusicList.normalBgSprite = "Menu";
-            m_TopShowMusicList.hoveredBgSprite = "Menu";
-            m_TopShowMusicList.color = new Color32(225, 225, 225, 255);
+            m_TopShowMusicList.normalFgSprite = "Menu";
+            m_TopShowMusicList.color = m_TopShowMusicList.focusedColor = new Color32(225, 225, 225, 255);
             m_TopShowMusicList.hoveredColor = new Color32(255, 255, 255, 255);
             m_TopShowMusicList.tooltip = Translations.Translate("SHOW_PLAYLIST");
             m_TopShowMusicList.Show();
@@ -508,9 +496,8 @@ namespace CSLMusicMod.UI
             m_TopNextTrack.position = muteButton.position + new Vector3((muteButton.size.x + 5) + (m_AdditionalButtonCount++ * (muteButton.size.y + 5)), 0);
             m_TopNextTrack.size = new Vector2(muteButton.size.y, muteButton.size.y);
             m_TopNextTrack.atlas = TextureHelper.ListAtlas;
-            m_TopNextTrack.normalBgSprite = "Next";
-            m_TopNextTrack.hoveredBgSprite = "Next";
-            m_TopNextTrack.color = new Color32(225, 225, 225, 255);
+            m_TopNextTrack.normalFgSprite = "Next";
+            m_TopNextTrack.color = m_TopNextTrack.focusedColor = new Color32(225, 225, 225, 255);
             m_TopNextTrack.hoveredColor = new Color32(255, 255, 255, 255);
             m_TopNextTrack.tooltip = Translations.Translate("SHOUTCUT_NEXTTRACK");
             m_TopNextTrack.Show();
@@ -527,9 +514,8 @@ namespace CSLMusicMod.UI
             m_TopOpenStationDirectory.position = muteButton.position + new Vector3((muteButton.size.x + 5) + (m_AdditionalButtonCount++ * (muteButton.size.y + 5)), 0);
             m_TopOpenStationDirectory.size = new Vector2(muteButton.size.y, muteButton.size.y);
             m_TopOpenStationDirectory.atlas = TextureHelper.ListAtlas;
-            m_TopOpenStationDirectory.normalBgSprite = "Open";
-            m_TopOpenStationDirectory.hoveredBgSprite = "Open";
-            m_TopOpenStationDirectory.color = new Color32(225, 225, 225, 255);
+            m_TopOpenStationDirectory.normalFgSprite = "Open";
+            m_TopOpenStationDirectory.color = m_TopOpenStationDirectory.focusedColor = new Color32(225, 225, 225, 255);
             m_TopOpenStationDirectory.hoveredColor = new Color32(255, 255, 255, 255);
             m_TopOpenStationDirectory.tooltip = Translations.Translate("BUTTON_OPENDIR");
             m_TopOpenStationDirectory.Show();
@@ -588,8 +574,7 @@ namespace CSLMusicMod.UI
         {
             RadioContentInfo info = m_CurrentContent[value];
             AudioManagerHelper.SetContentEnabled(info, !AudioManagerHelper.ContentIsEnabled(info));
-
-            RebuildList();
+            RefreshListWidget();
         }
 
         void filterTextChanged(UIComponent component, string value)
@@ -651,10 +636,7 @@ namespace CSLMusicMod.UI
             m_RadioChannelInfo.autoSize = false;
             m_RadioChannelInfo.Show();
         }
-        private bool IsFiltered(string entrytext)
-        {
-            return !Filtered ? false : !entrytext.ToLower().Contains(m_Filter.text.ToLower());
-        }
+        private bool IsFiltered(string entrytext) => Filtered && !entrytext.ToLower().Contains(m_Filter.text.ToLower());
 
         public string ShortenString(string str, int size)
         {
