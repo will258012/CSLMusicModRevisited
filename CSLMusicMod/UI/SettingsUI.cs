@@ -124,7 +124,7 @@ namespace CSLMusicMod.UI
                     currentY += title.height + GroupMargin;
 
                     var sortedNames =
-                        stationNamesDict.OrderBy(kvp => kvp.Value, StringComparer.Create(DesktopHelper.GetCorrectCultureInfo(), true)).ToList();
+                        stationNamesDict.OrderBy(kvp => kvp.Value, StringComparer.Create(DesktopHelper.CorrectedCultureInfo, true)).ToList();
 
                     foreach (var kvp in sortedNames)
                     {

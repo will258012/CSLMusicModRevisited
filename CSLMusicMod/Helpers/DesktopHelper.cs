@@ -39,9 +39,18 @@ namespace CSLMusicMod.Helpers
         /// the system language, though note that regional formats (such as time, date, and number 
         /// formatting) may still default to <see cref="CultureInfo"/>'s conventions rather than reflecting system preferences.
         /// </summary>
-        public static CultureInfo GetCorrectCultureInfo() => Environment.OSVersion.Platform == PlatformID.Win32NT
-                ? CultureInfo.GetCultureInfo(GetUserDefaultLCID())
-                : CultureInfo.GetCultureInfo(MapSystemLanguageToCultureCode(Application.systemLanguage));
+        public static CultureInfo CorrectedCultureInfo
+        {
+            get
+            {
+                if (_cultureInfo == null)
+                    _cultureInfo = Environment.OSVersion.Platform == PlatformID.Win32NT
+                                   ? CultureInfo.GetCultureInfo(GetUserDefaultLCID())
+                                   : CultureInfo.GetCultureInfo(MapSystemLanguageToCultureCode(Application.systemLanguage));
+                return _cultureInfo;
+            }
+        }
+        private static CultureInfo _cultureInfo;
 
         [System.Runtime.InteropServices.DllImport("KERNEL32.DLL")]
         private static extern int GetUserDefaultLCID();
