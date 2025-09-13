@@ -78,7 +78,7 @@ namespace CSLMusicMod.Patches
             HashSet<RadioContentInfo> disallowed_content = null;
             if (channel != null)
             {
-                RadioContentWatcher.DisallowedContents.TryGetValue(channel, out disallowed_content);
+                RadioContentWatcher.DisallowedContentsCache.TryGetValue(channel, out disallowed_content);
             }
 
             //Debug.Log("[update]" + channel.GetLocalizedTitle() + " | " + allowed_content);

@@ -15,7 +15,7 @@ namespace CSLMusicMod
     /// </summary>
     public class RadioContentWatcher : MonoBehaviour
     {
-        public static Dictionary<RadioChannelInfo, HashSet<RadioContentInfo>> DisallowedContents { get; private set; } =
+        public static Dictionary<RadioChannelInfo, HashSet<RadioContentInfo>> DisallowedContentsCache { get; private set; } =
             new Dictionary<RadioChannelInfo, HashSet<RadioContentInfo>>();
 
         private ushort m_currentChannel = 0;
@@ -43,91 +43,45 @@ namespace CSLMusicMod
             AudioManager.instance.m_radioContentChanged -= ApplyDisallowedContentRestrictions;
         }
 
-        /// <summary>
-        /// Rebuilds the allowed content for a channel.
-        /// </summary>
-        /// <param name="channel">Channel.</param>
-        public static void RebuildDisallowedContents(RadioChannelInfo channel)
+        public bool IsContentDisallowed(RadioChannelInfo channel, RadioContentInfo content)
         {
-            if (channel == null)
-            {
-                return;
-            }
-
-            if (!DisallowedContents.TryGetValue(channel, out var disallowed))
+            if (!DisallowedContentsCache.TryGetValue(channel, out var disallowed))
             {
                 disallowed = new HashSet<RadioContentInfo>();
-                DisallowedContents[channel] = disallowed;
-            }
-            else
-            {
-                disallowed.Clear();
+                DisallowedContentsCache[channel] = disallowed;
             }
 
-            UserRadioChannel userchannel = AudioManagerHelper.GetUserChannelInfo(channel);
+            var userChannel = AudioManagerHelper.GetUserChannelInfo(channel);
+            var isDisallowed = false;
 
-            if (userchannel != null)
+            if (userChannel != null)
             {
+                var allowedsongs = userChannel.GetApplyingSongs();
                 // If the channel is a custom channel, we can check for context and for content disabling
                 // The method returns NULL if all songs apply!
-                var allowedsongs = userchannel.GetApplyingSongs();
-
-                if (allowedsongs == null)
+                if (allowedsongs != null)
                 {
-                    if (ModOptions.Instance.EnableDisabledContent && ModOptions.Instance.DisabledContent.Count != 0)
-                    {
-                        foreach (UserRadioContent usercontent in userchannel.m_Content)
-                        {
-                            if (usercontent.m_VanillaContentInfo != null)
-                            {
-                                bool isenabled = (!ModOptions.Instance.EnableDisabledContent || AudioManagerHelper.ContentIsEnabled(usercontent.m_VanillaContentInfo));
+                    var userContent = AudioManagerHelper.GetUserContentInfo(content);
+                    bool isInContext = !ModOptions.Instance.EnableContextSensitivity || allowedsongs.Contains(userContent);
+                    bool isEnabled = AudioManagerHelper.ContentIsEnabled(content);
 
-                                if (!isenabled)
-                                {
-                                    disallowed.Add(usercontent.m_VanillaContentInfo);
-                                }
-                            }
-                        }
-                    }
+                    isDisallowed = !isInContext || !isEnabled;
                 }
                 else
-                {
-                    foreach (UserRadioContent usercontent in userchannel.m_Content)
-                    {
-                        if (usercontent.m_VanillaContentInfo != null)
-                        {
-                            bool isincontext = (!ModOptions.Instance.EnableContextSensitivity || allowedsongs.Contains(usercontent));
-                            bool isenabled = (!ModOptions.Instance.EnableDisabledContent || AudioManagerHelper.ContentIsEnabled(usercontent.m_VanillaContentInfo));
-
-                            if (!isincontext || !isenabled)
-                            {
-                                disallowed.Add(usercontent.m_VanillaContentInfo);
-                            }
-                        }
-                    }
-                }
+                    isDisallowed = !AudioManagerHelper.ContentIsEnabled(content);
             }
             else
             {
                 // If the channel is a vanilla channel, we can still disable content
-                AudioManager mgr = Singleton<AudioManager>.instance;
-
-                if (mgr.m_radioContents.m_size > 0)
-                {
-                    for (int i = 0; i < mgr.m_radioContents.m_size; ++i)
-                    {
-                        var content = mgr.m_radioContents[i];
-                        if (content.Info != null && content.Info.m_radioChannels != null && content.Info.m_radioChannels.Contains(channel))
-                        {
-                            if (!AudioManagerHelper.ContentIsEnabled(content.Info))
-                            {
-                                disallowed.Add(content.Info);
-                            }
-                        }
-                    }
-                }
+                isDisallowed = !AudioManagerHelper.ContentIsEnabled(content);
             }
-            DisallowedContents[channel] = disallowed;
+
+            if (isDisallowed)
+                disallowed.Add(content);
+            else
+                disallowed.Remove(content);
+
+            return isDisallowed;
         }
 
         /// <summary>
@@ -142,40 +96,37 @@ namespace CSLMusicMod
             // Otherwise trigger radio content rebuild and stop playback
             RadioChannelData? currentchannel = AudioManagerHelper.GetActiveChannelData();
 
-            if (currentchannel.HasValue)
+            if (!currentchannel.HasValue)
+                return;
+
+            RadioContentData? currentcontent = AudioManagerHelper.GetActiveContentInfo();
+
+            if (!currentcontent.HasValue)
+                return;
+
+            var channelInfo = currentchannel.Value.Info;
+            var contentInfo = currentcontent.Value.Info;
+
+            if (channelInfo == null || contentInfo == null || !IsContentDisallowed(channelInfo, contentInfo))
+                return;
+
+            if (ModOptions.Instance.EnableDebugInfo && DisallowedContentsCache.TryGetValue(channelInfo, out var disallowed))
             {
-                RebuildDisallowedContents(currentchannel.Value.Info);
-                RadioContentData? currentcontent = AudioManagerHelper.GetActiveContentInfo();
-
-                if (currentcontent.HasValue && currentcontent.Value.Info != null)
+                var builder = new System.Text.StringBuilder();
+                builder.AppendLine($"Disallowed content for {channelInfo.name} :");
+                foreach (var v in disallowed)
                 {
-
-                    if (DisallowedContents.TryGetValue(currentchannel.Value.Info, out var disallowed))
-                    {
-                        if (ModOptions.Instance.EnableDebugInfo)
-                        {
-                            var builder = new System.Text.StringBuilder();
-                            builder.AppendLine($"Disallowed content for {currentchannel.Value.Info.name} :");
-                            foreach (var v in disallowed)
-                            {
-                                builder.AppendLine(v.name);
-                            }
-                            Logging.Message(builder.ToString());
-                        }
-
-                        if (disallowed != null && disallowed.Contains(currentcontent.Value.Info))
-                        {
-
-                            Logging.Message("Skipping " + currentcontent.Value.Info.m_fileName);
-                            AudioManagerHelper.TriggerRebuildInternalSongList();
-
-                            if (!ModOptions.Instance.EnableSmoothTransitions)
-                                StartCoroutine(NextTrack_Hard());
-                            else AudioManagerHelper.NextTrack_Smooth();
-                        }
-                    }
+                    builder.AppendLine(v.name);
                 }
+                Logging.Message(builder.ToString());
             }
+
+            Logging.Message("Skipping " + contentInfo.m_fileName);
+            AudioManagerHelper.TriggerRebuildInternalSongList();
+
+            if (!ModOptions.Instance.EnableSmoothTransitions)
+                StartCoroutine(NextTrack_Hard());
+            else AudioManagerHelper.NextTrack_Smooth();
         }
         public void ApplySmoothTransition()
         {
