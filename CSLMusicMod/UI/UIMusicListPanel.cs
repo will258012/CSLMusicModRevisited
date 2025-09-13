@@ -193,9 +193,9 @@ namespace CSLMusicMod.UI
             var nameBuilder = new System.Text.StringBuilder();
 
             if (ModOptions.Instance.ImprovedDisableContentUI)
-                nameBuilder.Append(!AudioManagerHelper.ContentIsEnabled(content) ? "<sprite ContentUnchecked>" : "<sprite ContentChecked>");
+                nameBuilder.Append(!AudioManagerHelper.ContentIsEnabled(content) ? "<sprite ContentUnchecked> " : "<sprite ContentChecked> ");
             else if (!AudioManagerHelper.ContentIsEnabled(content))
-                nameBuilder.Append("<sprite ContentDisabled>");
+                nameBuilder.Append("<sprite ContentDisabled> ");
 
             var currentContentData = AudioManagerHelper.GetActiveContentInfo()?.Info;
             if (currentContentData == content)
@@ -204,22 +204,21 @@ namespace CSLMusicMod.UI
             switch (content.m_contentType)
             {
                 case RadioContentInfo.ContentType.Blurb:
-                    nameBuilder.Append("<sprite Blurb>");
+                    nameBuilder.Append("<sprite Blurb> ");
                     break;
                 case RadioContentInfo.ContentType.Broadcast:
-                    nameBuilder.Append("<sprite Broadcast>");
+                    nameBuilder.Append("<sprite Broadcast> ");
                     break;
                 case RadioContentInfo.ContentType.Commercial:
-                    nameBuilder.Append("<sprite Commercial>");
+                    nameBuilder.Append("<sprite Commercial> ");
                     break;
                 case RadioContentInfo.ContentType.Music:
-                    nameBuilder.Append("<sprite Music>");
+                    nameBuilder.Append("<sprite Music> ");
                     break;
                 case RadioContentInfo.ContentType.Talk:
-                    nameBuilder.Append("<sprite Talk>");
+                    nameBuilder.Append("<sprite Talk> ");
                     break;
             }
-
             nameBuilder.Append(AudioManagerHelper.GetContentName(content));
 
             return nameBuilder.ToString();
