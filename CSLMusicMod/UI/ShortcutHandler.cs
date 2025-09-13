@@ -41,8 +41,8 @@ namespace CSLMusicMod.UI
 
         public void Update()
         {
-            // Check if some other UI has the focus
-            if (UIView.HasInputFocus())
+            // Check if some other UI has the focus or the game is in pause menu
+            if (UIView.HasInputFocus() || SimulationManager.instance.ForcedSimulationPaused)
             {
                 m_NextTrackKey_IsDown = false;
                 m_OpenPanelKey_IsDown = false;
@@ -88,10 +88,10 @@ namespace CSLMusicMod.UI
                 m_OpenPanelKey_IsDown = false;
                 Logging.Message("Pressed shortcut for hide/show panel");
 
-                var radioPanel = AudioManagerHelper.CurrentRadioPanel;
+                var radioPanel = RadioPanelHelper.CurrentRadioPanel;
                 if (radioPanel != null)
                 {
-                    var visible = ReflectionHelper.GetPrivateField<bool>(radioPanel, "m_isVisible");
+                    var visible = RadioPanelHelper.m_isVisible.Value;
 
                     if (visible)
                         radioPanel.HideRadio();

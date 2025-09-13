@@ -16,7 +16,6 @@ namespace CSLMusicMod.UI
         public UIMusicListPanel ListPanel { get; private set; }
 
         private bool m_Initialized = false;
-
         private const float m_updateInterval = .1f;
         private float m_nextUpdateTime = default;
 
@@ -39,7 +38,7 @@ namespace CSLMusicMod.UI
 
         public void Update()
         {
-            if (!m_Initialized) return;
+            if (!m_Initialized || SimulationManager.instance.ForcedSimulationPaused) return;
 
             if (Time.time < m_nextUpdateTime) return;
 
@@ -47,7 +46,7 @@ namespace CSLMusicMod.UI
 
             if (ListPanel != null)
             {
-                ListPanel.isVisible = ModOptions.Instance.EnableCustomUI && ModOptions.Instance.MusicListVisible && ReflectionHelper.GetPrivateField<bool>(AudioManagerHelper.CurrentRadioPanel, "m_isVisible");
+                ListPanel.isVisible = ModOptions.Instance.EnableCustomUI && ModOptions.Instance.MusicListVisible && RadioPanelHelper.m_isVisible.Value;
                 if (ListPanel.isVisible)
                 {
                     ListPanel.UpdateVolumeSliderTooltip();
