@@ -47,7 +47,6 @@ namespace CSLMusicMod.UI
         private bool m_SortAscending = true;
 
         private List<RadioContentInfo> m_CurrentContent = new List<RadioContentInfo>();
-        private RadioPanel CurrentRadioPanel => AudioManagerHelper.CurrentRadioPanel;
 
         private bool Filtered
         {
@@ -74,8 +73,8 @@ namespace CSLMusicMod.UI
             disabledClickSound = UIView.GetAView().defaultDisabledClickSound;
             opacity = 0.9f;
 
-            var muteButton = ReflectionHelper.GetPrivateField<UIMultiStateButton>(CurrentRadioPanel, "m_muteButton");
-            var radioPanel = ReflectionHelper.GetPrivateField<UIPanel>(CurrentRadioPanel, "m_radioPanel");
+            var muteButton = ReflectionHelper.GetPrivateField<UIMultiStateButton>(RadioPanelHelper.CurrentRadioPanel, "m_muteButton");
+            var radioPanel = RadioPanelHelper.m_radioPanel.Value;
 
             InitializeShowMusicPanelButton(muteButton, radioPanel);
             InitializeTopNextTrackButton(muteButton, radioPanel);
@@ -116,10 +115,10 @@ namespace CSLMusicMod.UI
             base.OnVisibilityChanged();
 
             // Bring the radio panel to the front
-            if (CurrentRadioPanel != null)
+            if (RadioPanelHelper.CurrentRadioPanel != null)
             {
-                var panel = ReflectionHelper.GetPrivateField<UIPanel>(CurrentRadioPanel, "m_radioPanel");
-                var list = ReflectionHelper.GetPrivateField<UIPanel>(CurrentRadioPanel, "m_radioList");
+                var panel = RadioPanelHelper.m_radioPanel.Value;
+                var list = RadioPanelHelper.m_radioList.Value;
 
                 panel?.BringToFront();
                 if (list != null)
@@ -135,7 +134,7 @@ namespace CSLMusicMod.UI
         {
             AudioManager mgr = Singleton<AudioManager>.instance;
 
-            ushort activechannel = ReflectionHelper.GetPrivateField<ushort>(mgr, "m_activeRadioChannel");
+            ushort activechannel = AudioManagerHelper.m_activeRadioChannel.Value;
 
             //Debug.Log("Selected active channel " + activechannel + " of " + mgr.m_radioChannelCount);
 
@@ -583,7 +582,7 @@ namespace CSLMusicMod.UI
             RebuildList();
         }
 
-        void buttonCloseClicked(UIComponent component, UIMouseEventParameter eventParam) => CurrentRadioPanel.HideRadio();
+        void buttonCloseClicked(UIComponent component, UIMouseEventParameter eventParam) => RadioPanelHelper.CurrentRadioPanel.HideRadio();
 
         private void InitializeMusicList()
         {

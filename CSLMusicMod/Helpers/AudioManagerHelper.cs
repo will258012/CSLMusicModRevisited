@@ -1,7 +1,7 @@
 ﻿using AlgernonCommons;
 using ColossalFramework;
+using HarmonyLib;
 using System;
-using System.Linq;
 using UnityEngine;
 
 namespace CSLMusicMod.Helpers
@@ -11,29 +11,12 @@ namespace CSLMusicMod.Helpers
     /// </summary>
     public static class AudioManagerHelper
     {
-
-        /// <summary>
-        /// Gets the current radio panel.
-        /// This function is expensive. Only call if necessary!
-        /// </summary>
-        /// <value>The current radio panel.</value>
-        public static RadioPanel CurrentRadioPanel
-        {
-            get
-            {
-                if (m_CurrentRadioPanel == null)
-                {
-                    m_CurrentRadioPanel = Resources.FindObjectsOfTypeAll<RadioPanel>().FirstOrDefault();
-                }
-                return m_CurrentRadioPanel;
-            }
-        }
-
-        /// <summary>
-        /// The current radio panel (from vanilla UI)
-        /// Used as cache to prevent expensive FindObjectOfTypeAll calls 
-        /// </summary>
-        private static RadioPanel m_CurrentRadioPanel = null;
+        private static readonly Traverse m_audioManager = Traverse.Create(AudioManager.instance);
+        internal static readonly Traverse<ushort> m_activeRadioChannel = m_audioManager.Field<ushort>("m_activeRadioChannel");
+        private static readonly Traverse<RadioChannelInfo> m_selectedStation = m_audioManager.Field<RadioChannelInfo>("m_selectedStation");
+        private static readonly Traverse<RadioChannelInfo[]> m_stations = m_audioManager.Field<RadioChannelInfo[]>("m_stations");
+        private static readonly Traverse<bool> m_musicFileIsRadio = m_audioManager.Field<bool>("m_musicFileIsRadio");
+        private static readonly Traverse<AudioManager.AudioPlayer> m_currentRadioPlayer = m_audioManager.Field<AudioManager.AudioPlayer>("m_currentRadioPlayer");
 
         /// <summary>
         /// Returns the currently active channel data
@@ -42,11 +25,11 @@ namespace CSLMusicMod.Helpers
         public static RadioChannelData? GetActiveChannelData()
         {
             AudioManager mgr = Singleton<AudioManager>.instance;
-            ushort activechannel = ReflectionHelper.GetPrivateField<ushort>(mgr, "m_activeRadioChannel");
+            ushort activeChannel = m_activeRadioChannel.Value;
 
-            if (activechannel >= 0)
+            if (activeChannel >= 0)
             {
-                RadioChannelData data = mgr.m_radioChannels[activechannel];
+                RadioChannelData data = mgr.m_radioChannels[activeChannel];
                 return data;
             }
             else
@@ -61,12 +44,12 @@ namespace CSLMusicMod.Helpers
         /// <returns>The active content data.</returns>
         public static RadioContentData? GetActiveContentInfo()
         {
-            RadioChannelData? currentchannel = GetActiveChannelData();
+            RadioChannelData? currentChannel = GetActiveChannelData();
 
-            if (currentchannel != null)
+            if (currentChannel != null)
             {
                 AudioManager mgr = Singleton<AudioManager>.instance;
-                return currentchannel.Value.m_currentContent != 0 ? mgr.m_radioContents[currentchannel.Value.m_currentContent] : (RadioContentData?)null;
+                return currentChannel.Value.m_currentContent != 0 ? mgr.m_radioContents[currentChannel.Value.m_currentContent] : (RadioContentData?)null;
             }
             else
             {
@@ -80,13 +63,7 @@ namespace CSLMusicMod.Helpers
         /// </summary>
         /// <returns>The user channel info.</returns>
         /// <param name="info">Info.</param>
-        public static UserRadioChannel GetUserChannelInfo(RadioChannelInfo info)
-        {
-            AudioManager mgr = Singleton<AudioManager>.instance;
-
-
-            return Loading.UserRadioContainer.m_UserRadioDict.TryGetValue(info, out var userchannel) ? userchannel : null;
-        }
+        public static UserRadioChannel GetUserChannelInfo(RadioChannelInfo info) => Loading.UserRadioContainer.m_UserRadioDict.TryGetValue(info, out UserRadioChannel userchannel) ? userchannel : null;
 
         /// <summary>
         /// Returns the custom content info from a vanilla content info if available.
@@ -94,11 +71,7 @@ namespace CSLMusicMod.Helpers
         /// </summary>
         /// <returns>The user content info.</returns>
         /// <param name="info">Info.</param>
-        public static UserRadioContent GetUserContentInfo(RadioContentInfo info)
-        {
-
-            return Loading.UserRadioContainer.m_UserContentDict.TryGetValue(info, out var usercontent) ? usercontent : null;
-        }
+        public static UserRadioContent GetUserContentInfo(RadioContentInfo info) => Loading.UserRadioContainer.m_UserContentDict.TryGetValue(info, out var usercontent) ? usercontent : null;
 
         /// <summary>
         /// Switches to the next station
@@ -106,10 +79,10 @@ namespace CSLMusicMod.Helpers
         /// <returns><c>true</c>, if it was possible to switch to the next station, <c>false</c> otherwise.</returns>
         public static bool NextStation()
         {
-            if (CurrentRadioPanel != null)
+            if (RadioPanelHelper.CurrentRadioPanel != null)
             {
-                RadioChannelInfo current = ReflectionHelper.GetPrivateField<RadioChannelInfo>(CurrentRadioPanel, "m_selectedStation");
-                RadioChannelInfo[] stations = ReflectionHelper.GetPrivateField<RadioChannelInfo[]>(CurrentRadioPanel, "m_stations");
+                RadioChannelInfo current = m_selectedStation.Value;
+                RadioChannelInfo[] stations = m_stations.Value;
 
                 if (stations != null && stations.Length != 0)
                 {
@@ -120,7 +93,7 @@ namespace CSLMusicMod.Helpers
 
                     if (next != null)
                     {
-                        ReflectionHelper.InvokePrivateVoidMethod(CurrentRadioPanel, "SelectStation", next);
+                        RadioPanelHelper.selectStationMethod.GetValue(next);
                     }
                 }
             }
@@ -136,13 +109,13 @@ namespace CSLMusicMod.Helpers
         {
             // Note: there is GetActiveChannelData. But radio channels are structs, so we need to access directly. 
             AudioManager mgr = Singleton<AudioManager>.instance;
-            ushort activechannel = ReflectionHelper.GetPrivateField<ushort>(mgr, "m_activeRadioChannel");
+            ushort activeChannel = m_activeRadioChannel.Value;
 
-            if (activechannel >= 0)
+            if (activeChannel >= 0)
             {
-                RadioChannelData data = mgr.m_radioChannels[activechannel];
+                RadioChannelData data = mgr.m_radioChannels[activeChannel];
                 data.m_nextContent = 0;
-                mgr.m_radioChannels[activechannel] = data; // Did you know that you don't need this in C++?
+                mgr.m_radioChannels[activeChannel] = data; // Did you know that you don't need this in C++?
 
                 return true;
             }
@@ -169,15 +142,12 @@ namespace CSLMusicMod.Helpers
         {
             AudioManager mgr = Singleton<AudioManager>.instance;
 
-            if (ReflectionHelper.GetPrivateField<bool>(mgr, "m_musicFileIsRadio"))
+            if (m_musicFileIsRadio.Value)
             {
                 Logging.Message("Radio switches to next track");
 
-                var player = ReflectionHelper.GetPrivateField<AudioManager.AudioPlayer>(mgr, "m_currentRadioPlayer");
-
+                var player = m_currentRadioPlayer.Value;
                 player?.m_source.Stop();
-
-
                 return true;
             }
             else
@@ -197,17 +167,15 @@ namespace CSLMusicMod.Helpers
 
             // musicFileIsRadio is false if no radio channel is active. We cannot
             // do anything in this case.
-            if (ReflectionHelper.GetPrivateField<bool>(mgr, "m_musicFileIsRadio"))
+            if (m_musicFileIsRadio.Value)
             {
-                ushort activechannel = ReflectionHelper.GetPrivateField<ushort>(mgr, "m_activeRadioChannel");
+                ushort activechannel = m_activeRadioChannel.Value;
 
                 if (activechannel >= 0)
                 {
                     RadioChannelData data = mgr.m_radioChannels[activechannel];
                     data.m_currentContent = 0;
                     mgr.m_radioChannels[activechannel] = data;
-
-
 
                     return true;
                 }
@@ -233,7 +201,7 @@ namespace CSLMusicMod.Helpers
 
             // musicFileIsRadio is false if no radio channel is active. We cannot
             // do anything in this case.
-            if (ReflectionHelper.GetPrivateField<bool>(mgr, "m_musicFileIsRadio"))
+            if (m_musicFileIsRadio.Value)
             {
                 ushort contentindex = 0;
                 bool found = false;
@@ -269,14 +237,14 @@ namespace CSLMusicMod.Helpers
                 //Debug.Log("Content index: " + contentindex);
 
                 // Next content
-                ushort activechannel = ReflectionHelper.GetPrivateField<ushort>(mgr, "m_activeRadioChannel");
+                ushort activeChannel = m_activeRadioChannel.Value;
 
-                if (activechannel >= 0)
+                if (activeChannel >= 0)
                 {
-                    RadioChannelData data = mgr.m_radioChannels[activechannel];
+                    RadioChannelData data = mgr.m_radioChannels[activeChannel];
                     data.m_currentContent = contentindex;
                     //data.m_nextContent = contentindex;
-                    mgr.m_radioChannels[activechannel] = data;
+                    mgr.m_radioChannels[activeChannel] = data;
                     //mgr.m_radioChannels[activechannel].ChangeContent(activechannel);
 
                     return true;
@@ -300,7 +268,7 @@ namespace CSLMusicMod.Helpers
         /// <param name="info">Info.</param>
         public static bool ContentIsEnabled(RadioContentInfo info)
         {
-            if (info == null)
+            if (!ModOptions.Instance.EnableDisabledContent || ModOptions.Instance.DisabledContent.Count == 0 || info == null)
                 return true;
 
             string id = info.m_folderName + "/" + info.m_fileName;
@@ -349,34 +317,44 @@ namespace CSLMusicMod.Helpers
         {
             time = length = default;
             formattedProgress = null;
-            AudioManager mgr = Singleton<AudioManager>.instance;
-            if (ReflectionHelper.GetPrivateField<bool>(mgr, "m_musicFileIsRadio"))
-            {
-                var player = ReflectionHelper.GetPrivateField<AudioManager.AudioPlayer>(mgr, "m_currentRadioPlayer");
-                var source = player?.m_source;
 
-                if (source == null || source.clip == null)
-                    return false;
+            if (!m_musicFileIsRadio.Value)
+                return false;
 
-                time = source.time;
-                length = source.clip.length;
+            var player = m_currentRadioPlayer.Value;
+            var source = player?.m_source;
 
-                var timeSpan = TimeSpan.FromSeconds(time);
-                var lengthSpan = TimeSpan.FromSeconds(length);
+            if (source == null || source.clip == null)
+                return false;
 
-                 var timeFormatted = timeSpan.Hours > 0
-                    ? $"{(int)timeSpan.TotalHours:00}:{timeSpan.Minutes:00}:{timeSpan.Seconds:00}"
-                    : $"{timeSpan.Minutes:00}:{timeSpan.Seconds:00}";
+            time = source.time;
+            length = source.clip.length;
 
-                var lengthFormatted = lengthSpan.Hours > 0
-                    ? $"{(int)lengthSpan.TotalHours:00}:{lengthSpan.Minutes:00}:{lengthSpan.Seconds:00}"
-                    : $"{lengthSpan.Minutes:00}:{lengthSpan.Seconds:00}";
+            FormatTime(time, out string timeFormatted);
+            FormatTime(length, out string lengthFormatted);
 
-                formattedProgress = $"{timeFormatted} / {lengthFormatted}";
-                return true;
-            }
-            return false;
+            formattedProgress = string.Concat(timeFormatted, " / ", lengthFormatted);
+            return true;
         }
+
+
+        private static void FormatTime(float totalSeconds, out string formatted)
+        {
+            int seconds = (int)totalSeconds;
+            int hours = seconds / 3600;
+            int minutes = (seconds % 3600) / 60;
+            seconds = seconds % 60;
+
+            if (hours > 0)
+            {
+                formatted = $"{hours:00}:{minutes:00}:{seconds:00}";
+            }
+            else
+            {
+                formatted = $"{minutes:00}:{seconds:00}";
+            }
+        }
+
         /// <summary>
         /// Sets the playback position of the current track.
         /// </summary>
@@ -388,9 +366,9 @@ namespace CSLMusicMod.Helpers
         public static void SetTrackProgress(float time)
         {
             AudioManager mgr = Singleton<AudioManager>.instance;
-            if (ReflectionHelper.GetPrivateField<bool>(mgr, "m_musicFileIsRadio"))
+            if (m_musicFileIsRadio.Value)
             {
-                var player = ReflectionHelper.GetPrivateField<AudioManager.AudioPlayer>(mgr, "m_currentRadioPlayer");
+                var player = m_currentRadioPlayer.Value;
                 var source = player?.m_source;
                 if (source != null && source.clip != null)
                 {
