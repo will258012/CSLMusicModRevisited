@@ -1,0 +1,4 @@
+files:
+  - source: CSLMusicMod/Translations/en-EN.csv
+    translation: /**/CSLMusicMod/Translations/%locale%.csv
+    scheme: 'identifier,source_or_translation,context'
