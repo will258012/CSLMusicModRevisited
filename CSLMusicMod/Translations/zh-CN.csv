@@ -1,58 +1,61 @@
-﻿LANGUAGE,简体中文
-MOD_DESCRIPTION,为游戏添加自定义广播电台
-TAB_INFO,信息
-TAB_CHANNELS,频道
-TAB_CONT,内容
-TAB_SHORTCUTS,快捷键
-TAB_UI,用户界面
-PERF,性能
-PERF_TIP,"若遇到性能问题，可尝试禁用标有星号(*)的设置项。"
-CHANNELS_CONT,频道与内容
-CHANNELS_CONT_TIP,"你可通过安装音乐包、将电台配置文件或音乐文件放入 “CSLMusicMod_Music” 文件夹
-或放入包含原版广播内容的文件夹来添加自定义频道或音乐。"
-TRBL,故障排除
-TRBL_TIP,"可在 CSLMusicMod 维基和 Steam 创意工坊页面查看相关信息。
-如需提交日志文件，请务必启用 “启用详细的调试日志记录”。"
-VANILLA_CHANNELS,原版频道管理
-MUSIC_PACKS,音乐包（需要重新加载）
-ENABLE_MUSIC_PACKS,使用音乐包内的音乐
-CREATE_CHANNELS_FROM_LEGACY,从未使用的音乐文件创建频道
-CHANNEL_ALL_CONT,全内容频道（需要重新加载）
-CREATE_MIX_CHANNEL,创建“天际线音乐混搭”频道
-INCLUDE_VANILLA_SONGS,包含原版歌曲
-INCLUDE_MUSIC,包含音乐
-INCLUDE_BLURBS,包含台呼
-INCLUDE_TALKS,包含谈话节目
-INCLUDE_COMMERCIALS,包含广告
-INCLUDE_BROADCASTS,包含广播
-ADD_FEAT,附加功能
-DISABLED_CONT,内容可禁用
-CONT_SENS,情境感知内容
-SMOOTH_TRANS,平滑过渡
-ADD_CONT_TO_VANILLA,使用自定义内容扩展原版电台（需要重新加载）
-RESET_DISABLED,重置已禁用内容
-RADIO_CONT,电台内容（需要重新加载）
-ENABLE_MUSIC,启用音乐
-ENABLE_BLURBS,启用台呼
-ENABLE_TALKS,启用谈话节目
-ENABLE_COMMERCIALS,启用广告
-ENABLE_BROADCASTS,启用广播
-SHOUTCUT_OPENPLAYLIST,打开播放列表和设置
-SHOUTCUT_NEXTTRACK,下一曲
-SHOUTCUT_NEXTSTATION,下一电台
-ENABLE_PLAYLIST,启用播放列表*
-IMPROVED_RADIO_SELECTION,增强电台选择（需要重新加载）
-OPEN_DIR,打开电台目录按钮（需要重新加载）
-DISABLE_CONT_CHECKBOXES,内容禁用复选框
-VOLUMESLIDER,拖动调整音乐音量
-SORT_ASCEND,升序排序
-SORT_DESCEND,降序排序
-CLOSE_PANEL,关闭此面板
-SHOW_PLAYLIST,显示/隐藏播放列表
-BUTTON_OPENDIR,打开电台所在文件夹
-NOT_RADIO,"当前频道非广播频道。你的自定义音乐可以在“由用户定义”、
-“天际线音乐混搭”及由音乐包创建的频道中找到。"
-NO_RESULTS,未找到结果。
-DISABLE_CONT_CHECKBOXES_TIP,双击可禁用条目。
-USERDEFINED,由用户定义
-CSLMUSIC_MIX,天际线音乐混搭
+﻿"LANGUAGE","English",""
+"MOD_DESCRIPTION","Adds custom radio stations the game",""
+"TAB_INFO","Info",""
+"TAB_CHANNELS","Channels",""
+"TAB_CONT","Content",""
+"TAB_SHORTCUTS","Shortcuts",""
+"TAB_UI","User Interface",""
+"PERF","Performance",""
+"PERF_TIP","If you have performance problems, you can try to disable features
+marked with an asterisk (*).",""
+"CHANNELS_CONT","Channels & Content",""
+"CHANNELS_CONT_TIP","You can add your own channels or music by installing music packs,
+putting station configurations or music files into the ""CSLMusicMod_Music"" folder
+or into the folder containing vanilla radio content.",""
+"TRBL","Troubleshooting",""
+"TRBL_TIP","You can find information in the CSLMusicMod wiki and the Steam workshop entry.
+Don't forget to enable ""Enable detailed debugging logging"" if you want to provide a log.",""
+"VANILLA_CHANNELS","Manage vanilla channels",""
+"MUSIC_PACKS","Music packs (Needs reload)",""
+"ENABLE_MUSIC_PACKS","Use music from music packs",""
+"CREATE_CHANNELS_FROM_LEGACY","Create channels from unused music files",""
+"CHANNEL_ALL_CONT","Channel with all contents (Needs reload)",""
+"CREATE_MIX_CHANNEL","Create ""CSLMusic Mix"" channel",""
+"INCLUDE_VANILLA_SONGS","Include vanilla songs",""
+"INCLUDE_MUSIC","Include music",""
+"INCLUDE_BLURBS","Include blurbs",""
+"INCLUDE_TALKS","Include talks",""
+"INCLUDE_COMMERCIALS","Include commercials",""
+"INCLUDE_BROADCASTS","Include broadcasts",""
+"ADD_FEAT","Additional features",""
+"DISABLED_CONT","Content can be disabled",""
+"CONT_SENS","Context-sensitive content",""
+"SMOOTH_TRANS","Smooth transitions",""
+"ADD_CONT_TO_VANILLA","Extend vanilla stations with custom content (Needs reload)",""
+"RESET_DISABLED","Reset disabled contents",""
+"RADIO_CONT","Radio station content (Needs reload)",""
+"ENABLE_MUSIC","Enable music",""
+"ENABLE_BLURBS","Enable blurbs",""
+"ENABLE_TALKS","Enable talks",""
+"ENABLE_COMMERCIALS","Enable commercials",""
+"ENABLE_BROADCASTS","Enable broadcasts",""
+"SHOUTCUT_OPENPLAYLIST","Open playlist and settings",""
+"SHOUTCUT_NEXTTRACK","Next track",""
+"SHOUTCUT_NEXTSTATION","Next station",""
+"ENABLE_PLAYLIST","Enable playlist*",""
+"IMPROVED_RADIO_SELECTION","Improved radio station selection (Needs reload)",""
+"OPEN_DIR","Open station directory button (Needs reload)",""
+"DISABLE_CONT_CHECKBOXES","Checkboxes to disable content",""
+"VOLUMESLIDER","Drag to change the music volume",""
+"SORT_ASCEND","Sort ascending",""
+"SORT_DESCEND","Sort descending",""
+"CLOSE_PANEL","Close this panel",""
+"SHOW_PLAYLIST","Shows/hides the playlist",""
+"BUTTON_OPENDIR","Open folder containing the radio station.",""
+"NOT_RADIO","This channel is not a radio-channel. Your custom music
+can be found in ""Userdefined"", ""CSLMusic Mix"" and
+channels created by music packs.",""
+"NO_RESULTS","No results found.",""
+"DISABLE_CONT_CHECKBOXES_TIP","Double-click to disable an entry.",""
+"USERDEFINED","Userdefined",""
+"CSLMUSIC_MIX","CSLMusic Mix",""
