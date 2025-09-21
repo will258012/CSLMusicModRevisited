@@ -61,6 +61,7 @@
     <Compile Include="Helpers\LoadingManagerHelper.cs" />
     <Compile Include="ChannelInitializer.cs" />
     <Compile Include="ContentInitializer.cs" />
+    <Compile Include="UI\ErrorNotification.cs" />
     <Compile Include="UserRadioContent.cs" />
     <Compile Include="UserRadioChannel.cs" />
     <Compile Include="UserRadioCollection.cs" />

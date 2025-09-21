@@ -30,6 +30,16 @@ namespace CSLMusicMod
                 }
             }
        };
+        public override void OnEnabled()
+        {
+            base.OnEnabled();
+            Logging.EventExceptionOccured += ErrorNotification.ShowNotification;
+        }
+        public override void OnDisabled()
+        {
+            base.OnDisabled();
+            Logging.EventExceptionOccured -= ErrorNotification.ShowNotification;
+        }
         public override void LoadSettings() => ModOptions.Instance.LoadSettings();
         public override void SaveSettings() => ModOptions.Instance.SaveSettings();
 
