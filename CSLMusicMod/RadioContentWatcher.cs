@@ -1,10 +1,8 @@
 ﻿using AlgernonCommons;
 using ColossalFramework;
 using CSLMusicMod.Helpers;
-using HarmonyLib;
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
 
 namespace CSLMusicMod
@@ -19,28 +17,27 @@ namespace CSLMusicMod
             new Dictionary<RadioChannelInfo, HashSet<RadioContentInfo>>();
 
         private ushort m_currentChannel = 0;
+        private UserRadioChannel m_currentUserChannel = null;
         private string[] m_musicFilesBackup = null;
         public void Start()
         {
             if (m_musicFilesBackup == null)
             {
-                AudioManager mgr = Singleton<AudioManager>.instance;
-                m_musicFilesBackup = ReflectionHelper.GetPrivateField<string[]>(mgr, "m_musicFiles");
+                m_musicFilesBackup = AudioManagerHelper.m_musicFiles.Value;
             }
 
             AudioManager.instance.m_radioContentChanged += ApplySmoothTransition;
-            AudioManager.instance.m_radioContentChanged += ApplyDisallowedContentRestrictions;
+            InvokeRepeating("ApplyDisallowedContentRestrictions", 1f, 5f);
         }
 
         public void OnDestroy()
         {
             if (m_musicFilesBackup != null)
             {
-                AudioManager mgr = Singleton<AudioManager>.instance;
-                ReflectionHelper.SetPrivateField(mgr, "m_musicFiles", m_musicFilesBackup);
+                AudioManagerHelper.m_musicFiles.Value = m_musicFilesBackup;
             }
             AudioManager.instance.m_radioContentChanged -= ApplySmoothTransition;
-            AudioManager.instance.m_radioContentChanged -= ApplyDisallowedContentRestrictions;
+            CancelInvoke("ApplyDisallowedContentRestrictions");
         }
 
         public bool IsContentDisallowed(RadioChannelInfo channel, RadioContentInfo content)
@@ -51,12 +48,11 @@ namespace CSLMusicMod
                 DisallowedContentsCache[channel] = disallowed;
             }
 
-            var userChannel = AudioManagerHelper.GetUserChannelInfo(channel);
             var isDisallowed = false;
 
-            if (userChannel != null)
+            if (m_currentUserChannel != null)
             {
-                var allowedsongs = userChannel.GetApplyingSongs();
+                var allowedsongs = m_currentUserChannel.GetApplyingSongs();
                 // If the channel is a custom channel, we can check for context and for content disabling
                 // The method returns NULL if all songs apply!
                 if (allowedsongs != null)
@@ -99,7 +95,7 @@ namespace CSLMusicMod
             if (!currentchannel.HasValue)
                 return;
 
-            RadioContentData? currentcontent = AudioManagerHelper.GetActiveContentInfo();
+            RadioContentData? currentcontent = AudioManagerHelper.GetActiveContentInfo(currentchannel);
 
             if (!currentcontent.HasValue)
                 return;
@@ -107,7 +103,7 @@ namespace CSLMusicMod
             var channelInfo = currentchannel.Value.Info;
             var contentInfo = currentcontent.Value.Info;
 
-            if (channelInfo == null || contentInfo == null || !IsContentDisallowed(channelInfo, contentInfo))
+            if (!IsContentDisallowed(channelInfo, contentInfo))
                 return;
 
             if (ModOptions.Instance.EnableDebugInfo && DisallowedContentsCache.TryGetValue(channelInfo, out var disallowed))
@@ -144,20 +140,19 @@ namespace CSLMusicMod
                 return;
 
             m_currentChannel = index;
+            m_currentUserChannel = AudioManagerHelper.GetUserChannelInfo(channel.Value.Info);
 
-            AudioManager mgr = Singleton<AudioManager>.instance;
-            var traverse = Traverse.Create(mgr).Field("m_musicFiles");
 
             if (channel.Value.m_flags.IsFlagSet(RadioChannelData.Flags.PlayDefault))
             {
                 if (m_musicFilesBackup != null)
                 {
-                    traverse.SetValue(m_musicFilesBackup);
+                    AudioManagerHelper.m_musicFiles.Value = m_musicFilesBackup;
                 }
             }
             else
             {
-                traverse.SetValue(null);
+                AudioManagerHelper.m_musicFiles.Value = null;
             }
         }
         private IEnumerator NextTrack_Hard()
