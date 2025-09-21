@@ -34,7 +34,8 @@ namespace CSLMusicMod.Helpers
         internal static readonly Traverse<UIPanel> m_radioPanel = m_traverse.Field<UIPanel>("m_radioPanel");
         internal static readonly Traverse<UIPanel> m_radioList = m_traverse.Field<UIPanel>("m_radioList");
         internal static readonly Traverse<bool> m_isVisible = m_traverse.Field<bool>("m_isVisible");
-
-        internal static readonly Traverse selectStationMethod = m_traverse.Method("SelectStation");
+        internal static readonly Traverse<RadioChannelInfo> m_selectedStation = m_traverse.Field<RadioChannelInfo>("m_selectedStation");
+        internal static readonly Traverse<RadioChannelInfo[]> m_stations = m_traverse.Field<RadioChannelInfo[]>("m_stations");
+        internal static void SelectStation(RadioChannelInfo radioChannelInfo) => m_traverse.Method("SelectStation", radioChannelInfo).GetValue();
     }
 }

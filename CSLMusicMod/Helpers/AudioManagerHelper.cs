@@ -13,10 +13,9 @@ namespace CSLMusicMod.Helpers
     {
         private static readonly Traverse m_audioManager = Traverse.Create(AudioManager.instance);
         internal static readonly Traverse<ushort> m_activeRadioChannel = m_audioManager.Field<ushort>("m_activeRadioChannel");
-        private static readonly Traverse<RadioChannelInfo> m_selectedStation = m_audioManager.Field<RadioChannelInfo>("m_selectedStation");
-        private static readonly Traverse<RadioChannelInfo[]> m_stations = m_audioManager.Field<RadioChannelInfo[]>("m_stations");
         private static readonly Traverse<bool> m_musicFileIsRadio = m_audioManager.Field<bool>("m_musicFileIsRadio");
         private static readonly Traverse<AudioManager.AudioPlayer> m_currentRadioPlayer = m_audioManager.Field<AudioManager.AudioPlayer>("m_currentRadioPlayer");
+        internal static readonly Traverse<string[]> m_musicFiles = m_audioManager.Field<string[]>("m_musicFiles");
 
         /// <summary>
         /// Returns the currently active channel data
@@ -42,11 +41,12 @@ namespace CSLMusicMod.Helpers
         /// Returns the currently playing song
         /// </summary>
         /// <returns>The active content data.</returns>
-        public static RadioContentData? GetActiveContentInfo()
+        public static RadioContentData? GetActiveContentInfo(RadioChannelData? currentChannel = null)
         {
-            RadioChannelData? currentChannel = GetActiveChannelData();
+            if (!currentChannel.HasValue)
+                currentChannel = GetActiveChannelData();
 
-            if (currentChannel != null)
+            if (currentChannel.HasValue)
             {
                 AudioManager mgr = Singleton<AudioManager>.instance;
                 return currentChannel.Value.m_currentContent != 0 ? mgr.m_radioContents[currentChannel.Value.m_currentContent] : (RadioContentData?)null;
@@ -63,7 +63,7 @@ namespace CSLMusicMod.Helpers
         /// </summary>
         /// <returns>The user channel info.</returns>
         /// <param name="info">Info.</param>
-        public static UserRadioChannel GetUserChannelInfo(RadioChannelInfo info) => Loading.UserRadioContainer.m_UserRadioDict.TryGetValue(info, out UserRadioChannel userchannel) ? userchannel : null;
+        public static UserRadioChannel GetUserChannelInfo(RadioChannelInfo info) => Loading.UserRadioContainer.m_UserRadioDict.TryGetValue(info, out var userchannel) ? userchannel : null;
 
         /// <summary>
         /// Returns the custom content info from a vanilla content info if available.
@@ -81,8 +81,8 @@ namespace CSLMusicMod.Helpers
         {
             if (RadioPanelHelper.CurrentRadioPanel != null)
             {
-                RadioChannelInfo current = m_selectedStation.Value;
-                RadioChannelInfo[] stations = m_stations.Value;
+                RadioChannelInfo current = RadioPanelHelper.m_selectedStation.Value;
+                RadioChannelInfo[] stations = RadioPanelHelper.m_stations.Value;
 
                 if (stations != null && stations.Length != 0)
                 {
@@ -93,7 +93,7 @@ namespace CSLMusicMod.Helpers
 
                     if (next != null)
                     {
-                        RadioPanelHelper.selectStationMethod.GetValue(next);
+                        RadioPanelHelper.SelectStation(next);
                     }
                 }
             }
