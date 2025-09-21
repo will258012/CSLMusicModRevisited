@@ -43,10 +43,24 @@ namespace CSLMusicMod.Helpers
         {
             get
             {
-                if (_cultureInfo == null)
-                    _cultureInfo = Environment.OSVersion.Platform == PlatformID.Win32NT
-                                   ? CultureInfo.GetCultureInfo(GetUserDefaultLCID())
-                                   : CultureInfo.GetCultureInfo(MapSystemLanguageToCultureCode(Application.systemLanguage));
+                try
+                {
+                    if (_cultureInfo == null)
+                        _cultureInfo = Environment.OSVersion.Platform == PlatformID.Win32NT
+                                       ? CultureInfo.GetCultureInfo(GetUserDefaultLCID())
+                                       : CultureInfo.GetCultureInfo(MapSystemLanguageToCultureCode());
+
+                }
+                catch (Exception e)
+                {
+                    Logging.LogException(e, "Failed to get CorrectedCultureInfo");
+                }
+                finally
+                {
+                    if (_cultureInfo == null)
+                        _cultureInfo = CultureInfo.CurrentCulture;
+                }
+
                 return _cultureInfo;
             }
         }
@@ -55,10 +69,10 @@ namespace CSLMusicMod.Helpers
         [System.Runtime.InteropServices.DllImport("KERNEL32.DLL")]
         private static extern int GetUserDefaultLCID();
 
-        private static string MapSystemLanguageToCultureCode(SystemLanguage lang)
+        private static string MapSystemLanguageToCultureCode()
         {
             //Supports languages supported by AlgernonCommons for now
-            switch (lang)
+            switch (Application.systemLanguage)
             {
                 case SystemLanguage.Czech: return "cs-CZ";
                 case SystemLanguage.Chinese: return "zh-CN";
@@ -83,7 +97,7 @@ namespace CSLMusicMod.Helpers
                 case SystemLanguage.Ukrainian: return "uk-UA";
 
                 default:
-                    Logging.KeyMessage("GetCorrectCultureInfo(): Not supported SystemLanguage" + lang);
+                    Logging.Error("MapSystemLanguageToCultureCode(): Not supported SystemLanguage" + Application.systemLanguage);
                     return "en-US";
             }
         }
