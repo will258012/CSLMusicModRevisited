@@ -315,7 +315,7 @@ namespace CSLMusicMod.Helpers
         /// <returns>True if successfully retrieved progress data; otherwise, false.</returns>
         public static bool GetCurrentTrackProgress(out float time, out float length, out string formattedProgress)
         {
-            time = length = default;
+            time = default; length = 1f;
             formattedProgress = null;
 
             if (!m_musicFileIsRadio.Value)
@@ -328,7 +328,7 @@ namespace CSLMusicMod.Helpers
                 return false;
 
             time = source.time;
-            length = source.clip.length;
+            length = Mathf.Max(1f, source.clip.length);
 
             FormatTime(time, out string timeFormatted);
             FormatTime(length, out string lengthFormatted);
