@@ -468,8 +468,18 @@ namespace CSLMusicMod.UI
 
             m_TopShowMusicList = radioPanel.AddUIComponent<UIButton>();
             m_TopShowMusicList.name = "ShowMusicListButton";
-            m_TopShowMusicList.position = muteButton.position + new Vector3((muteButton.size.x + 5) + (m_AdditionalButtonCount++ * (muteButton.size.y + 5)), 0);
-            m_TopShowMusicList.size = new Vector2(muteButton.size.y, muteButton.size.y);
+
+            if (muteButton != null)
+            {
+                m_TopShowMusicList.position = muteButton.position + new Vector3((muteButton.size.x + 5) + (m_AdditionalButtonCount++ * (muteButton.size.y + 5)), 0);
+                m_TopShowMusicList.size = new Vector2(muteButton.size.y, muteButton.size.y);
+            }
+            else
+            {
+                m_TopShowMusicList.position = new Vector3(95f, -8f);
+                m_TopShowMusicList.size = new Vector2(16f, 16f);
+            }
+
             m_TopShowMusicList.atlas = TextureHelper.ListAtlas;
             m_TopShowMusicList.normalFgSprite = "Menu";
             m_TopShowMusicList.color = m_TopShowMusicList.focusedColor = new Color32(225, 225, 225, 255);
@@ -491,8 +501,18 @@ namespace CSLMusicMod.UI
 
             m_TopNextTrack = radioPanel.AddUIComponent<UIButton>();
             m_TopNextTrack.name = "NextTrackButton";
-            m_TopNextTrack.position = muteButton.position + new Vector3((muteButton.size.x + 5) + (m_AdditionalButtonCount++ * (muteButton.size.y + 5)), 0);
-            m_TopNextTrack.size = new Vector2(muteButton.size.y, muteButton.size.y);
+
+            if (muteButton != null)
+            {
+                m_TopNextTrack.position = muteButton.position + new Vector3((muteButton.size.x + 5) + (m_AdditionalButtonCount++ * (muteButton.size.y + 5)), 0);
+                m_TopNextTrack.size = new Vector2(muteButton.size.y, muteButton.size.y);
+            }
+            else
+            {
+                m_TopNextTrack.position = new Vector3(115f, -8f);
+                m_TopNextTrack.size = new Vector2(16f, 16f);
+            }
+
             m_TopNextTrack.atlas = TextureHelper.ListAtlas;
             m_TopNextTrack.normalFgSprite = "Next";
             m_TopNextTrack.color = m_TopNextTrack.focusedColor = new Color32(225, 225, 225, 255);
@@ -509,8 +529,18 @@ namespace CSLMusicMod.UI
 
             m_TopOpenStationDirectory = radioPanel.AddUIComponent<UIButton>();
             m_TopOpenStationDirectory.name = "OpenStationDir";
-            m_TopOpenStationDirectory.position = muteButton.position + new Vector3((muteButton.size.x + 5) + (m_AdditionalButtonCount++ * (muteButton.size.y + 5)), 0);
-            m_TopOpenStationDirectory.size = new Vector2(muteButton.size.y, muteButton.size.y);
+
+            if (muteButton != null)
+            {
+                m_TopOpenStationDirectory.position = muteButton.position + new Vector3((muteButton.size.x + 5) + (m_AdditionalButtonCount++ * (muteButton.size.y + 5)), 0);
+                m_TopOpenStationDirectory.size = new Vector2(muteButton.size.y, muteButton.size.y);
+            }
+            else
+            {
+                m_TopOpenStationDirectory.position = new Vector3(135f, -8f);
+                m_TopOpenStationDirectory.size = new Vector2(16f, 16f);
+            }
+
             m_TopOpenStationDirectory.atlas = TextureHelper.ListAtlas;
             m_TopOpenStationDirectory.normalFgSprite = "Open";
             m_TopOpenStationDirectory.color = m_TopOpenStationDirectory.focusedColor = new Color32(225, 225, 225, 255);

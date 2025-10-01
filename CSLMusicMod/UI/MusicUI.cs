@@ -26,7 +26,14 @@ namespace CSLMusicMod.UI
         }
         private void Initialize()
         {
-            ListPanel = (UIMusicListPanel)UIView.GetAView().AddUIComponent(typeof(UIMusicListPanel));
+            try
+            {
+                ListPanel = (UIMusicListPanel)UIView.GetAView().AddUIComponent(typeof(UIMusicListPanel));
+            }
+            catch (System.Exception e)
+            {
+                Logging.LogException(e, "Failed to initialize ListPanel");
+            }
             Logging.Message("Initialized music UI");
             m_Initialized = true;
         }
