@@ -3,6 +3,9 @@
 "WHATSNEW_L1","이 메시지는 모드가 업데이트 되었음을 알려드리기 위한 것입니다.",""
 "WHATSNEW_L2","자세한 변경 사항은 Steam 워크샵이나 GitHub를 참조하세요.",""
 "WHATSNEW_L3","당신의 사용과 지원에 감사합니다!",""
+"ERROR","이런! 뭔가 오류가 발생했습니다.",""
+"ERROR_COPY","Copy",""
+"ERROR_SUPPORT","Support",""
 "TAB_INFO","Info",""
 "TAB_CHANNELS","Channels",""
 "TAB_CONT","Content",""
@@ -16,7 +19,7 @@ marked with an asterisk (*).",""
 putting station configurations or music files into the ""CSLMusicMod_Music"" folder
 or into the folder containing vanilla radio content.",""
 "TRBL","Troubleshooting",""
-"TRBL_TIP","You can find information in the CSLMusicMod wiki and the Steam workshop entry.
+"TRBL_TIP","You can find information in the CSL Music Mod Wiki and the Steam Workshop entry.
 Don't forget to enable ""Enable detailed debugging logging"" if you want to provide a log.",""
 "VANILLA_CHANNELS","Manage vanilla channels",""
 "MUSIC_PACKS","Music packs (Needs reload)",""
@@ -44,7 +47,7 @@ Don't forget to enable ""Enable detailed debugging logging"" if you want to prov
 "ENABLE_BROADCASTS","Enable broadcasts",""
 "SHOUTCUT_OPENPLAYLIST","Open playlist and settings",""
 "SHOUTCUT_NEXTTRACK","Next track",""
-"SHOUTCUT_NEXTSTATION","Next station",""
+"SHOUTCUT_NEXTSTATION","다음 역",""
 "ENABLE_PLAYLIST","Enable playlist*",""
 "IMPROVED_RADIO_SELECTION","Improved radio station selection (Needs reload)",""
 "OPEN_DIR","Open station directory button (Needs reload)",""
@@ -56,9 +59,9 @@ Don't forget to enable ""Enable detailed debugging logging"" if you want to prov
 "SHOW_PLAYLIST","Shows/hides the playlist",""
 "BUTTON_OPENDIR","Open folder containing the radio station.",""
 "NOT_RADIO","This channel is not a radio-channel. Your custom music
-can be found in ""Userdefined"", ""CSLMusic Mix"" and
+can be found in ""User Defined"", ""CSLMusic Mix"" and
 channels created by music packs.",""
 "NO_RESULTS","No results found.",""
 "DISABLE_CONT_CHECKBOXES_TIP","Double-click to disable an entry.",""
-"USERDEFINED","Userdefined",""
+"USERDEFINED","User Defined",""
 "CSLMUSIC_MIX","CSLMusic Mix",""

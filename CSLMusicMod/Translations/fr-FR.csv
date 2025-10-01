@@ -3,6 +3,9 @@
 "WHATSNEW_L1","This message is just to let you know that the mod has been updated.",""
 "WHATSNEW_L2","For a detailed list of changes, please visit the Steam Workshop or GitHub.",""
 "WHATSNEW_L3","Thank you for your use and support!",""
+"ERROR","Oops! Something went wrong:",""
+"ERROR_COPY","Copy",""
+"ERROR_SUPPORT","Support",""
 "TAB_INFO","Info",""
 "TAB_CHANNELS","Channels",""
 "TAB_CONT","Content",""
@@ -16,7 +19,7 @@ marked with an asterisk (*).",""
 putting station configurations or music files into the ""CSLMusicMod_Music"" folder
 or into the folder containing vanilla radio content.",""
 "TRBL","Troubleshooting",""
-"TRBL_TIP","You can find information in the CSLMusicMod wiki and the Steam workshop entry.
+"TRBL_TIP","You can find information in the CSL Music Mod Wiki and the Steam Workshop entry.
 Don't forget to enable ""Enable detailed debugging logging"" if you want to provide a log.",""
 "VANILLA_CHANNELS","Manage vanilla channels",""
 "MUSIC_PACKS","Music packs (Needs reload)",""
@@ -56,9 +59,9 @@ Don't forget to enable ""Enable detailed debugging logging"" if you want to prov
 "SHOW_PLAYLIST","Shows/hides the playlist",""
 "BUTTON_OPENDIR","Open folder containing the radio station.",""
 "NOT_RADIO","This channel is not a radio-channel. Your custom music
-can be found in ""Userdefined"", ""CSLMusic Mix"" and
+can be found in ""User Defined"", ""CSLMusic Mix"" and
 channels created by music packs.",""
 "NO_RESULTS","No results found.",""
 "DISABLE_CONT_CHECKBOXES_TIP","Double-click to disable an entry.",""
-"USERDEFINED","Userdefined",""
+"USERDEFINED","User Defined",""
 "CSLMUSIC_MIX","CSLMusic Mix",""
