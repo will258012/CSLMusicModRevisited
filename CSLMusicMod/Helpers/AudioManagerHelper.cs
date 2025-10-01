@@ -312,7 +312,7 @@ namespace CSLMusicMod.Helpers
         /// <param name="time">Current playback time in seconds.</param>
         /// <param name="length">Total length of the track in seconds.</param>
         /// <param name="formattedProgress">Formatted progress string (e.g., "01:23 / 04:56").</param>
-        /// <returns>True if successfully retrieved progress data; otherwise, false.</returns>
+        /// <returns><c>true</c> if successfully retrieved progress data; otherwise, <c>false</c>.</returns>
         public static bool GetCurrentTrackProgress(out float time, out float length, out string formattedProgress)
         {
             time = default; length = 1f;

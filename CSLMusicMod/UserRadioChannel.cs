@@ -20,7 +20,7 @@ namespace CSLMusicMod
         public string m_Name;
 
         public string m_DisplayName;
-        
+
         public HashSet<string> m_Collections;
 
         public List<UserRadioContent> m_Content;

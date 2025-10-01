@@ -7,9 +7,6 @@ using UnityEngine;
 
 namespace CSLMusicMod.Patches
 {
-    /// <summary>
-    /// Used for detouring methods from AudioManger.
-    /// </summary>
     [HarmonyPatch]
     public class AudioManagerPatches
     {

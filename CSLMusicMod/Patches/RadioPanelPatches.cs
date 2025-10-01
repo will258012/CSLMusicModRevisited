@@ -6,12 +6,56 @@ using UnityEngine;
 
 namespace CSLMusicMod.Patches
 {
-    /// <summary>
-    /// Used for detours of RadioPanel.
-    /// </summary>
     [HarmonyPatch]
     public class RadioPanelPatch : RadioPanel
     {
+        /// <summary>
+        /// Radio station buttons in vanilla game have multiple sprites (one for normal state,
+        /// another one for if the button is pressed, ...). Custom stations only have a thumbnail.
+        /// This detour method overwrites the vanilla behavior and makes is possible for
+        /// music pack creators to only provide a thumbnail.
+        /// </summary>
+        /// <param name="button">Button.</param>
+        /// <param name="station">Station.</param>
+        [HarmonyPatch(typeof(RadioPanel), "AssignStationToButton")]
+        [HarmonyPrefix]
+        public static bool AssignStationToButtonPatch(UIButton button, RadioChannelInfo station)
+        {
+            UserRadioCollection collection = Loading.UserRadioContainer;
+            UISprite iconsprite = button.Find<UISprite>("sprite");
+
+            // Additional sprite on top of the button
+            if (iconsprite == null)
+            {
+                iconsprite = button.AddUIComponent<UISprite>();
+                iconsprite.name = "sprite";
+            }
+
+            // Different behavior depending on if the button is displayed in the panel or in the list
+            if (button.parent != null && button.parent.name == "StationsList")
+            {
+                if (ModOptions.Instance.EnableImprovedRadioStationList)
+                    AssignStationToButtonInList(button, iconsprite, station, collection);
+                else
+                    AssignStationToButtonInPanel(button, iconsprite, station, collection);
+            }
+            else
+            {
+                AssignStationToButtonInPanel(button, iconsprite, station, collection);
+
+                //	            if(ModOptions.Instance.EnableImprovedRadioStationList)
+                //	            	AddComboboxVisualClue(button, iconsprite, station);
+            }
+            return false;
+        }
+
+        [HarmonyPatch(typeof(RadioPanel), "OnLevelLoaded")]
+        [HarmonyPostfix]
+        public static void OnLevelLoadedPatch()
+        {
+            RadioPanelHelper.m_originalStations = RadioPanelHelper.m_stations.Value;
+            RadioPanelHelper.ApplyStationsDisabling();
+        }
         private static void AssignStationToButtonInPanel(UIButton button, UISprite iconsprite, RadioChannelInfo station, UserRadioCollection collection)
         {
             button.atlas = station.m_Atlas;
@@ -51,7 +95,6 @@ namespace CSLMusicMod.Patches
         private static void AssignStationToButtonInList(UIButton button, UISprite iconsprite, RadioChannelInfo station,
             UserRadioCollection collection)
         {
-
             //button.isVisible = !ModOptions.Instance.DisabledRadioStations.Contains(station.name);
 
             ((UIPanel)button.parent).autoLayoutPadding = new RectOffset(0, 0, 0, 0);
@@ -81,60 +124,14 @@ namespace CSLMusicMod.Patches
             iconsprite.spriteName = station.m_Thumbnail;
             iconsprite.isVisible = true;
         }
-        private static void AddComboboxVisualClue(UIButton button, UISprite iconsprite, RadioChannelInfo station)
+        /*private static void AddComboboxVisualClue(UIButton button, UISprite iconsprite, RadioChannelInfo station)
         {
             iconsprite.position = new Vector3(23, -23);
             iconsprite.size = new Vector2(16, 16);
             iconsprite.atlas = TextureHelper.ListAtlas;
             iconsprite.spriteName = "Arrow";
             iconsprite.isVisible = true;
-        }
-
-        /// <summary>
-        /// Radio station buttons in vanilla game have multiple sprites (one for normal state,
-        /// another one for if the button is pressed, ...). Custom stations only have a thumbnail.
-        /// This detour method overwrites the vanilla behavior and makes is possible for
-        /// music pack creators to only provide a thumbnail.
-        /// </summary>
-        /// <param name="button">Button.</param>
-        /// <param name="station">Station.</param>
-        [HarmonyPatch(typeof(RadioPanel), "AssignStationToButton")]
-        public static bool Prefix(UIButton button, RadioChannelInfo station)
-        {
-            UserRadioCollection collection = Loading.UserRadioContainer;
-            UISprite iconsprite = button.Find<UISprite>("sprite");
-
-            // Additional sprite on top of the button
-            if (iconsprite == null)
-            {
-                iconsprite = button.AddUIComponent<UISprite>();
-                iconsprite.name = "sprite";
-            }
-
-            // Different behavior depending on if the button is displayed in the panel or in the list
-            if (button.parent != null && button.parent.name == "StationsList")
-            {
-                if (ModOptions.Instance.EnableImprovedRadioStationList)
-                    AssignStationToButtonInList(button, iconsprite, station, collection);
-                else
-                    AssignStationToButtonInPanel(button, iconsprite, station, collection);
-            }
-            else
-            {
-                AssignStationToButtonInPanel(button, iconsprite, station, collection);
-
-                //	            if(ModOptions.Instance.EnableImprovedRadioStationList)
-                //	            	AddComboboxVisualClue(button, iconsprite, station);
-            }
-            return false;
-        }
-        [HarmonyPatch(typeof(RadioPanel), "OnLevelLoaded")]
-        [HarmonyPostfix]
-        public static void OnLevelLoadedPatch()
-        {
-            RadioPanelHelper.m_originalStations = RadioPanelHelper.m_stations.Value;
-            RadioPanelHelper.ApplyStationsDisabling();
-        }
+        }*/
     }
 }
 

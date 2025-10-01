@@ -3,16 +3,12 @@ using HarmonyLib;
 
 namespace CSLMusicMod.Patches
 {
-    /// <summary>
-    /// Used for detours of RadioChannelInfo.
-    /// </summary>
     [HarmonyPatch]
     public class RadioChannelInfoPatch
     {
-
         /// <summary>
         /// The game usually translates all radio channel names with a translation table.
-        /// If a name is not in this table, an error occurs. This detour looks if the station is custom
+        /// If a name is not in this table, an error occurs. This patch looks if the station is custom
         /// and returns the correct title.
         /// </summary>
         [HarmonyPatch(typeof(RadioChannelInfo), nameof(RadioChannelInfo.GetLocalizedTitle))]

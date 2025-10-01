@@ -7,15 +7,12 @@ using UnityEngine;
 
 namespace CSLMusicMod.Patches
 {
-    /// <summary>
-    /// Used for detours of RadioContentInfo.
-    /// </summary>
     [HarmonyPatch]
     public class RadioContentInfoPatch
     {
         /// <summary>
         /// The game usually loads its music from its data directories. This is not compatible with
-        /// custom music. This detour method loads vanilla music the vanilla way and 
+        /// custom music. This patch loads vanilla music the vanilla way and 
         /// custom music from absolute paths.
         /// </summary>
         [HarmonyPatch(typeof(RadioContentInfo), nameof(RadioContentInfo.ObtainClip))]

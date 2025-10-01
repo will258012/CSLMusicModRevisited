@@ -65,7 +65,7 @@
     <Compile Include="UserRadioContent.cs" />
     <Compile Include="UserRadioChannel.cs" />
     <Compile Include="UserRadioCollection.cs" />
-    <Compile Include="Patches\RadioPanelPatch.cs" />
+    <Compile Include="Patches\RadioPanelPatches.cs" />
     <Compile Include="ModOptions.cs" />
     <Compile Include="UI\SettingsUI.cs" />
     <Compile Include="UI\MusicUI.cs" />
