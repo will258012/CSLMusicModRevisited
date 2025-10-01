@@ -55,7 +55,14 @@ namespace CSLMusicMod
             LoadChannels();
             Postprocess();
         }
+        public void LocaleChanged()
+        {
+            if (m_Stations.TryGetValue("CSLMusicMix", out var channel))
+                channel.m_DisplayName = Translations.Translate("CSLMUSIC_MIX");
 
+            if (m_Stations.TryGetValue("UserDefined", out var channel2))
+                channel2.m_DisplayName = Translations.Translate("USERDEFINED");
+        }
         private void LoadSongs()
         {
             LoadVanillaSongs(RadioContentInfo.ContentType.Music);

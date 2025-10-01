@@ -49,6 +49,7 @@ namespace CSLMusicMod.UI
                     Translations.Index = index;
                     OptionsPanelManager<SettingsUI>.LocaleChanged();
                     Loading.UI?.LocaleChanged();
+                    Loading.UserRadioContainer?.LocaleChanged();
                 };
                 currentY += language_DropDown.height + GroupMargin;
             }
