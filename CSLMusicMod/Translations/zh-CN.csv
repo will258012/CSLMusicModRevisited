@@ -19,7 +19,7 @@
 "TRBL","故障排除",""
 "TRBL_TIP","可在 CSL Music Mod 维基和 Steam 创意工坊页面查看相关信息。
 如需提交日志文件，请务必启用 “启用详细的调试日志记录”。",""
-"VANILLA_CHANNELS","原版频道管理",""
+"VANILLA_CHANNELS","管理原版频道",""
 "MUSIC_PACKS","音乐包（需要重新加载）",""
 "ENABLE_MUSIC_PACKS","使用音乐包内的音乐",""
 "CREATE_CHANNELS_FROM_LEGACY","从未使用的音乐文件创建频道",""
