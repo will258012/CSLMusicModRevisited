@@ -6,21 +6,19 @@
 "ERROR","哎呀，出了點問題。",""
 "ERROR_COPY","複製",""
 "ERROR_SUPPORT","支援",""
-"TAB_INFO","Info",""
-"TAB_CHANNELS","Channels",""
-"TAB_CONT","Content",""
-"TAB_SHORTCUTS","Shortcuts",""
-"TAB_UI","User Interface",""
-"PERF","Performance",""
-"PERF_TIP","If you have performance problems, you can try to disable features
-marked with an asterisk (*).",""
-"CHANNELS_CONT","Channels & Content",""
-"CHANNELS_CONT_TIP","You can add your own channels or music by installing music packs,
-putting station configurations or music files into the ""CSLMusicMod_Music"" folder
-or into the folder containing vanilla radio content.",""
-"TRBL","Troubleshooting",""
-"TRBL_TIP","You can find information in the CSL Music Mod Wiki and the Steam Workshop entry.
-Don't forget to enable ""Enable detailed debugging logging"" if you want to provide a log.",""
+"TAB_INFO","資訊",""
+"TAB_CHANNELS","頻道",""
+"TAB_CONT","內容",""
+"TAB_SHORTCUTS","快捷鍵",""
+"TAB_UI","界面",""
+"PERF","效能",""
+"PERF_TIP","若遇到效能問題，可嘗試停用標有星號(*)的設定項目。",""
+"CHANNELS_CONT","頻道與內容",""
+"CHANNELS_CONT_TIP","你可透過安裝音樂包、將電台設定檔或音樂檔案放入 “CSLMusicMod_Music” 資料夾
+或放入包含原始廣播內容的資料夾以新增自訂頻道或音樂。",""
+"TRBL","故障排除",""
+"TRBL_TIP","可在 CSL Music Mod 維基和 Steam 創意工坊頁面上查看相關資訊。
+如需提交日誌文件，請務必啟用 「啟用詳細的除錯記錄」。",""
 "VANILLA_CHANNELS","Manage vanilla channels",""
 "MUSIC_PACKS","Music packs (Needs reload)",""
 "ENABLE_MUSIC_PACKS","Use music from music packs",""
