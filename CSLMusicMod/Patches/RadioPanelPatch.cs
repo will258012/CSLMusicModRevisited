@@ -52,7 +52,7 @@ namespace CSLMusicMod.Patches
             UserRadioCollection collection)
         {
 
-            button.isVisible = !ModOptions.Instance.DisabledRadioStations.Contains(station.name);
+            //button.isVisible = !ModOptions.Instance.DisabledRadioStations.Contains(station.name);
 
             ((UIPanel)button.parent).autoLayoutPadding = new RectOffset(0, 0, 0, 0);
 
@@ -127,6 +127,13 @@ namespace CSLMusicMod.Patches
                 //	            	AddComboboxVisualClue(button, iconsprite, station);
             }
             return false;
+        }
+        [HarmonyPatch(typeof(RadioPanel), "OnLevelLoaded")]
+        [HarmonyPostfix]
+        public static void OnLevelLoadedPatch()
+        {
+            RadioPanelHelper.m_originalStations = RadioPanelHelper.m_stations.Value;
+            RadioPanelHelper.ApplyStationsDisabling();
         }
     }
 }

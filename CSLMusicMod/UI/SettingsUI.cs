@@ -23,6 +23,7 @@ namespace CSLMusicMod.UI
         private const float GroupMargin = 40f;
         private const float TitleMargin = 50f;
         private const float SliderMargin = 60f;
+        private bool disabledStationsChanged = false;
         protected override void Setup()
         {
             m_TabStrip = AutoTabstrip.AddTabstrip(this, 0f, 0f, OptionsPanelManager<SettingsUI>.PanelWidth, OptionsPanelManager<SettingsUI>.PanelHeight, out _, 30f);
@@ -96,7 +97,19 @@ namespace CSLMusicMod.UI
             scrollPanel.clipChildren = true;
             scrollPanel.builtinKeyNavigation = true;
             scrollPanel.scrollWheelDirection = UIOrientation.Vertical;
-            scrollPanel.eventVisibilityChanged += (_, isShow) => { if (isShow) scrollPanel.Reset(); };
+            scrollPanel.eventVisibilityChanged += (_, isShow) =>
+            {
+                if (isShow)
+                {
+                    scrollPanel.Reset();
+                    disabledStationsChanged = false;
+                }
+                else
+                {
+                    if (disabledStationsChanged && Loading.IsLoaded)
+                        RadioPanelHelper.ApplyStationsDisabling();
+                }
+            };
             UIScrollbars.AddScrollbar(component, scrollPanel);
 
             var currentY = Margin;
@@ -143,6 +156,7 @@ namespace CSLMusicMod.UI
                             {
                                 options.DisabledRadioStations.Add(folderName);
                             }
+                            disabledStationsChanged = true;
                         };
                         currentY += checkBox.height + Margin;
                     }
@@ -153,12 +167,12 @@ namespace CSLMusicMod.UI
 
                     var enableMusicPacks = UICheckBoxes.AddPlainCheckBox(scrollPanel, LeftMargin, currentY, Translations.Translate("ENABLE_MUSIC_PACKS"));
                     enableMusicPacks.isChecked = options.EnableMusicPacks;
-                    enableMusicPacks.eventCheckChanged += (_, isChecked) => options.EnableMusicPacks = isChecked;
+                    enableMusicPacks.eventCheckChanged += (_, isChecked) => { options.EnableMusicPacks = isChecked; disabledStationsChanged = true; };
                     currentY += enableMusicPacks.height + Margin;
 
                     var createChannelsFromLegacyPacks = UICheckBoxes.AddPlainCheckBox(scrollPanel, LeftMargin, currentY, Translations.Translate("CREATE_CHANNELS_FROM_LEGACY"));
                     createChannelsFromLegacyPacks.isChecked = options.CreateChannelsFromLegacyPacks;
-                    createChannelsFromLegacyPacks.eventCheckChanged += (_, isChecked) => options.CreateChannelsFromLegacyPacks = isChecked;
+                    createChannelsFromLegacyPacks.eventCheckChanged += (_, isChecked) => { options.CreateChannelsFromLegacyPacks = isChecked; disabledStationsChanged = true; };
                     currentY += createChannelsFromLegacyPacks.height + Margin;
                 }
                 {
@@ -167,7 +181,7 @@ namespace CSLMusicMod.UI
 
                     var createMixChannel = UICheckBoxes.AddPlainCheckBox(scrollPanel, LeftMargin, currentY, Translations.Translate("CREATE_MIX_CHANNEL"));
                     createMixChannel.isChecked = options.CreateMixChannels;
-                    createMixChannel.eventCheckChanged += (_, isChecked) => options.CreateMixChannels = isChecked;
+                    createMixChannel.eventCheckChanged += (_, isChecked) => { options.CreateMixChannels = isChecked; disabledStationsChanged = true; };
                     currentY += createMixChannel.height + Margin;
 
                     var addVanillaSongsToMusicMix = UICheckBoxes.AddPlainCheckBox(scrollPanel, LeftMargin, currentY, Translations.Translate("INCLUDE_VANILLA_SONGS"));
