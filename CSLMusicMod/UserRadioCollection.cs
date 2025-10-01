@@ -147,7 +147,7 @@ namespace CSLMusicMod
 
                                 if (ModOptions.Instance.CreateChannelsFromLegacyPacks)
                                 {
-                                    CreateLegacyChannel("MusicPack " + mod.Name, new string[] { "MusicPack " + mod.Name }, info.modPath);
+                                    CreateLegacyChannel("MusicPack " + mod.Name, mod.Name, new string[] { "MusicPack " + mod.Name }, info.modPath);
                                 }
 
                                 LoadChannelsFromCollection(path);
@@ -160,7 +160,7 @@ namespace CSLMusicMod
 
             if (ModOptions.Instance.CreateChannelsFromLegacyPacks)
             {
-                CreateLegacyChannel(Translations.Translate("USERDEFINED"), new string[] { "Userdefined" }, GameDirUserCollectionDirectory);
+                CreateLegacyChannel("UserDefined", Translations.Translate("USERDEFINED"), new string[] { "Userdefined" }, GameDirUserCollectionDirectory);
             }
 
             LoadChannelsFromCollection(GameDirUserCollectionDirectory);
@@ -196,10 +196,11 @@ namespace CSLMusicMod
             }
         }
 
-        private void CreateLegacyChannel(string name, string[] collections, string dir)
+        private void CreateLegacyChannel(string name, string showName, string[] collections, string dir)
         {
-            UserRadioChannel channel = new UserRadioChannel(name)
+            UserRadioChannel channel = new UserRadioChannel(name, showName)
             {
+                m_IsLegacyPack = true,
                 m_Collections = new HashSet<string>(collections),
                 m_ThumbnailFile = "thumbnail_package.png"
             };
@@ -214,7 +215,7 @@ namespace CSLMusicMod
 
         private void CreateDefaultMixChannel()
         {
-            UserRadioChannel channel = new UserRadioChannel(Translations.Translate("CSLMUSIC_MIX"))
+            UserRadioChannel channel = new UserRadioChannel("CSLMusicMix", Translations.Translate("CSLMUSIC_MIX"))
             {
                 m_ThumbnailFile = "thumbnail_mix.png",
                 m_Collections = new HashSet<string>(m_Songs.Values.Where(song => !song.m_isVanilla || ModOptions.Instance.AddVanillaSongsToMusicMix).Select(song => song.m_Collection)) // Default channel loads from all collections

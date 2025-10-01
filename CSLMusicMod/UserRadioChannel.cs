@@ -19,6 +19,8 @@ namespace CSLMusicMod
     {
         public string m_Name;
 
+        public string m_DisplayName;
+        
         public HashSet<string> m_Collections;
 
         public List<UserRadioContent> m_Content;
@@ -33,14 +35,16 @@ namespace CSLMusicMod
 
         public string m_DefinitionDirectory = DataLocation.gameContentPath;
 
+        public bool m_IsLegacyPack = false;
         // Post-launch
         public RadioChannelInfo m_VanillaChannelInfo;
 
         public UserRadioChannel() { }
 
-        public UserRadioChannel(string name)
+        public UserRadioChannel(string name, string showName)
         {
             m_Name = name;
+            m_DisplayName = showName;
             m_Collections = new HashSet<string>() { name };
         }
 
