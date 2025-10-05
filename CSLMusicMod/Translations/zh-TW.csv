@@ -17,13 +17,13 @@
 "CHANNELS_CONT_TIP","你可透過安裝音樂包、將電台設定檔或音樂檔案放入 “CSLMusicMod_Music” 資料夾
 或放入包含原版廣播內容的資料夾以新增自訂頻道或音樂。",""
 "TRBL","故障排除",""
-"TRBL_TIP","可在 CSL Music Mod 維基和 Steam 創意工坊頁面上查看相關資訊。
+"TRBL_TIP","可在 CSL Music Mod 維基和 Steam 工作坊頁面上查看相關資訊。
 如需提交日誌文件，請務必啟用 「啟用詳細的除錯記錄」。",""
 "VANILLA_CHANNELS","管理原版頻道",""
 "MUSIC_PACKS","音樂包（需要重新載入）",""
 "ENABLE_MUSIC_PACKS","使用音樂包內的音樂",""
 "CREATE_CHANNELS_FROM_LEGACY","從未使用的音樂檔案創建頻道",""
-"CHANNEL_ALL_CONT","全內容頻道（需重新載入）",""
+"CHANNEL_ALL_CONT","全內容頻道（需要重新載入）",""
 "CREATE_MIX_CHANNEL","創建「天際線音樂混搭」頻道",""
 "INCLUDE_VANILLA_SONGS","包含原版歌曲",""
 "INCLUDE_MUSIC","包含音樂",""
