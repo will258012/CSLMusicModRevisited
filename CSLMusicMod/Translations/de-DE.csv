@@ -16,8 +16,8 @@
 "CHANNELS_CONT","Kanäle & Inhalt",""
 "CHANNELS_CONT_TIP","Sie können eigene Kanäle oder Musik hinzufügen, indem Sie Musikpakete installieren, Stationskonfigurationen oder Musikdateien in den Ordner ""CSLMusicMod_Music"" oder in den Ordner legen, der die ursprünglichen Radioinhalte enthält.",""
 "TRBL","Fehlerbehebung",""
-"TRBL_TIP","You can find information in the CSL Music Mod Wiki and the Steam Workshop entry.
-Don't forget to enable the setting below if you want to provide a log.",""
+"TRBL_TIP","Sie finden Informationen im CSL Music Mod Wiki und im Steam Workshop-Eintrag.
+Vergessen Sie nicht, die untenstehende Einstellung zu aktivieren, wenn Sie ein Protokoll bereitstellen möchten.",""
 "VANILLA_CHANNELS","Ursprüngliche Kanäle verwalten",""
 "MUSIC_PACKS","Musikpakete (Neuladen erforderlich)",""
 "ENABLE_MUSIC_PACKS","Musik aus Musikpaketen verwenden",""
