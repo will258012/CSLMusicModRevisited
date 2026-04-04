@@ -16,8 +16,8 @@
 "CHANNELS_CONT","Kanály a obsah",""
 "CHANNELS_CONT_TIP","Vlastní kanály nebo hudbu můžete přidat instalací hudebních balíčků, vložením konfigurací stanic nebo hudebních souborů do složky ""CSLMusicMod_Music"" nebo do složky obsahující původní rozhlasový obsah.",""
 "TRBL","Řešení problémů",""
-"TRBL_TIP","You can find information in the CSL Music Mod Wiki and the Steam Workshop entry.
-Don't forget to enable the setting below if you want to provide a log.",""
+"TRBL_TIP","Informace najdete v CSL Music Mod Wiki a na stránce Steam Workshopu.
+Pokud chcete poskytnout log, nezapomeňte povolit nastavení níže.",""
 "VANILLA_CHANNELS","Spravovat původní kanály",""
 "MUSIC_PACKS","Hudební balíčky (vyžaduje znovunačtení)",""
 "ENABLE_MUSIC_PACKS","Používat hudbu z hudebních balíčků",""
