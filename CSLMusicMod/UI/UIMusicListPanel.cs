@@ -19,7 +19,7 @@ namespace CSLMusicMod.UI
         private bool m_Initialized = false;
 
         //UILabel m_LabelCurrentMusic;
-        UIListBox m_MusicList;
+        private UIListBox m_MusicList;
 
         //Texture atlas
 
@@ -55,6 +55,7 @@ namespace CSLMusicMod.UI
                 return m_Filter.text.Trim() != "";
             }
         }
+        [ReflectionHelper.UsedReflection]
         public override void Start()
         {
             base.Start();
@@ -65,8 +66,7 @@ namespace CSLMusicMod.UI
             wrapLayout = true;
             width = 500;
             height = screenResolution.y - 120 - 100;
-            relativePosition = new Vector3(screenResolution.x - width - 10, screenResolution.y - height - 120);
-            isVisible = false;
+            isVisible = true;
             canFocus = true;
             isInteractive = true;
             m_ZIndex = -100;
@@ -89,6 +89,8 @@ namespace CSLMusicMod.UI
             InitializeMusicList();
             RebuildList();
 
+            LoadPanelPosition();
+
             if (Mathf.Abs(m_VolumeSlider.value / 100f - m_MusicAudioVolume.value) > 0.01f)
             {
                 m_VolumeSlider.value = m_MusicAudioVolume.value * 100f;
@@ -98,7 +100,21 @@ namespace CSLMusicMod.UI
             Singleton<AudioManager>.instance.m_radioContentChanged += RadioContentChanged;
         }
 
-        void RadioContentChanged()
+        public void LoadPanelPosition()
+        {
+            var view = UIView.GetAView();
+
+            absolutePosition = MusicUI.SavedPanelPosition.x >= 0f
+                ? MusicUI.SavedPanelPosition
+                : new Vector3(Mathf.Floor(view.GetScreenResolution().x - width - 10), Mathf.Floor(view.GetScreenResolution().y - height - 120));
+
+            // Ensure panel is fully visible on screen (in case of e.g. UI scaling changes).
+            float clampedXpos = Mathf.Clamp(absolutePosition.x, 0f, view.fixedWidth - width);
+            float clampedYpos = Mathf.Clamp(absolutePosition.y, 0f, view.fixedHeight - height);
+            absolutePosition = new Vector2(clampedXpos, clampedYpos);
+        }
+
+        private void RadioContentChanged()
         {
             RebuildList();
         }
@@ -113,7 +129,14 @@ namespace CSLMusicMod.UI
         protected override void OnVisibilityChanged()
         {
             base.OnVisibilityChanged();
+            if (!isVisible)
+            {
+                MusicUI.SavedPanelPosition = absolutePosition;
+                ModOptions.SaveSettings();
+                return;
+            }
 
+            LoadPanelPosition();
             // Bring the radio panel to the front
             if (RadioPanelHelper.CurrentRadioPanel != null)
             {
@@ -451,7 +474,14 @@ namespace CSLMusicMod.UI
                 m_Header.height = 60;
                 m_Header.backgroundSprite = "GenericTab";
             }
-
+            // Drag
+            {
+                var dragHandle = m_Header.AddUIComponent<UIDragHandle>();
+                dragHandle.size = m_Header.size;
+                dragHandle.relativePosition = Vector3.zero;
+                dragHandle.target = this;
+                dragHandle.SendToBack();
+            }
             InitializeHeaderToolbarVolumeSlider();
             InitializeHeaderToolbarNextTrackButton();
             InitializeHeaderToolbarSortAscendingButton();
@@ -569,9 +599,9 @@ namespace CSLMusicMod.UI
             }
         }
 
-        void buttonNextTrackClicked(UIComponent component, UIMouseEventParameter eventPara) => AudioManagerHelper.NextTrack();
+        private void buttonNextTrackClicked(UIComponent component, UIMouseEventParameter eventPara) => AudioManagerHelper.NextTrack();
 
-        void musicEntrySelected(UIComponent component, int value)
+        private void musicEntrySelected(UIComponent component, int value)
         {
             if (ModOptions.Instance.ImprovedDisableContentUI)
             {
@@ -598,20 +628,20 @@ namespace CSLMusicMod.UI
         }
 
 
-        void musicEntryEnableDisable(UIComponent component, int value)
+        private void musicEntryEnableDisable(UIComponent component, int value)
         {
             RadioContentInfo info = m_CurrentContent[value];
             AudioManagerHelper.SetContentEnabled(info, !AudioManagerHelper.ContentIsEnabled(info));
             RefreshListWidget();
         }
 
-        void filterTextChanged(UIComponent component, string value)
+        private void filterTextChanged(UIComponent component, string value)
         {
             m_ClearFilter.normalFgSprite = !Filtered ? "Search" : "Clear";
             RebuildList();
         }
 
-        void buttonCloseClicked(UIComponent component, UIMouseEventParameter eventParam) => RadioPanelHelper.CurrentRadioPanel.HideRadio();
+        private void buttonCloseClicked(UIComponent component, UIMouseEventParameter eventParam) => RadioPanelHelper.CurrentRadioPanel.HideRadio();
 
         private void InitializeMusicList()
         {

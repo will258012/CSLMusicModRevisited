@@ -597,6 +597,16 @@ namespace CSLMusicMod
 
             public bool ImprovedDisableContentUI { get; set; }
 
+            public float MusicUIPosX
+            {
+                get => UI.MusicUI.SavedPanelPositionX;
+                set => UI.MusicUI.SavedPanelPositionX = value;
+            }
+            public float MusicUIPosY
+            {
+                get => UI.MusicUI.SavedPanelPositionY;
+                set => UI.MusicUI.SavedPanelPositionY = value;
+            }
             public Options()
             {
                 CreateMixChannels = true;
@@ -637,6 +647,9 @@ namespace CSLMusicMod
                 MusicListVisible = true;
 
                 ImprovedDisableContentUI = true;
+
+                UI.MusicUI.SavedPanelPositionX = UI.MusicUI.DefaultPosition.x;
+                UI.MusicUI.SavedPanelPositionY = UI.MusicUI.DefaultPosition.y;
             }
         }
     }
