@@ -16,8 +16,8 @@
 "CHANNELS_CONT","Каналы и контент",""
 "CHANNELS_CONT_TIP","Вы можете добавить собственные каналы или музыку, установив музыкальные пакеты, поместив конфигурации станций или музыкальные файлы в папку «CSLMusicMod_Music» или в папку, содержащую стандартный радио-контент.",""
 "TRBL","Устранение неполадок",""
-"TRBL_TIP","You can find information in the CSL Music Mod Wiki and the Steam Workshop entry.
-Don't forget to enable the setting below if you want to provide a log.",""
+"TRBL_TIP","Информацию можно найти в CSL Music Mod Wiki и на странице Steam Workshop.
+Не забудьте включить настройку ниже, если хотите предоставить лог.",""
 "VANILLA_CHANNELS","Управление стандартными каналами",""
 "MUSIC_PACKS","Музыкальные пакеты (требуется перезагрузка)",""
 "ENABLE_MUSIC_PACKS","Использовать музыку из музыкальных пакетов",""
