@@ -2,6 +2,7 @@
 using AlgernonCommons.Patching;
 using ColossalFramework.IO;
 using ColossalFramework.Plugins;
+using CSLMusicMod.Helpers;
 using CSLMusicMod.UI;
 using HarmonyLib;
 using ICities;
@@ -56,6 +57,7 @@ namespace CSLMusicMod
             RemoveUnsupportedContent();
             UserRadioContainer.CollectPostLoadingData();
             ExtendVanillaContent();
+            AudioManagerHelper.Initialize();
 
             // Build UI and other post loadtime
             if (UI == null && ModOptions.Instance.EnableCustomUI)
@@ -213,47 +215,26 @@ namespace CSLMusicMod
         {
             if (info == null)
                 return;
-            if (info.m_stateChain == null)
+            if (info.m_stateChain == null || info.m_stateChain.Length <= 0)
                 return;
 
             Logging.Message("Removing unsupported content from " + info);
 
             var options = ModOptions.Instance;
+            var states = new List<RadioChannelInfo.State>(info.m_stateChain);
+            if (states == null || states.Count <= 0) return;
 
-            List<RadioChannelInfo.State> states = new List<RadioChannelInfo.State>(info.m_stateChain);
             states.RemoveAll(obj =>
             {
                 switch (obj.m_contentType)
                 {
-                    case RadioContentInfo.ContentType.Blurb:
-                        if (!options.AllowContentBlurb)
-                        {
-                            return true;
-                        }
-                        break;
-                    case RadioContentInfo.ContentType.Broadcast:
-                        if (!options.AllowContentBroadcast)
-                        {
-                            return true;
-                        }
-                        break;
-                    case RadioContentInfo.ContentType.Commercial:
-                        if (!options.AllowContentCommercial)
-                        {
-                            return true;
-                        }
-                        break;
-                    case RadioContentInfo.ContentType.Music:
-                        if (!options.AllowContentMusic)
-                        {
-                            return true;
-                        }
-                        break;
-                    case RadioContentInfo.ContentType.Talk:
-                        if (!options.AllowContentTalk)
-                        {
-                            return true;
-                        }
+                    case RadioContentInfo.ContentType.Blurb when !options.AllowContentBlurb:
+                    case RadioContentInfo.ContentType.Broadcast when !options.AllowContentBroadcast:
+                    case RadioContentInfo.ContentType.Commercial when !options.AllowContentCommercial:
+                    case RadioContentInfo.ContentType.Music when !options.AllowContentMusic:
+                    case RadioContentInfo.ContentType.Talk when !options.AllowContentTalk:
+                        return true;
+                    default:
                         break;
                 }
                 return false;
