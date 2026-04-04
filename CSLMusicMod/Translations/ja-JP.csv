@@ -16,8 +16,8 @@
 "CHANNELS_CONT","チャンネルとコンテンツ",""
 "CHANNELS_CONT_TIP","音楽パックをインストールするか、ステーション設定ファイルや音楽ファイルを「CSLMusicMod_Music」フォルダー、またはバニララジオコンテンツを含むフォルダーに置くことで、独自のチャンネルや音楽を追加できます。",""
 "TRBL","トラブルシューティング",""
-"TRBL_TIP","CSL Music Mod WikiおよびSteam Workshopのエントリで情報を見つけることができます。
-ログを提供したい場合は、「詳細なデバッグログ記録を有効化」を有効にすることを忘れないでください。",""
+"TRBL_TIP","You can find information in the CSL Music Mod Wiki and the Steam Workshop entry.
+Don't forget to enable the setting below if you want to provide a log.",""
 "VANILLA_CHANNELS","バニラチャンネルを管理",""
 "MUSIC_PACKS","音楽パック (再読み込みが必要)",""
 "ENABLE_MUSIC_PACKS","音楽パックの音楽を使用",""
