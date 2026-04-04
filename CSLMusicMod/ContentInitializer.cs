@@ -72,7 +72,7 @@ namespace CSLMusicMod
         {
             SceneManager.sceneLoaded -= OnLevelFinishedLoading;
         }
-        void OnLevelFinishedLoading(Scene scene, LoadSceneMode mode)
+        private void OnLevelFinishedLoading(Scene scene, LoadSceneMode mode)
         {
             if (mode == LoadSceneMode.Single)
             {

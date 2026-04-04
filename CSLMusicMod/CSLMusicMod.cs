@@ -40,8 +40,8 @@ namespace CSLMusicMod
             base.OnDisabled();
             Logging.EventExceptionOccured -= ErrorNotification.ShowNotification;
         }
-        public override void LoadSettings() => ModOptions.Instance.LoadSettings();
-        public override void SaveSettings() => ModOptions.Instance.SaveSettings();
+        public override void LoadSettings() => ModOptions.LoadSettings();
+        public override void SaveSettings() => ModOptions.SaveSettings();
 
     }
 }

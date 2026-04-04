@@ -16,6 +16,7 @@ namespace CSLMusicMod.Patches
         /// <param name="info">The content to be played</param>
         [HarmonyPatch(typeof(AudioManager), nameof(AudioManager.QueueBroadcast))]
         [HarmonyPrefix]
+        [ReflectionHelper.UsedReflection]
         public static bool QueueBroadcastPatch(AudioManager __instance, RadioContentInfo info)
         {
             if (!ModOptions.Instance.AllowContentBroadcast)
@@ -55,6 +56,7 @@ namespace CSLMusicMod.Patches
         /// <param name="channel">Channel.</param>
         [HarmonyPatch(typeof(AudioManager), nameof(AudioManager.CollectRadioContentInfo))]
         [HarmonyPrefix]
+        [ReflectionHelper.UsedReflection]
         public static bool CollectRadioContentInfoPatch(AudioManager __instance, RadioContentInfo.ContentType type, RadioChannelInfo channel, ref FastList<ushort> __result)
         {
             //Logging.Message("[Internal] Rebuilding the radio content of channel " + channel.GetLocalizedTitle());

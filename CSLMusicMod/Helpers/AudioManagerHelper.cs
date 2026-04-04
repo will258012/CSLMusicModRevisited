@@ -9,14 +9,31 @@ namespace CSLMusicMod.Helpers
     /// <summary>
     /// Contains some helper functions that work the AudioManager class of the game
     /// </summary>
+    [ReflectionHelper.UsedReflection]
     public static class AudioManagerHelper
     {
-        private static readonly Traverse m_audioManager = Traverse.Create(AudioManager.instance);
-        internal static readonly Traverse<ushort> m_activeRadioChannel = m_audioManager.Field<ushort>("m_activeRadioChannel");
-        private static readonly Traverse<bool> m_musicFileIsRadio = m_audioManager.Field<bool>("m_musicFileIsRadio");
-        private static readonly Traverse<AudioManager.AudioPlayer> m_currentRadioPlayer = m_audioManager.Field<AudioManager.AudioPlayer>("m_currentRadioPlayer");
-        internal static readonly Traverse<string[]> m_musicFiles = m_audioManager.Field<string[]>("m_musicFiles");
-
+        private static Traverse m_audioManager = null;
+        internal static Traverse<ushort> m_activeRadioChannel = null;
+        private static Traverse<bool> m_musicFileIsRadio = null;
+        private static Traverse<AudioManager.AudioPlayer> m_currentRadioPlayer = null;
+        internal static Traverse<string[]> m_musicFiles = null;
+        static AudioManagerHelper()
+        {
+            Initialize();
+        }
+        public static void Initialize()
+        {
+            if (AudioManager.instance == null)
+            {
+                Logging.Error("AudioManager instance is null");
+                return;
+            }
+            m_audioManager = Traverse.Create(AudioManager.instance);
+            m_activeRadioChannel = m_audioManager.Field<ushort>("m_activeRadioChannel");
+            m_musicFileIsRadio = m_audioManager.Field<bool>("m_musicFileIsRadio");
+            m_currentRadioPlayer = m_audioManager.Field<AudioManager.AudioPlayer>("m_currentRadioPlayer");
+            m_musicFiles = m_audioManager.Field<string[]>("m_musicFiles");
+        }
         /// <summary>
         /// Returns the currently active channel data
         /// </summary>
@@ -298,7 +315,7 @@ namespace CSLMusicMod.Helpers
                 ModOptions.Instance.DisabledContent.Add(id);
             }
 
-            ModOptions.Instance.SaveSettings();
+            ModOptions.SaveSettings();
 
         }
 

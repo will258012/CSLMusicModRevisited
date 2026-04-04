@@ -1,4 +1,5 @@
 ﻿using AlgernonCommons;
+using AlgernonCommons.Translation;
 using ColossalFramework.UI;
 using CSLMusicMod.Helpers;
 using HarmonyLib;
@@ -21,6 +22,7 @@ namespace CSLMusicMod.Patches
         [HarmonyPrefix]
         public static bool AssignStationToButtonPatch(UIButton button, RadioChannelInfo station)
         {
+            Logging.Message("Assigning station " + station.name + " to radio panel");
             UserRadioCollection collection = Loading.UserRadioContainer;
             UISprite iconsprite = button.Find<UISprite>("sprite");
 
@@ -53,6 +55,7 @@ namespace CSLMusicMod.Patches
         [HarmonyPostfix]
         public static void OnLevelLoadedPatch()
         {
+            RadioPanelHelper.Initialize();
             RadioPanelHelper.m_originalStations = RadioPanelHelper.m_stations.Value;
             RadioPanelHelper.ApplyStationsDisabling();
         }
@@ -96,7 +99,6 @@ namespace CSLMusicMod.Patches
             UserRadioCollection collection)
         {
             //button.isVisible = !ModOptions.Instance.DisabledRadioStations.Contains(station.name);
-
             ((UIPanel)button.parent).autoLayoutPadding = new RectOffset(0, 0, 0, 0);
 
             button.atlas = TextureHelper.ListAtlas;

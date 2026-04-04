@@ -19,7 +19,7 @@ namespace CSLMusicMod.UI
         private bool m_Initialized = false;
 
         //UILabel m_LabelCurrentMusic;
-        UIListBox m_MusicList;
+        private UIListBox m_MusicList;
 
         //Texture atlas
 
@@ -40,9 +40,9 @@ namespace CSLMusicMod.UI
 
         // Additional options UI
         private int m_AdditionalButtonCount = 0;
-        private UIButton m_TopShowMusicList;
-        private UIButton m_TopNextTrack;
-        private UIButton m_TopOpenStationDirectory;
+        private static UIButton m_TopShowMusicList;
+        private static UIButton m_TopNextTrack;
+        internal static UIButton m_TopOpenStationDirectory;
 
         private bool m_SortAscending = true;
 
@@ -55,6 +55,7 @@ namespace CSLMusicMod.UI
                 return m_Filter.text.Trim() != "";
             }
         }
+        [ReflectionHelper.UsedReflection]
         public override void Start()
         {
             base.Start();
@@ -65,8 +66,7 @@ namespace CSLMusicMod.UI
             wrapLayout = true;
             width = 500;
             height = screenResolution.y - 120 - 100;
-            relativePosition = new Vector3(screenResolution.x - width - 10, screenResolution.y - height - 120);
-            isVisible = false;
+            isVisible = true;
             canFocus = true;
             isInteractive = true;
             m_ZIndex = -100;
@@ -78,9 +78,7 @@ namespace CSLMusicMod.UI
 
             InitializeShowMusicPanelButton(muteButton, radioPanel);
             InitializeTopNextTrackButton(muteButton, radioPanel);
-
-            if (ModOptions.Instance.EnableOpenStationDirButton)
-                InitializeOpenStationDirectoryButton(muteButton, radioPanel);
+            InitializeOpenStationDirectoryButton(muteButton, radioPanel);
 
             //Add header
             InitializeHeaderToolbar();
@@ -88,6 +86,8 @@ namespace CSLMusicMod.UI
             //Add list
             InitializeMusicList();
             RebuildList();
+
+            LoadPanelPosition();
 
             if (Mathf.Abs(m_VolumeSlider.value / 100f - m_MusicAudioVolume.value) > 0.01f)
             {
@@ -98,7 +98,21 @@ namespace CSLMusicMod.UI
             Singleton<AudioManager>.instance.m_radioContentChanged += RadioContentChanged;
         }
 
-        void RadioContentChanged()
+        public void LoadPanelPosition()
+        {
+            var view = UIView.GetAView();
+
+            absolutePosition = MusicUI.SavedPanelPosition.x >= 0f
+                ? MusicUI.SavedPanelPosition
+                : new Vector3(Mathf.Floor(view.GetScreenResolution().x - width - 10), Mathf.Floor(view.GetScreenResolution().y - height - 120));
+
+            // Ensure panel is fully visible on screen (in case of e.g. UI scaling changes).
+            float clampedXpos = Mathf.Clamp(absolutePosition.x, 0f, view.fixedWidth - width);
+            float clampedYpos = Mathf.Clamp(absolutePosition.y, 0f, view.fixedHeight - height);
+            absolutePosition = new Vector2(clampedXpos, clampedYpos);
+        }
+
+        private void RadioContentChanged()
         {
             RebuildList();
         }
@@ -113,7 +127,14 @@ namespace CSLMusicMod.UI
         protected override void OnVisibilityChanged()
         {
             base.OnVisibilityChanged();
+            if (!isVisible)
+            {
+                MusicUI.SavedPanelPosition = absolutePosition;
+                ModOptions.SaveSettings();
+                return;
+            }
 
+            LoadPanelPosition();
             // Bring the radio panel to the front
             if (RadioPanelHelper.CurrentRadioPanel != null)
             {
@@ -304,7 +325,7 @@ namespace CSLMusicMod.UI
             m_NextTrack.width = 36;
             m_NextTrack.height = 36;
             m_NextTrack.relativePosition = new Vector3(130, 10);
-            m_NextTrack.tooltip = Translations.Translate("SHOUTCUT_NEXTTRACK");
+            m_NextTrack.tooltip = $"{Translations.Translate("SHOUTCUT_NEXTTRACK")} ({ModOptions.Instance.ShortcutNextTrack.Encode()})";
 
             m_NextTrack.atlas = TextureHelper.ListAtlas;
             m_NextTrack.normalFgSprite = "Next";
@@ -392,7 +413,7 @@ namespace CSLMusicMod.UI
             m_Close.width = 36;
             m_Close.height = 36;
             m_Close.relativePosition = new Vector3(width - 10 - 36, 10);
-            m_Close.tooltip = Translations.Translate("CLOSE_PANEL");
+            m_Close.tooltip = $"{Translations.Translate("CLOSE_PANEL")} ({ModOptions.Instance.ShortcutOpenRadioPanel.Encode()})";
 
             m_Close.atlas = TextureHelper.ListAtlas;
             m_Close.normalFgSprite = "Close";
@@ -451,7 +472,14 @@ namespace CSLMusicMod.UI
                 m_Header.height = 60;
                 m_Header.backgroundSprite = "GenericTab";
             }
-
+            // Drag
+            {
+                var dragHandle = m_Header.AddUIComponent<UIDragHandle>();
+                dragHandle.size = m_Header.size;
+                dragHandle.relativePosition = Vector3.zero;
+                dragHandle.target = this;
+                dragHandle.SendToBack();
+            }
             InitializeHeaderToolbarVolumeSlider();
             InitializeHeaderToolbarNextTrackButton();
             InitializeHeaderToolbarSortAscendingButton();
@@ -464,7 +492,12 @@ namespace CSLMusicMod.UI
 
         private void InitializeShowMusicPanelButton(UIMultiStateButton muteButton, UIPanel radioPanel)
         {
-            if (radioPanel.Find("ShowMusicListButton") != null) return;
+            var tooltip = $"{Translations.Translate("SHOW_PLAYLIST")} ({ModOptions.Instance.ShortcutOpenRadioPanel.Encode()})";
+            if (m_TopShowMusicList != null)
+            {
+                m_TopShowMusicList.tooltip = tooltip;
+                return;
+            }
 
             m_TopShowMusicList = radioPanel.AddUIComponent<UIButton>();
             m_TopShowMusicList.name = "ShowMusicListButton";
@@ -484,7 +517,7 @@ namespace CSLMusicMod.UI
             m_TopShowMusicList.normalFgSprite = "Menu";
             m_TopShowMusicList.color = m_TopShowMusicList.focusedColor = new Color32(225, 225, 225, 255);
             m_TopShowMusicList.hoveredColor = new Color32(255, 255, 255, 255);
-            m_TopShowMusicList.tooltip = Translations.Translate("SHOW_PLAYLIST");
+            m_TopShowMusicList.tooltip = tooltip;
             m_TopShowMusicList.Show();
 
             m_TopShowMusicList.eventClick += TopShowMusicListOnEventClick;
@@ -497,7 +530,12 @@ namespace CSLMusicMod.UI
 
         private void InitializeTopNextTrackButton(UIMultiStateButton muteButton, UIPanel radioPanel)
         {
-            if (radioPanel.Find("NextTrackButton") != null) return;
+            var tooltip = $"{Translations.Translate("SHOUTCUT_NEXTTRACK")} ({ModOptions.Instance.ShortcutNextTrack.Encode()})";
+            if (m_TopNextTrack != null)
+            {
+                m_TopNextTrack.tooltip = tooltip;
+                return;
+            }
 
             m_TopNextTrack = radioPanel.AddUIComponent<UIButton>();
             m_TopNextTrack.name = "NextTrackButton";
@@ -517,7 +555,7 @@ namespace CSLMusicMod.UI
             m_TopNextTrack.normalFgSprite = "Next";
             m_TopNextTrack.color = m_TopNextTrack.focusedColor = new Color32(225, 225, 225, 255);
             m_TopNextTrack.hoveredColor = new Color32(255, 255, 255, 255);
-            m_TopNextTrack.tooltip = Translations.Translate("SHOUTCUT_NEXTTRACK");
+            m_TopNextTrack.tooltip = tooltip;
             m_TopNextTrack.Show();
 
             m_TopNextTrack.eventClick += buttonNextTrackClicked;
@@ -525,7 +563,12 @@ namespace CSLMusicMod.UI
 
         private void InitializeOpenStationDirectoryButton(UIMultiStateButton muteButton, UIPanel radioPanel)
         {
-            if (radioPanel.Find("OpenStationDir") != null) return;
+            if (m_TopOpenStationDirectory != null)
+            {
+                m_TopOpenStationDirectory.tooltip = Translations.Translate("BUTTON_OPENDIR");
+                m_TopOpenStationDirectory.isVisible = ModOptions.Instance.EnableOpenStationDirButton;
+                return;
+            }
 
             m_TopOpenStationDirectory = radioPanel.AddUIComponent<UIButton>();
             m_TopOpenStationDirectory.name = "OpenStationDir";
@@ -546,7 +589,7 @@ namespace CSLMusicMod.UI
             m_TopOpenStationDirectory.color = m_TopOpenStationDirectory.focusedColor = new Color32(225, 225, 225, 255);
             m_TopOpenStationDirectory.hoveredColor = new Color32(255, 255, 255, 255);
             m_TopOpenStationDirectory.tooltip = Translations.Translate("BUTTON_OPENDIR");
-            m_TopOpenStationDirectory.Show();
+            m_TopOpenStationDirectory.isVisible = ModOptions.Instance.EnableOpenStationDirButton;
 
             m_TopOpenStationDirectory.eventClick += TopOpenStationDirectoryOnEventClick;
 
@@ -569,9 +612,9 @@ namespace CSLMusicMod.UI
             }
         }
 
-        void buttonNextTrackClicked(UIComponent component, UIMouseEventParameter eventPara) => AudioManagerHelper.NextTrack();
+        private void buttonNextTrackClicked(UIComponent component, UIMouseEventParameter eventPara) => AudioManagerHelper.NextTrack();
 
-        void musicEntrySelected(UIComponent component, int value)
+        private void musicEntrySelected(UIComponent component, int value)
         {
             if (ModOptions.Instance.ImprovedDisableContentUI)
             {
@@ -598,20 +641,20 @@ namespace CSLMusicMod.UI
         }
 
 
-        void musicEntryEnableDisable(UIComponent component, int value)
+        private void musicEntryEnableDisable(UIComponent component, int value)
         {
             RadioContentInfo info = m_CurrentContent[value];
             AudioManagerHelper.SetContentEnabled(info, !AudioManagerHelper.ContentIsEnabled(info));
             RefreshListWidget();
         }
 
-        void filterTextChanged(UIComponent component, string value)
+        private void filterTextChanged(UIComponent component, string value)
         {
             m_ClearFilter.normalFgSprite = !Filtered ? "Search" : "Clear";
             RebuildList();
         }
 
-        void buttonCloseClicked(UIComponent component, UIMouseEventParameter eventParam) => RadioPanelHelper.CurrentRadioPanel.HideRadio();
+        private void buttonCloseClicked(UIComponent component, UIMouseEventParameter eventParam) => RadioPanelHelper.CurrentRadioPanel.HideRadio();
 
         private void InitializeMusicList()
         {
