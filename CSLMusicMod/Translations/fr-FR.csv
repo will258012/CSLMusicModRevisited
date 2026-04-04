@@ -17,7 +17,7 @@
 "CHANNELS_CONT_TIP","Vous pouvez ajouter vos propres chaînes ou musiques en installant des packs de musique, en plaçant des configurations de station ou des fichiers musicaux dans le dossier ""CSLMusicMod_Music"" ou dans le dossier contenant le contenu radio d'origine.",""
 "TRBL","Dépannage",""
 "TRBL_TIP","Vous pouvez trouver des informations dans le Wiki du CSL Music Mod et la page du Steam Workshop.
-N'oubliez pas d'activer ""Activer la journalisation de débogage détaillée"" si vous souhaitez fournir un journal.",""
+N'oubliez pas d'activer le paramètre ci-dessous si vous souhaitez fournir un journal.",""
 "VANILLA_CHANNELS","Gérer les chaînes d'origine",""
 "MUSIC_PACKS","Packs de musique (Nécessite un rechargement)",""
 "ENABLE_MUSIC_PACKS","Utiliser la musique des packs de musique",""

@@ -20,7 +20,7 @@ colocando configurações de estação ou arquivos de música na pasta ""CSLMusi
 ou na pasta que contém o conteúdo de rádio padrão do jogo.",""
 "TRBL","Solução de Problemas",""
 "TRBL_TIP","Você pode encontrar informações na Wiki do CSL Music Mod e na entrada da Oficina Steam.
-Não se esqueça de ativar ""Ativar registro de depuração detalhado"" se quiser fornecer um log.",""
+Não se esqueça de ativar a configuração abaixo se quiser fornecer um registro.",""
 "VANILLA_CHANNELS","Gerenciar canais padrão",""
 "MUSIC_PACKS","Pacotes de música (Requer recarregamento)",""
 "ENABLE_MUSIC_PACKS","Usar música de pacotes de música",""
