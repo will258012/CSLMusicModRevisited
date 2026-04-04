@@ -20,7 +20,7 @@ putting station configurations or music files into the ""CSLMusicMod_Music"" fol
 or into the folder containing vanilla radio content."
 TRBL,Troubleshooting
 "TRBL_TIP","You can find information in the CSL Music Mod Wiki and the Steam Workshop entry.
-Don't forget to enable ""Enable detailed debugging logging"" if you want to provide a log."
+Don't forget to enable the setting below if you want to provide a log."
 VANILLA_CHANNELS,Manage vanilla channels
 MUSIC_PACKS,Music packs (Needs reload)
 ENABLE_MUSIC_PACKS,Use music from music packs

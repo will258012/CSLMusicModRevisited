@@ -59,27 +59,22 @@ namespace CSLMusicMod.UI
             }
             {
                 var title = UISpacers.AddTitleSpacer(component, LeftMargin, currentY, OptionsPanelManager<SettingsUI>.PanelWidth, Translations.Translate("PERF"));
-                currentY += title.height + GroupMargin;
-                var tip = UISpacers.AddTitle(component, LeftMargin, currentY, Translations.Translate("PERF_TIP"));
-                tip.textScale = 1;
-                currentY += tip.height + GroupMargin;
+                currentY += title.height + LeftMargin;
+                var tip = UILabels.AddLabel(component, GroupMargin, currentY, Translations.Translate("PERF_TIP"), width: OptionsPanelManager<SettingsUI>.PanelWidth - TitleMargin);
+                currentY += tip.height + LeftMargin;
             }
             {
                 var title = UISpacers.AddTitleSpacer(component, LeftMargin, currentY, OptionsPanelManager<SettingsUI>.PanelWidth, Translations.Translate("CHANNELS_CONT"));
-                currentY += title.height + GroupMargin;
-                var tip = UISpacers.AddTitle(component, LeftMargin, currentY,
-                Translations.Translate("CHANNELS_CONT_TIP"));
-                tip.textScale = 1;
-                currentY += tip.height + GroupMargin;
+                currentY += title.height + LeftMargin;
+                var tip = UILabels.AddLabel(component, GroupMargin, currentY, Translations.Translate("CHANNELS_CONT_TIP"), width: OptionsPanelManager<SettingsUI>.PanelWidth - TitleMargin);
+                currentY += tip.height + LeftMargin;
             }
             var options = Instance;
             {
                 var title = UISpacers.AddTitleSpacer(component, LeftMargin, currentY, OptionsPanelManager<SettingsUI>.PanelWidth, Translations.Translate("TRBL"));
-                currentY += title.height + GroupMargin;
-                var tip = UISpacers.AddTitle(component, LeftMargin, currentY,
-                Translations.Translate("TRBL_TIP"));
-                tip.textScale = 1;
-                currentY += tip.height + GroupMargin;
+                currentY += title.height + LeftMargin;
+                var tip = UILabels.AddLabel(component, GroupMargin, currentY, Translations.Translate("TRBL_TIP"), width: OptionsPanelManager<SettingsUI>.PanelWidth - TitleMargin);
+                currentY += tip.height + LeftMargin;
 
                 var logging_CheckBox = UICheckBoxes.AddPlainCheckBox(component, LeftMargin, currentY, Translations.Translate("DETAIL_LOGGING"));
                 logging_CheckBox.isChecked = options.EnableDebugInfo;
