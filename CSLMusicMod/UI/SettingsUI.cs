@@ -68,8 +68,8 @@ namespace CSLMusicMod.UI
                 tip.textScale = 1;
                 currentY += tip.height + GroupMargin;
             }
+            var options = Instance;
             {
-                ModOptions options = Instance;
                 var title = UISpacers.AddTitleSpacer(component, LeftMargin, currentY, OptionsPanelManager<SettingsUI>.PanelWidth, Translations.Translate("TRBL"));
                 currentY += title.height + GroupMargin;
                 var tip = UISpacers.AddTitle(component, LeftMargin, currentY,
@@ -80,6 +80,12 @@ namespace CSLMusicMod.UI
                 var logging_CheckBox = UICheckBoxes.AddPlainCheckBox(component, LeftMargin, currentY, Translations.Translate("DETAIL_LOGGING"));
                 logging_CheckBox.isChecked = options.EnableDebugInfo;
                 logging_CheckBox.eventCheckChanged += (_, isChecked) => options.EnableDebugInfo = isChecked;
+
+                currentY += logging_CheckBox.height + GroupMargin;
+            }
+            {
+                var defaults_Button = UIButtons.AddButton(component, LeftMargin, currentY, Translations.Translate("RESET_SETTINGS"), width: 300, tooltip: Translations.Translate("RESET_SETTINGS"));
+                defaults_Button.eventClicked += (c, _) => ResetSettings();
             }
         }
 
@@ -87,7 +93,7 @@ namespace CSLMusicMod.UI
 
         private void AddOptionsChannels(UIComponent component)
         {
-            ModOptions options = Instance;
+            var options = Instance;
 
             var scrollPanel = component.AddUIComponent<UIScrollablePanel>();
             scrollPanel.relativePosition = new Vector2(0, Margin);
@@ -220,7 +226,7 @@ namespace CSLMusicMod.UI
 
         private void AddOptionsContent(UIHelperBase helper)
         {
-            ModOptions options = Instance;
+            var options = Instance;
 
             {
                 var subgroup = helper.AddGroup(Translations.Translate("ADD_FEAT"));
@@ -249,7 +255,7 @@ namespace CSLMusicMod.UI
                 subgroup.AddButton(Translations.Translate("RESET_DISABLED"), new OnButtonClicked(() =>
                 {
                     options.DisabledContent.Clear();
-                    options.SaveSettings();
+                    ModOptions.SaveSettings();
                 }));
             }
             {
@@ -275,7 +281,7 @@ namespace CSLMusicMod.UI
 
         private void AddOptionsShortcuts(UIComponent helper)
         {
-            ModOptions options = Instance;
+            var options = Instance;
             var currentY = LeftMargin;
             var shortcutOpenRadioPanel = ShortcutMapping.AddKeymapping(helper, LeftMargin, currentY, Translations.Translate("SHOUTCUT_OPENPLAYLIST"), options.ShortcutOpenRadioPanel);
             currentY += shortcutOpenRadioPanel.Panel.height + Margin;
@@ -288,7 +294,7 @@ namespace CSLMusicMod.UI
 
         private void AddOptionsUI(UIHelperBase helper)
         {
-            ModOptions options = Instance;
+            var options = Instance;
 
             helper.AddCheckbox(Translations.Translate("ENABLE_PLAYLIST"),
                 options.EnableCustomUI,
@@ -302,6 +308,11 @@ namespace CSLMusicMod.UI
             helper.AddCheckbox(Translations.Translate("DISABLE_CONT_CHECKBOXES"),
                 options.ImprovedDisableContentUI,
                 new OnCheckChanged(isChecked => options.ImprovedDisableContentUI = isChecked));
+        }
+        private static void ResetSettings()
+        {
+            ModOptions.ResetSettings();
+            OptionsPanelManager<SettingsUI>.LocaleChanged();
         }
     }
 }

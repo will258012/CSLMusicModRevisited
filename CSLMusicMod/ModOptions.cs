@@ -16,399 +16,21 @@ namespace CSLMusicMod
     /// <summary>
     /// Class that wraps the options of the mod.
     /// </summary>
-    public class ModOptions
+    public static class ModOptions
     {
-        private static ModOptions _Instance = null;
-        public static ModOptions Instance
+        private static Options _Instance = null;
+        public static Options Instance
         {
             get
             {
                 if (_Instance == null)
                 {
-                    //_Instance = new GameObject("CSLMusicMod Settings").AddComponent<ModOptions>();
-                    _Instance = new ModOptions();
+                    _Instance = new Options();
                 }
 
                 return _Instance;
             }
-        }
-
-        private Options m_Options = new Options();
-
-
-        public bool CreateMixChannels
-        {
-            get
-            {
-                return m_Options.CreateMixChannels;
-            }
-            set
-            {
-                m_Options.CreateMixChannels = value;
-
-            }
-        }
-
-        public bool CreateChannelsFromLegacyPacks
-        {
-            get
-            {
-                return m_Options.CreateChannelsFromLegacyPacks;
-            }
-            set
-            {
-                m_Options.CreateChannelsFromLegacyPacks = value;
-
-            }
-        }
-
-        public bool EnableMusicPacks
-        {
-            get
-            {
-                return m_Options.EnableMusicPacks;
-            }
-            set
-            {
-                m_Options.EnableMusicPacks = value;
-
-            }
-        }
-
-        public bool AllowContentMusic
-        {
-            get
-            {
-                return m_Options.AllowContentMusic;
-            }
-            set
-            {
-                m_Options.AllowContentMusic = value;
-
-            }
-        }
-
-        public bool AllowContentTalk
-        {
-            get
-            {
-                return m_Options.AllowContentTalk;
-            }
-            set
-            {
-                m_Options.AllowContentTalk = value;
-
-            }
-        }
-
-        public bool AllowContentBlurb
-        {
-            get
-            {
-                return m_Options.AllowContentBlurb;
-            }
-            set
-            {
-                m_Options.AllowContentBlurb = value;
-
-            }
-        }
-
-        public bool AllowContentBroadcast
-        {
-            get
-            {
-                return m_Options.AllowContentBroadcast;
-            }
-            set
-            {
-                m_Options.AllowContentBroadcast = value;
-
-            }
-        }
-
-        public bool AllowContentCommercial
-        {
-            get
-            {
-                return m_Options.AllowContentCommercial;
-            }
-            set
-            {
-                m_Options.AllowContentCommercial = value;
-
-            }
-        }
-
-        public bool MixContentMusic
-        {
-            get
-            {
-                return m_Options.MixContentMusic;
-            }
-            set
-            {
-                m_Options.MixContentMusic = value;
-
-            }
-        }
-
-        public bool MixContentTalk
-        {
-            get
-            {
-                return m_Options.MixContentTalk;
-            }
-            set
-            {
-                m_Options.MixContentTalk = value;
-
-            }
-        }
-
-        public bool MixContentBlurb
-        {
-            get
-            {
-                return m_Options.MixContentBlurb;
-            }
-            set
-            {
-                m_Options.MixContentBlurb = value;
-
-            }
-        }
-
-        public bool MixContentBroadcast
-        {
-            get
-            {
-                return m_Options.MixContentBroadcast;
-            }
-            set
-            {
-                m_Options.MixContentBroadcast = value;
-
-            }
-        }
-
-        public bool MixContentCommercial
-        {
-            get
-            {
-                return m_Options.MixContentCommercial;
-            }
-            set
-            {
-                m_Options.MixContentCommercial = value;
-
-            }
-        }
-
-        public bool EnableCustomUI
-        {
-            get
-            {
-                return m_Options.EnableCustomUI;
-            }
-            set
-            {
-                m_Options.EnableCustomUI = value;
-
-            }
-        }
-        public Shortcut ShortcutNextTrack
-        {
-            get
-            {
-                return m_Options.ShortcutNextTrack;
-            }
-            set
-            {
-                m_Options.ShortcutNextTrack = value;
-
-            }
-        }
-
-        public Shortcut ShortcutNextStation
-        {
-            get
-            {
-                return m_Options.ShortcutNextStation;
-            }
-            set
-            {
-                m_Options.ShortcutNextStation = value;
-
-            }
-        }
-
-        public Shortcut ShortcutOpenRadioPanel
-        {
-            get
-            {
-                return m_Options.ShortcutOpenRadioPanel;
-            }
-            set
-            {
-                m_Options.ShortcutOpenRadioPanel = value;
-
-            }
-        }
-
-        public bool EnableDisabledContent
-        {
-            get
-            {
-                return m_Options.EnableDisabledContent;
-            }
-            set
-            {
-                m_Options.EnableDisabledContent = value;
-
-            }
-        }
-
-        public List<string> DisabledContent
-        {
-            get
-            {
-                return m_Options.DisabledContent;
-            }
-            set
-            {
-                m_Options.DisabledContent = value;
-
-            }
-        }
-
-        public bool EnableContextSensitivity
-        {
-            get
-            {
-                return m_Options.EnableContextSensitivity;
-            }
-            set
-            {
-                m_Options.EnableContextSensitivity = value;
-
-            }
-        }
-
-        public bool EnableAddingContentToVanillaStations
-        {
-            get
-            {
-                return m_Options.EnableAddingContentToVanillaStations;
-            }
-            set
-            {
-                m_Options.EnableAddingContentToVanillaStations = value;
-
-            }
-        }
-
-        public bool EnableSmoothTransitions
-        {
-            get
-            {
-                return m_Options.EnableSmoothTransitions;
-            }
-            set
-            {
-                m_Options.EnableSmoothTransitions = value;
-
-            }
-        }
-
-        public List<string> DisabledRadioStations
-        {
-            get
-            {
-                return m_Options.DisabledRadioStations;
-            }
-            set
-            {
-                m_Options.DisabledRadioStations = value;
-
-            }
-        }
-
-        public bool EnableDebugInfo
-        {
-            get
-            {
-                return m_Options.EnableDebugInfo;
-            }
-            set
-            {
-                m_Options.EnableDebugInfo = value;
-
-            }
-        }
-
-        public bool AddVanillaSongsToMusicMix
-        {
-            get
-            {
-                return m_Options.AddVanillaSongsToMusicMix;
-            }
-            set
-            {
-                m_Options.AddVanillaSongsToMusicMix = value;
-
-            }
-        }
-
-        public bool EnableImprovedRadioStationList
-        {
-            get
-            {
-                return m_Options.EnableImprovedRadioStationList;
-            }
-            set
-            {
-                m_Options.EnableImprovedRadioStationList = value;
-
-            }
-        }
-
-        public bool EnableOpenStationDirButton
-        {
-            get
-            {
-                return m_Options.EnableOpenStationDirButton;
-            }
-            set
-            {
-                m_Options.EnableOpenStationDirButton = value;
-            }
-        }
-
-        public bool MusicListVisible
-        {
-            get
-            {
-                return m_Options.MusicListVisible;
-            }
-            set
-            {
-                m_Options.MusicListVisible = value;
-
-            }
-        }
-
-        public bool ImprovedDisableContentUI
-        {
-            get
-            {
-                return m_Options.ImprovedDisableContentUI;
-            }
-            set
-            {
-                m_Options.ImprovedDisableContentUI = value;
-
-            }
+            private set => _Instance = value;
         }
 
         public static string SettingsFilename
@@ -418,18 +40,12 @@ namespace CSLMusicMod
                 return Path.Combine(DataLocation.applicationBase, "CSLMusicMod.json");
             }
         }
-
-        public ModOptions()
+        public static void ResetSettings()
         {
+            Instance = new Options();
+            SaveSettings();
         }
-
-        //public void Awake()
-        //{
-        //    DontDestroyOnLoad(this);
-        //    LoadSettings();
-        //}
-
-        public void SaveSettings()
+        public static void SaveSettings()
         {
             try
             {
@@ -439,7 +55,7 @@ namespace CSLMusicMod
                     PrettyPrint = true
                 };
 
-                JsonMapper.ToJson(m_Options, f);
+                JsonMapper.ToJson(Instance, f);
                 File.WriteAllText(SettingsFilename, json.ToString());
 
             }
@@ -449,18 +65,18 @@ namespace CSLMusicMod
             }
             finally
             {
-                Logging.Message("Settings saved.");
+                Logging.Message("Settings saved");
             }
         }
 
-        public void LoadSettings()
+        public static void LoadSettings()
         {
             if (File.Exists(SettingsFilename))
             {
                 try
                 {
                     string data = File.ReadAllText(SettingsFilename);
-                    m_Options = JsonMapper.ToObject<Options>(data);
+                    Instance = JsonMapper.ToObject<Options>(data);
                 }
                 catch (Exception ex)
                 {
@@ -609,6 +225,10 @@ namespace CSLMusicMod
             }
             public Options()
             {
+                Translations.CurrentLanguage = "default";
+                Logging.DetailLogging = false;
+                WhatsNew.LastNotifiedVersionString = "0.0";
+
                 CreateMixChannels = true;
                 MixContentBlurb = false;
                 MixContentBroadcast = false;
