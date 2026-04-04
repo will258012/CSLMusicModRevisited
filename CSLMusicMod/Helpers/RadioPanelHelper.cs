@@ -1,4 +1,5 @@
 ﻿using AlgernonCommons;
+using AlgernonCommons.Translation;
 using ColossalFramework.UI;
 using HarmonyLib;
 using System.Linq;
@@ -9,7 +10,10 @@ namespace CSLMusicMod.Helpers
     [ReflectionHelper.UsedReflection]
     public static class RadioPanelHelper
     {
-        static RadioPanelHelper() => _ = CurrentRadioPanel;
+        static RadioPanelHelper()
+        {
+            Initialize();
+        }
         /// <summary>
         /// Gets the current radio panel.
         /// This function is expensive. Only call if necessary!
@@ -22,20 +26,24 @@ namespace CSLMusicMod.Helpers
                 if (m_CurrentRadioPanel == null)
                 {
                     m_CurrentRadioPanel = Resources.FindObjectsOfTypeAll<RadioPanel>().FirstOrDefault();
-                    if (m_CurrentRadioPanel != null)
-                    {
-                        m_traverse = Traverse.Create(m_CurrentRadioPanel);
-                        m_radioPanel = m_traverse.Field<UIPanel>("m_radioPanel");
-                        m_radioList = m_traverse.Field<UIPanel>("m_radioList");
-                        m_isVisible = m_traverse.Field<bool>("m_isVisible");
-                        m_selectedStation = m_traverse.Field<RadioChannelInfo>("m_selectedStation");
-                        m_stations = m_traverse.Field<RadioChannelInfo[]>("m_stations");
-                    }
                 }
                 return m_CurrentRadioPanel;
             }
         }
-
+        public static void Initialize()
+        {
+            if (CurrentRadioPanel == null)
+            {
+                Logging.Error("CurrentRadioPanel instance is null");
+                return;
+            }
+            m_traverse = Traverse.Create(CurrentRadioPanel);
+            m_radioPanel = m_traverse.Field<UIPanel>("m_radioPanel");
+            m_radioList = m_traverse.Field<UIPanel>("m_radioList");
+            m_isVisible = m_traverse.Field<bool>("m_isVisible");
+            m_selectedStation = m_traverse.Field<RadioChannelInfo>("m_selectedStation");
+            m_stations = m_traverse.Field<RadioChannelInfo[]>("m_stations");
+        }
         /// <summary>
         /// The current radio panel (from vanilla UI)
         /// Used as cache to prevent expensive FindObjectOfTypeAll calls 
