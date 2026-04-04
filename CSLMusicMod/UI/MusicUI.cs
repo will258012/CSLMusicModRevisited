@@ -35,41 +35,46 @@ namespace CSLMusicMod.UI
         public static float SavedPanelPositionY { get; set; } = DefaultPosition.y;
         public static Vector3 DefaultPosition => Vector3.left;
 
-        private bool m_Initialized = false;
         private const float m_updateInterval = .1f;
         private float m_nextUpdateTime = default;
 
         public void Awake()
         {
             DontDestroyOnLoad(this);
-            Initialize();
         }
         private void Initialize()
         {
             try
             {
+                if (RadioPanelHelper.m_radioPanel.Value == default)
+                {
+                    Logging.Error("Failed to initialize MusicUI. Failed to find radio panel");
+                    return;
+                }
                 ListPanel = (UIMusicListPanel)UIView.GetAView().AddUIComponent(typeof(UIMusicListPanel));
             }
             catch (System.Exception e)
             {
-                Logging.LogException(e, "Failed to initialize ListPanel");
+                Logging.LogException(e, "Failed to initialize MusicUI");
             }
-            Logging.Message("Initialized music UI");
-            m_Initialized = true;
+            Logging.Message("Initialized MusicUI");
         }
         public void LocaleChanged()
         {
             OnDestroy();
-            Initialize();
         }
 
         public void Update()
         {
-            if (!m_Initialized || SimulationManager.instance.ForcedSimulationPaused) return;
-
+            if (SimulationManager.instance.ForcedSimulationPaused) return;
             if (Time.time < m_nextUpdateTime) return;
-
             m_nextUpdateTime = Time.time + m_updateInterval;
+
+            if (ListPanel == null)
+            {
+                Initialize();
+                return;
+            }
 
             if (ListPanel != null)
             {

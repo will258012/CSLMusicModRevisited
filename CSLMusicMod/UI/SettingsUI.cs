@@ -38,7 +38,12 @@ namespace CSLMusicMod.UI
             m_TabStrip.selectedIndex = 0;
         }
         private UIPanel AddTab(string name, bool autoLayout = false) => UITabstrips.AddTextTab(m_TabStrip, name, _tabIndex++, out var _, autoLayout: autoLayout);
-
+        protected override void OnVisibilityChanged()
+        {
+            base.OnVisibilityChanged();
+            if (!isVisible)
+                OtherLocaleChanged();
+        }
         private void AddOptionsInfo(UIComponent component)
         {
             var currentY = Margin;
@@ -48,8 +53,7 @@ namespace CSLMusicMod.UI
                 {
                     Translations.Index = index;
                     OptionsPanelManager<SettingsUI>.LocaleChanged();
-                    Loading.UI?.LocaleChanged();
-                    Loading.UserRadioContainer?.LocaleChanged();
+                    OtherLocaleChanged();
                 };
                 currentY += language_DropDown.height + GroupMargin;
             }
@@ -313,6 +317,15 @@ namespace CSLMusicMod.UI
         {
             ModOptions.ResetSettings();
             OptionsPanelManager<SettingsUI>.LocaleChanged();
+            OtherLocaleChanged();
+        }
+        private static void OtherLocaleChanged()
+        {
+            if (!Loading.IsLoaded)
+                return;
+
+            Loading.UI?.LocaleChanged();
+            Loading.UserRadioContainer?.LocaleChanged();
         }
     }
 }

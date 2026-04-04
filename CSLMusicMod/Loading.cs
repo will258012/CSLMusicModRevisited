@@ -54,10 +54,10 @@ namespace CSLMusicMod
         }
         protected override void LoadedActions(LoadMode mode)
         {
+            AudioManagerHelper.Initialize();
             RemoveUnsupportedContent();
             UserRadioContainer.CollectPostLoadingData();
             ExtendVanillaContent();
-            AudioManagerHelper.Initialize();
 
             // Build UI and other post loadtime
             if (UI == null && ModOptions.Instance.EnableCustomUI)
@@ -94,7 +94,7 @@ namespace CSLMusicMod
             }
             if (UIShortcutHandler != null)
             {
-                UnityEngine.Object.Destroy(UI.gameObject);
+                UnityEngine.Object.Destroy(UIShortcutHandler.gameObject);
                 UIShortcutHandler = null;
             }
             if (StationContainer != null)
