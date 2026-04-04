@@ -16,8 +16,8 @@
 "CHANNELS_CONT","Csatornák és tartalom",""
 "CHANNELS_CONT_TIP","Saját csatornákat vagy zenét adhatsz hozzá zenei csomagok telepítésével, rádióállomás-konfigurációk vagy zenefájlok elhelyezésével a ""CSLMusicMod_Music"" mappába vagy az eredeti rádiótartalmat tartalmazó mappába.",""
 "TRBL","Hibaelhárítás",""
-"TRBL_TIP","Információkat találhatsz a CSL Music Mod Wiki oldalán és a Steam Workshop bejegyzésben.
-Ne felejtsd el bekapcsolni a ""Részletes hibakeresési naplózás engedélyezése"" opciót, ha naplót szeretnél biztosítani.",""
+"TRBL_TIP","You can find information in the CSL Music Mod Wiki and the Steam Workshop entry.
+Don't forget to enable the setting below if you want to provide a log.",""
 "VANILLA_CHANNELS","Eredeti csatornák kezelése",""
 "MUSIC_PACKS","Zenei csomagok (Újratöltés szükséges)",""
 "ENABLE_MUSIC_PACKS","Zene használata zenei csomagokból",""
