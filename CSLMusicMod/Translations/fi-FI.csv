@@ -16,8 +16,8 @@
 "CHANNELS_CONT","Kanavat & Sisältö",""
 "CHANNELS_CONT_TIP","Voit lisätä omia kanavia tai musiikkia asentamalla musiikkipaketteja, sijoittamalla aseman asetustiedostot tai musiikkitiedostot ""CSLMusicMod_Music""-kansioon tai kansioon, joka sisältää alkuperäisen radion sisällön.",""
 "TRBL","Vianetsintä",""
-"TRBL_TIP","Löydät tietoja CSL Music Mod Wikistä ja Steam Workshop -sivulta.
-Älä unohda ottaa käyttöön ""Ota yksityiskohtainen vianetsintäloki"" jos haluat tarjota lokin.",""
+"TRBL_TIP","You can find information in the CSL Music Mod Wiki and the Steam Workshop entry.
+Don't forget to enable the setting below if you want to provide a log.",""
 "VANILLA_CHANNELS","Hallitse alkuperäisiä kanavia",""
 "MUSIC_PACKS","Musiikkipaketit (vaatii uudelleenlatauksen)",""
 "ENABLE_MUSIC_PACKS","Käytä musiikkipakettien musiikkia",""
