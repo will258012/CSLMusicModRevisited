@@ -40,9 +40,9 @@ namespace CSLMusicMod.UI
 
         // Additional options UI
         private int m_AdditionalButtonCount = 0;
-        private UIButton m_TopShowMusicList;
-        private UIButton m_TopNextTrack;
-        private UIButton m_TopOpenStationDirectory;
+        private static UIButton m_TopShowMusicList;
+        private static UIButton m_TopNextTrack;
+        internal static UIButton m_TopOpenStationDirectory;
 
         private bool m_SortAscending = true;
 
@@ -78,9 +78,7 @@ namespace CSLMusicMod.UI
 
             InitializeShowMusicPanelButton(muteButton, radioPanel);
             InitializeTopNextTrackButton(muteButton, radioPanel);
-
-            if (ModOptions.Instance.EnableOpenStationDirButton)
-                InitializeOpenStationDirectoryButton(muteButton, radioPanel);
+            InitializeOpenStationDirectoryButton(muteButton, radioPanel);
 
             //Add header
             InitializeHeaderToolbar();
@@ -327,7 +325,7 @@ namespace CSLMusicMod.UI
             m_NextTrack.width = 36;
             m_NextTrack.height = 36;
             m_NextTrack.relativePosition = new Vector3(130, 10);
-            m_NextTrack.tooltip = Translations.Translate("SHOUTCUT_NEXTTRACK");
+            m_NextTrack.tooltip = $"{Translations.Translate("SHOUTCUT_NEXTTRACK")} ({ModOptions.Instance.ShortcutNextTrack.Encode()})";
 
             m_NextTrack.atlas = TextureHelper.ListAtlas;
             m_NextTrack.normalFgSprite = "Next";
@@ -415,7 +413,7 @@ namespace CSLMusicMod.UI
             m_Close.width = 36;
             m_Close.height = 36;
             m_Close.relativePosition = new Vector3(width - 10 - 36, 10);
-            m_Close.tooltip = Translations.Translate("CLOSE_PANEL");
+            m_Close.tooltip = $"{Translations.Translate("CLOSE_PANEL")} ({ModOptions.Instance.ShortcutOpenRadioPanel.Encode()})";
 
             m_Close.atlas = TextureHelper.ListAtlas;
             m_Close.normalFgSprite = "Close";
@@ -494,7 +492,12 @@ namespace CSLMusicMod.UI
 
         private void InitializeShowMusicPanelButton(UIMultiStateButton muteButton, UIPanel radioPanel)
         {
-            if (radioPanel.Find("ShowMusicListButton") != null) return;
+            var tooltip = $"{Translations.Translate("SHOW_PLAYLIST")} ({ModOptions.Instance.ShortcutOpenRadioPanel.Encode()})";
+            if (m_TopShowMusicList != null)
+            {
+                m_TopShowMusicList.tooltip = tooltip;
+                return;
+            }
 
             m_TopShowMusicList = radioPanel.AddUIComponent<UIButton>();
             m_TopShowMusicList.name = "ShowMusicListButton";
@@ -514,7 +517,7 @@ namespace CSLMusicMod.UI
             m_TopShowMusicList.normalFgSprite = "Menu";
             m_TopShowMusicList.color = m_TopShowMusicList.focusedColor = new Color32(225, 225, 225, 255);
             m_TopShowMusicList.hoveredColor = new Color32(255, 255, 255, 255);
-            m_TopShowMusicList.tooltip = Translations.Translate("SHOW_PLAYLIST");
+            m_TopShowMusicList.tooltip = tooltip;
             m_TopShowMusicList.Show();
 
             m_TopShowMusicList.eventClick += TopShowMusicListOnEventClick;
@@ -527,7 +530,12 @@ namespace CSLMusicMod.UI
 
         private void InitializeTopNextTrackButton(UIMultiStateButton muteButton, UIPanel radioPanel)
         {
-            if (radioPanel.Find("NextTrackButton") != null) return;
+            var tooltip = $"{Translations.Translate("SHOUTCUT_NEXTTRACK")} ({ModOptions.Instance.ShortcutNextTrack.Encode()})";
+            if (m_TopNextTrack != null)
+            {
+                m_TopNextTrack.tooltip = tooltip;
+                return;
+            }
 
             m_TopNextTrack = radioPanel.AddUIComponent<UIButton>();
             m_TopNextTrack.name = "NextTrackButton";
@@ -547,7 +555,7 @@ namespace CSLMusicMod.UI
             m_TopNextTrack.normalFgSprite = "Next";
             m_TopNextTrack.color = m_TopNextTrack.focusedColor = new Color32(225, 225, 225, 255);
             m_TopNextTrack.hoveredColor = new Color32(255, 255, 255, 255);
-            m_TopNextTrack.tooltip = Translations.Translate("SHOUTCUT_NEXTTRACK");
+            m_TopNextTrack.tooltip = tooltip;
             m_TopNextTrack.Show();
 
             m_TopNextTrack.eventClick += buttonNextTrackClicked;
@@ -555,7 +563,12 @@ namespace CSLMusicMod.UI
 
         private void InitializeOpenStationDirectoryButton(UIMultiStateButton muteButton, UIPanel radioPanel)
         {
-            if (radioPanel.Find("OpenStationDir") != null) return;
+            if (m_TopOpenStationDirectory != null)
+            {
+                m_TopOpenStationDirectory.tooltip = Translations.Translate("BUTTON_OPENDIR");
+                m_TopOpenStationDirectory.isVisible = ModOptions.Instance.EnableOpenStationDirButton;
+                return;
+            }
 
             m_TopOpenStationDirectory = radioPanel.AddUIComponent<UIButton>();
             m_TopOpenStationDirectory.name = "OpenStationDir";
@@ -576,7 +589,7 @@ namespace CSLMusicMod.UI
             m_TopOpenStationDirectory.color = m_TopOpenStationDirectory.focusedColor = new Color32(225, 225, 225, 255);
             m_TopOpenStationDirectory.hoveredColor = new Color32(255, 255, 255, 255);
             m_TopOpenStationDirectory.tooltip = Translations.Translate("BUTTON_OPENDIR");
-            m_TopOpenStationDirectory.Show();
+            m_TopOpenStationDirectory.isVisible = ModOptions.Instance.EnableOpenStationDirButton;
 
             m_TopOpenStationDirectory.eventClick += TopOpenStationDirectoryOnEventClick;
 

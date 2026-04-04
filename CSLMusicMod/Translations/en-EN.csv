@@ -50,7 +50,7 @@ SHOUTCUT_NEXTTRACK,Next track
 SHOUTCUT_NEXTSTATION,Next station
 ENABLE_PLAYLIST,Enable playlist*
 IMPROVED_RADIO_SELECTION,Improved radio station selection (Needs reload)
-OPEN_DIR,Open station directory button (Needs reload)
+OPEN_DIR,Open station directory button
 DISABLE_CONT_CHECKBOXES,Checkboxes to disable content
 VOLUMESLIDER,Drag to change the music volume
 SORT_ASCEND,Sort ascending
