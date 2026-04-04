@@ -16,8 +16,8 @@
 "CHANNELS_CONT","Kanallar ve İçerik",""
 "CHANNELS_CONT_TIP","Müzik paketleri kurarak, istasyon yapılandırmalarını veya müzik dosyalarını ""CSLMusicMod_Music"" klasörüne veya vanilya radyo içeriğini içeren klasöre koyarak kendi kanallarınızı veya müziklerinizi ekleyebilirsiniz.",""
 "TRBL","Sorun Giderme",""
-"TRBL_TIP","CSL Music Mod Wiki'de ve Steam Workshop girişinde bilgi bulabilirsiniz.
-Bir günlük sağlamak istiyorsanız ""Ayrıntılı hata ayıklama günlüğünü etkinleştir""i etkinleştirmeyi unutmayın.",""
+"TRBL_TIP","You can find information in the CSL Music Mod Wiki and the Steam Workshop entry.
+Don't forget to enable the setting below if you want to provide a log.",""
 "VANILLA_CHANNELS","Vanilya kanallarını yönet",""
 "MUSIC_PACKS","Müzik paketleri (Yeniden yükleme gerekir)",""
 "ENABLE_MUSIC_PACKS","Müzik paketlerinden müzik kullan",""
