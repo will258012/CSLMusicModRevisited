@@ -9,6 +9,7 @@ namespace CSLMusicMod.Helpers
     /// <summary>
     /// Contains some helper functions that work the AudioManager class of the game
     /// </summary>
+    [ReflectionHelper.UsedReflection]
     public static class AudioManagerHelper
     {
         private static readonly Traverse m_audioManager = Traverse.Create(AudioManager.instance);

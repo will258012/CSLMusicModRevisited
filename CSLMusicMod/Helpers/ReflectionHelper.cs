@@ -9,6 +9,18 @@ namespace CSLMusicMod.Helpers
     public static class ReflectionHelper
     {
         /// <summary>
+        /// Indicates that the attributed code element is accessed via reflection.
+        /// </summary>
+        /// <remarks>
+        /// Reflection has a performance cost.
+        /// Mark code with this attribute when reflection is used.
+        /// <strong>Remember to verify compatibility after game or mod updates, 
+        /// or consider using alternative ways to invoke the target code.</strong>
+        /// </remarks>
+        [AttributeUsage(AttributeTargets.All, AllowMultiple = false)]
+        [Obsolete("This code uses reflection. Remember to verify compatibility after game/mod updates.")]
+        public sealed class UsedReflectionAttribute : Attribute { }
+        /// <summary>
         /// Gets a private field of an object
         /// </summary>
         /// <returns>The private field.</returns>

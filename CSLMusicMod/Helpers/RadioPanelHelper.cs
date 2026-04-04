@@ -6,6 +6,7 @@ using UnityEngine;
 
 namespace CSLMusicMod.Helpers
 {
+    [ReflectionHelper.UsedReflection]
     public static class RadioPanelHelper
     {
         /// <summary>
