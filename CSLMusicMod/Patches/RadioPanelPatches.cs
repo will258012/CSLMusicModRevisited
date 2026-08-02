@@ -1,5 +1,4 @@
 ﻿using AlgernonCommons;
-using AlgernonCommons.Translation;
 using ColossalFramework.UI;
 using CSLMusicMod.Helpers;
 using HarmonyLib;

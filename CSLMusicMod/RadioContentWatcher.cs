@@ -38,11 +38,19 @@ namespace CSLMusicMod
 
         public void OnDestroy()
         {
+            DisallowedContentsCache.Clear();
+
             if (musicFilesBackup != null)
             {
                 AudioManagerHelper.m_musicFiles.Value = musicFilesBackup;
             }
-            AudioManager.instance.m_radioContentChanged -= OnContentChanged;
+
+            AudioManager audioManager = AudioManager.instance;
+            if (audioManager != null)
+            {
+                audioManager.m_radioContentChanged -= OnContentChanged;
+            }
+
             CancelInvoke(nameof(ApplyDisallowedContentRestrictions));
             CancelInvoke(nameof(ReevaluateCache));
         }

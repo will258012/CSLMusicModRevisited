@@ -38,6 +38,9 @@ namespace CSLMusicMod.Contexts
 
             foreach (var conj in m_Conditions)
             {
+                if (conj.Count == 0)
+                    continue;
+
                 bool applies = true;
 
                 foreach (RadioContextCondition cond in conj)

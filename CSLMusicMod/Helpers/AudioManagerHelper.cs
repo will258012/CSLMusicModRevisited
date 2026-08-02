@@ -43,7 +43,7 @@ namespace CSLMusicMod.Helpers
             AudioManager mgr = Singleton<AudioManager>.instance;
             ushort activeChannel = m_activeRadioChannel.Value;
 
-            if (activeChannel >= 0)
+            if (activeChannel > 0)
             {
                 RadioChannelData data = mgr.m_radioChannels[activeChannel];
                 return data;
@@ -111,6 +111,7 @@ namespace CSLMusicMod.Helpers
                     if (next != null)
                     {
                         RadioPanelHelper.SelectStation(next);
+                        return true;
                     }
                 }
             }
@@ -128,7 +129,7 @@ namespace CSLMusicMod.Helpers
             AudioManager mgr = Singleton<AudioManager>.instance;
             ushort activeChannel = m_activeRadioChannel.Value;
 
-            if (activeChannel >= 0)
+            if (activeChannel > 0)
             {
                 RadioChannelData data = mgr.m_radioChannels[activeChannel];
                 data.m_nextContent = 0;
@@ -188,7 +189,7 @@ namespace CSLMusicMod.Helpers
             {
                 ushort activechannel = m_activeRadioChannel.Value;
 
-                if (activechannel >= 0)
+                if (activechannel > 0)
                 {
                     RadioChannelData data = mgr.m_radioChannels[activechannel];
                     data.m_currentContent = 0;
@@ -256,7 +257,7 @@ namespace CSLMusicMod.Helpers
                 // Next content
                 ushort activeChannel = m_activeRadioChannel.Value;
 
-                if (activeChannel >= 0)
+                if (activeChannel > 0)
                 {
                     RadioChannelData data = mgr.m_radioChannels[activeChannel];
                     data.m_currentContent = contentindex;
