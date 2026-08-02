@@ -55,9 +55,7 @@ N'oubliez pas d'activer le paramètre ci-dessous si vous souhaitez fournir un jo
 "CLOSE_PANEL","Fermer ce panneau",""
 "SHOW_PLAYLIST","Affiche/masque la playlist",""
 "BUTTON_OPENDIR","Ouvrir le dossier contenant la station de radio.",""
-"NOT_RADIO","Cette chaîne n'est pas une chaîne de radio. Votre musique personnalisée
-peut être trouvée dans ""Défini par l'utilisateur"", ""CSLMusic Mix"" et
-les chaînes créées par les packs de musique.",""
+"NOT_RADIO","Cette chaîne n'est pas une chaîne de radio. Votre musique personnalisée peut être trouvée dans ""Défini par l'utilisateur"", ""CSLMusic Mix"" et les chaînes créées par les packs de musique.",""
 "NO_RESULTS","Aucun résultat trouvé.",""
 "DISABLE_CONT_CHECKBOXES_TIP","Double-cliquer pour désactiver une entrée.",""
 "USERDEFINED","Défini par l'utilisateur",""

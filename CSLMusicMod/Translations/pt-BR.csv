@@ -58,9 +58,7 @@ Não se esqueça de ativar a configuração abaixo se quiser fornecer um registr
 "CLOSE_PANEL","Fechar este painel",""
 "SHOW_PLAYLIST","Mostra/oculta a lista de reprodução",""
 "BUTTON_OPENDIR","Abrir pasta que contém a estação de rádio.",""
-"NOT_RADIO","Este canal não é um canal de rádio. Sua música personalizada
-pode ser encontrada em ""Definido pelo Usuário"", ""CSLMusic Mix"" e
-canais criados por pacotes de música.",""
+"NOT_RADIO","Este canal não é um canal de rádio. Sua música personalizada pode ser encontrada em ""Definido pelo Usuário"", ""CSLMusic Mix"" e canais criados por pacotes de música.",""
 "NO_RESULTS","Nenhum resultado encontrado.",""
 "DISABLE_CONT_CHECKBOXES_TIP","Clique duas vezes para desativar uma entrada.",""
 "USERDEFINED","Definido pelo Usuário",""

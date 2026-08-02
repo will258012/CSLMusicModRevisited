@@ -55,9 +55,7 @@ Ne felejtsd el bekapcsolni az alábbi beállítást, ha naplót szeretnél bizto
 "CLOSE_PANEL","Panel bezárása",""
 "SHOW_PLAYLIST","Megjeleníti/elrejti a lejátszási listát",""
 "BUTTON_OPENDIR","A rádióállomást tartalmazó mappa megnyitása.",""
-"NOT_RADIO","Ez a csatorna nem rádiócsatorna. Az egyedi zenéid
-a ""Felhasználó által definiált"", a ""CSLMusic Mix"" és
-a zenei csomagok által létrehozott csatornákban találhatók.",""
+"NOT_RADIO","Ez a csatorna nem rádiócsatorna. Az egyedi zenéid a ""Felhasználó által definiált"", a ""CSLMusic Mix"" és a zenei csomagok által létrehozott csatornákban találhatók.",""
 "NO_RESULTS","Nincs találat.",""
 "DISABLE_CONT_CHECKBOXES_TIP","Dupla kattintással letiltható egy bejegyzés.",""
 "USERDEFINED","Felhasználó által definiált",""

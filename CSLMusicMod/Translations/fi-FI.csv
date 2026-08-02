@@ -55,9 +55,7 @@
 "CLOSE_PANEL","Sulje tämä paneeli",""
 "SHOW_PLAYLIST","Näyttää/piilottaa soittolistan",""
 "BUTTON_OPENDIR","Avaa radioaseman sisältävä kansio.",""
-"NOT_RADIO","Tämä kanava ei ole radio-kanava. Oma musiikkisi
-löytyy ""Käyttäjän määrittelemät"", ""CSLMusic Mix"" ja
-musiikkipakettien luomista kanavista.",""
+"NOT_RADIO","Tämä kanava ei ole radio-kanava. Oma musiikkisi löytyy ""Käyttäjän määrittelemät"", ""CSLMusic Mix"" ja musiikkipakettien luomista kanavista.",""
 "NO_RESULTS","Tuloksia ei löytynyt.",""
 "DISABLE_CONT_CHECKBOXES_TIP","Kaksoisnapsauta poistaaksesi kohteen käytöstä.",""
 "USERDEFINED","Käyttäjän määrittelemät",""
