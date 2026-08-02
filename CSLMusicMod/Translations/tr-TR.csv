@@ -55,9 +55,7 @@ Bir günlük sağlamak istiyorsanız aşağıdaki ayarı etkinleştirmeyi unutma
 "CLOSE_PANEL","Bu paneli kapat",""
 "SHOW_PLAYLIST","Çalma listesini gösterir/gizler",""
 "BUTTON_OPENDIR","Radyo istasyonunu içeren klasörü aç.",""
-"NOT_RADIO","Bu kanal bir radyo kanalı değildir. Özel müzikleriniz
-""Kullanıcı Tanımlı"", ""CSLMusic Mix"" ve
-müzik paketleri tarafından oluşturulan kanallarda bulunabilir.",""
+"NOT_RADIO","Bu kanal bir radyo kanalı değildir. Özel müzikleriniz ""Kullanıcı Tanımlı"", ""CSLMusic Mix"" ve müzik paketleri tarafından oluşturulan kanallarda bulunabilir.",""
 "NO_RESULTS","Sonuç bulunamadı.",""
 "DISABLE_CONT_CHECKBOXES_TIP","Bir girdiyi devre dışı bırakmak için çift tıklayın.",""
 "USERDEFINED","Kullanıcı Tanımlı",""
