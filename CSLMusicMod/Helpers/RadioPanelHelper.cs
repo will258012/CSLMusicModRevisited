@@ -1,6 +1,6 @@
 ﻿using AlgernonCommons;
-using AlgernonCommons.Translation;
 using ColossalFramework.UI;
+using CSLMusicMod.UI;
 using HarmonyLib;
 using System.Linq;
 using UnityEngine;
@@ -40,9 +40,18 @@ namespace CSLMusicMod.Helpers
             m_traverse = Traverse.Create(CurrentRadioPanel);
             m_radioPanel = m_traverse.Field<UIPanel>("m_radioPanel");
             m_radioList = m_traverse.Field<UIPanel>("m_radioList");
+            m_radioButton = m_traverse.Field<UIButton>("m_radioButton");
+            m_radioListButton = m_traverse.Field<UIButton>("m_radioListButton");
             m_isVisible = m_traverse.Field<bool>("m_isVisible");
             m_selectedStation = m_traverse.Field<RadioChannelInfo>("m_selectedStation");
             m_stations = m_traverse.Field<RadioChannelInfo[]>("m_stations");
+
+            m_radioPanel.Value.eventClicked -= BringToFront;
+            m_radioPanel.Value.eventClicked += BringToFront;
+            m_radioButton.Value.eventClicked -= BringToFront;
+            m_radioButton.Value.eventClicked += BringToFront;
+            m_radioListButton.Value.eventClicked -= BringToFront;
+            m_radioListButton.Value.eventClicked += BringToFront;
         }
         /// <summary>
         /// The current radio panel (from vanilla UI)
@@ -55,6 +64,8 @@ namespace CSLMusicMod.Helpers
         private static Traverse m_traverse = null;
         internal static Traverse<UIPanel> m_radioPanel = null;
         internal static Traverse<UIPanel> m_radioList = null;
+        internal static Traverse<UIButton> m_radioButton = null;
+        private static Traverse<UIButton> m_radioListButton = null;
         internal static Traverse<bool> m_isVisible = null;
         internal static Traverse<RadioChannelInfo> m_selectedStation = null;
         internal static Traverse<RadioChannelInfo[]> m_stations = null;
@@ -98,6 +109,12 @@ namespace CSLMusicMod.Helpers
             {
                 Logging.LogException(e, "Could not disable radio stations");
             }
+        }
+        private static void BringToFront(UIComponent comp, UIMouseEventParameter eventParam)
+        {
+            m_radioPanel.Value.BringToFront();
+            m_radioList.Value.BringToFront();
+            Loading.UI.ListPanel?.SendToBack();
         }
     }
 }
