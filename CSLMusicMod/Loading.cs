@@ -115,7 +115,7 @@ namespace CSLMusicMod
             if (DisabledContentContainer != null)
             {
                 UnityEngine.Object.Destroy(DisabledContentContainer.gameObject);
-                UserRadioContainer = null;
+                DisabledContentContainer = null;
             }
         }
 
