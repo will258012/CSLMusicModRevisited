@@ -47,13 +47,16 @@ namespace CSLMusicMod.Helpers
                 {
                     if (_cultureInfo == null)
                         _cultureInfo = Environment.OSVersion.Platform == PlatformID.Win32NT
-                                       ? CultureInfo.GetCultureInfo(GetUserDefaultLCID())
+                                       ? GetWindowsCultureInfo()
                                        : CultureInfo.GetCultureInfo(MapSystemLanguageToCultureCode());
 
                 }
                 catch (Exception e)
                 {
-                    Logging.LogException(e, "Failed to get CorrectedCultureInfo");
+                    Logging.LogException(e, @"Failed to get CorrectedCultureInfo.
+This means that the mod does not fully support your system language, which may affect how song titles in your language are sorted.
+Otherwise, you can safely ignore this error.");
+
                 }
                 finally
                 {
@@ -68,6 +71,19 @@ namespace CSLMusicMod.Helpers
 
         [System.Runtime.InteropServices.DllImport("KERNEL32.DLL")]
         private static extern int GetUserDefaultLCID();
+
+        private static CultureInfo GetWindowsCultureInfo()
+        {
+            try
+            {
+                return CultureInfo.GetCultureInfo(GetUserDefaultLCID());
+            }
+            catch (ArgumentException)
+            {
+                // Windows can return locale IDs that aren't present in the game's older Mono runtime.
+                return CultureInfo.GetCultureInfo(MapSystemLanguageToCultureCode());
+            }
+        }
 
         private static string MapSystemLanguageToCultureCode()
         {
