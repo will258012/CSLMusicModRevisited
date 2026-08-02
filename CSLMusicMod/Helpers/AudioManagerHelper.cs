@@ -260,6 +260,7 @@ namespace CSLMusicMod.Helpers
                 {
                     RadioChannelData data = mgr.m_radioChannels[activeChannel];
                     data.m_currentContent = contentindex;
+                    data.m_flags = data.m_flags.ClearFlags(RadioChannelData.Flags.PlayDefault);
                     //data.m_nextContent = contentindex;
                     mgr.m_radioChannels[activeChannel] = data;
                     //mgr.m_radioChannels[activechannel].ChangeContent(activechannel);
@@ -315,8 +316,9 @@ namespace CSLMusicMod.Helpers
                 ModOptions.Instance.DisabledContent.Add(id);
             }
 
-            ModOptions.SaveSettings();
+            Loading.DisabledContentContainer?.UpdateCache(info);
 
+            ModOptions.SaveSettings();
         }
 
         public static string GetContentName(RadioContentInfo info)
