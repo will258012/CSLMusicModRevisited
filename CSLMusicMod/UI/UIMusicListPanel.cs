@@ -66,7 +66,7 @@ namespace CSLMusicMod.UI
             wrapLayout = true;
             width = 500;
             height = screenResolution.y - 120 - 100;
-            isVisible = true;
+            isVisible = false;
             canFocus = true;
             isInteractive = true;
             m_ZIndex = -100;
@@ -213,7 +213,7 @@ namespace CSLMusicMod.UI
         {
             var nameBuilder = new System.Text.StringBuilder();
 
-            if (ModOptions.Instance.ImprovedDisableContentUI)
+            if (ModOptions.Instance.EnableDisabledContent && ModOptions.Instance.ImprovedDisableContentUI)
                 nameBuilder.Append(!AudioManagerHelper.ContentIsEnabled(content) ? "<sprite ContentUnchecked> " : "<sprite ContentChecked> ");
             else if (!AudioManagerHelper.ContentIsEnabled(content))
                 nameBuilder.Append("<sprite ContentDisabled> ");
@@ -616,7 +616,7 @@ namespace CSLMusicMod.UI
 
         private void musicEntrySelected(UIComponent component, int value)
         {
-            if (ModOptions.Instance.ImprovedDisableContentUI)
+            if (ModOptions.Instance.EnableDisabledContent && ModOptions.Instance.ImprovedDisableContentUI)
             {
                 Vector3 mouse = Input.mousePosition / component.GetUIView().inputScale;
                 Vector3 diff = mouse - component.absolutePosition;
@@ -668,7 +668,7 @@ namespace CSLMusicMod.UI
             m_MusicList.itemHover = "ListEntryHover";
             m_MusicList.itemHeight = 32;
             m_MusicList.itemPadding = new RectOffset(0, 0, 4, 4);
-            m_MusicList.tooltip = !ModOptions.Instance.ImprovedDisableContentUI ? Translations.Translate("DISABLE_CONT_CHECKBOXES_TIP") : "";
+            m_MusicList.tooltip = ModOptions.Instance.EnableDisabledContent && !ModOptions.Instance.ImprovedDisableContentUI ? Translations.Translate("DISABLE_CONT_CHECKBOXES_TIP") : "";
             m_MusicList.zOrder = -50;
             m_MusicList.atlas = TextureHelper.ListAtlas;
             m_MusicList.processMarkup = true;
@@ -691,7 +691,7 @@ namespace CSLMusicMod.UI
 
         private void musicEntryDoubleClick(UIComponent component, int value)
         {
-            if (!ModOptions.Instance.ImprovedDisableContentUI)
+            if (ModOptions.Instance.EnableDisabledContent && !ModOptions.Instance.ImprovedDisableContentUI)
             {
                 musicEntryEnableDisable(component, value);
             }
