@@ -142,8 +142,7 @@ namespace CSLMusicMod.UI
                 var list = RadioPanelHelper.m_radioList.Value;
 
                 panel?.BringToFront();
-                if (list != null)
-                    panel.BringToFront();
+                list?.BringToFront();
 
                 SendToBack();
             }
@@ -161,7 +160,7 @@ namespace CSLMusicMod.UI
 
             //Dictionary<RadioContentInfo, String> entrytexts = new Dictionary<RadioContentInfo, string>();
 
-            if (activechannel >= 0)
+            if (activechannel > 0)
             {
                 RadioChannelData channeldata = mgr.m_radioChannels[activechannel];
                 RadioChannelInfo info = channeldata.Info;
@@ -701,10 +700,11 @@ namespace CSLMusicMod.UI
         {
             m_RadioChannelInfo = AddUIComponent<UILabel>();
             m_RadioChannelInfo.relativePosition = new Vector3(10, 60 + 10);
-            m_RadioChannelInfo.size = m_MusicList.size;
-            m_RadioChannelInfo.textColor = new Color32(150, 150, 150, 255);
-            m_RadioChannelInfo.text = Translations.Translate("NOT_RADIO");
             m_RadioChannelInfo.autoSize = false;
+            m_RadioChannelInfo.wordWrap = true;
+            m_RadioChannelInfo.textColor = Color.white;
+            m_RadioChannelInfo.text = Translations.Translate("NOT_RADIO");
+            m_RadioChannelInfo.width = width - 20;
             m_RadioChannelInfo.Show();
         }
         private bool IsFiltered(string entrytext) => Filtered && !entrytext.ToLower().Contains(m_Filter.text.ToLower());
