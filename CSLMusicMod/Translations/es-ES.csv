@@ -55,7 +55,7 @@ No olvides activar la configuración a continuación si quieres proporcionar un 
 "CLOSE_PANEL","Cerrar este panel",""
 "SHOW_PLAYLIST","Muestra/oculta la lista de reproducción",""
 "BUTTON_OPENDIR","Abrir carpeta que contiene la emisora de radio.",""
-"NOT_RADIO","This channel is not a radio-channel. Your custom music can be found in ""User Defined"", ""CSLMusic Mix"" and channels created by music packs.",""
+"NOT_RADIO","Este canal no es una emisora de radio. Tu música personalizada se puede encontrar en ""Definido por el usuario"", ""CSLMusic Mix"" y en los canales creados por paquetes de música.",""
 "NO_RESULTS","No se encontraron resultados.",""
 "DISABLE_CONT_CHECKBOXES_TIP","Haz doble clic para desactivar una entrada.",""
 "USERDEFINED","Definido por el usuario",""
