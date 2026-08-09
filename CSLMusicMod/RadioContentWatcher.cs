@@ -135,9 +135,13 @@ namespace CSLMusicMod
                     return;
                 }
             }
-            if (!DisallowedContentsCache.TryGetValue(currentChannelInfo, out var disallowed) || disallowed.Count == 0) return;
+            if (currentChannelInfo != null)
+            {
+                if (!DisallowedContentsCache.TryGetValue(currentChannelInfo, out var disallowed) || disallowed.Count == 0) return;
 
-            UpdateCache(disallowed.ToArray());
+                UpdateCache(disallowed.ToArray());
+                return;
+            }
         }
 
         private bool UpdateCurrentChannelCache(RadioChannelData channel)
